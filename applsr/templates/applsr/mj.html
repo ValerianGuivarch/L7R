@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap4 %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page du MJ - interdit aux joueurs !</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+<link href="/static/css/l7r.css" rel="stylesheet">
+</head>
+<body>
+<script src="{% static 'js/jquery-3.4.1.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script>
+    var parts = location.pathname.split("/"); var nompj = parts[parts.length - 1];
+
+</script>
+
+
+<button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
+<br\>
+
+
+<label for="pj-select"></label>
+
+<select id="pj-select" name="pj">
+    <option value="">Nom du PJ</option>
+    <option value="aurelien">aurelien</option>
+    <option value="ayoub">ayoub</option>
+    <option value="camille">camille</option>
+    <option value="cora">cora</option>
+    <option value="deirdre">deirdre</option>
+    <option value="gertrude">gertrude</option>
+    <option value="isycho">isycho</option>O
+    <option value="john">john</option>
+    <option value="jonathan">jonathan</option>
+    <option value="kyma">kyma</option>
+    <option value="mathieu">mathieu</option>
+    <option value="roger">roger</option>
+    <option value="roy">roy</option>
+    <option value="tara">tara</option>
+    <option value="tibo">tibo</option>
+    <option value="viktor">viktor</option>
+</select>
+<button onclick="ajouter_pj(document.getElementById('pj-select').value)">Ajouter</button>
+
+<input id="opposition" size="2" type="text" value="opposition">
+<label class="btn active"><input id="opposition_checked" type="checkbox" autocomplete="off">Opposition</label>
+<br>
+<input id="new_pnj_name" size="2" type="text" value="name">
+<input id="new_pnj_chair" size="2" type="text" value="chair">
+<input id="new_pnj_esprit" size="2" type="text" value="esprit">
+<input id="new_pnj_essence" size="2" type="text" value="essence">
+<input id="new_pnj_pv_max" size="2" type="text" value="PVmax">
+<input id="new_pnj_pf_max" size="2" type="text" value="PFmax">
+<input id="new_pnj_pp_max" size="2" type="text" value="PPmax">
+<button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value,
+                            document.getElementById('new_pnj_chair').value,
+                            document.getElementById('new_pnj_esprit').value,
+                            document.getElementById('new_pnj_essence').value,
+                            document.getElementById('new_pnj_pv_max').value,
+                            document.getElementById('new_pnj_pf_max').value,
+                            document.getElementById('new_pnj_pp_max').value)">Ajouter
+</button>
+
+
+
+<span id="liste_pj"></span>
+
+<span id="liste_pnj"></span>
+
+
+<div id="chat"></div>
+
+
+<script src="{% static 'applsr/js/mj.js' %}"></script>
+
+
+</body>
+</html>
