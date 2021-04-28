@@ -1,7 +1,12 @@
 function afficher() {
     const chat = document.querySelector('#chat');
     fetch('/afficher/'+nompj+'/false').then((response) => response.text()).then(text => {
-        chat.innerHTML = text;
+        var newChat = document.createElement("div");
+        newChat.innerHTML = text;
+        if(chat.innerHTML != newChat.innerHTML) {
+            console.log("refresh");
+            chat.innerHTML = newChat.innerHTML;
+        }
     }).catch(function(e) {
         console.error("error", e);
     });
