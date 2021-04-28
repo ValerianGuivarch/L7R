@@ -142,7 +142,7 @@
                 </label>
 
                 <label>
-                    <span class="btn-group">
+                    <span class="btn-group" title="Ne peut pas être utilisé sur le jets d'arcane">
                         <button class="btn btn-info" onclick="moinsPp();">-</button>
                         <button class="btn btn-info">
                             <input autocomplete="off" id="use_pp" type="checkbox"> PP : <span id="pp">{{ car.point_de_pouvoir }}</span> / {{ car.point_de_pouvoir_max }}
@@ -155,11 +155,43 @@
             <div data-toggle="buttons">
                 <label class="btn btn-info active">
                     <input autocomplete="off" id="use_ra" type="checkbox">
-                    {% if car.niveau <= 13 %} {% if car.element=="glace" %} Ruse {% elif car.element=="feu" %} Séduction {% elif car.element=="ombre" %} Discrétion {% elif car.element=="vent" %} Adresse {% elif car.element=="terre" %} Force {% elif car.element=="foudre" %} Sagacité {% elif car.element=="lumiere" %} Tenacité {% elif car.element=="eau" %} Observation {% elif car.element=="arbre" %} Nature {% elif car.element=="lion" %} Perception {% elif car.element=="illithid" %} Détection de mensonge {% elif car.element=="deva" %} Chaos {% elif car.element=="pacificateur" %} Résistance magique {% else %} Intimidation {% endif %} {% else %} {% if car.element=="glace" %} Ruse / Self-contrôle {% elif car.element=="feu" %} Séduction / Folie {% elif car.element=="ombre" %} Discrétion / Empathie {% elif car.element=="vent" %} Adresse / Vitesse {% elif car.element=="terre" %} Force / Stratégie {% elif car.element=="foudre" %} Sagacité / Autorité {% elif car.element=="lumiere" %} Tenacité / Inspiration {% elif car.element=="eau" %} Observation / Apaisement {% elif car.element=="arbre" %} Nature {% elif car.element=="lion" %} Perception {% elif car.element=="illithid" %} Détection de mensonge {% elif car.element=="deva" %} Chaos {% elif car.element=="pacificateur" %} Résistance magique {% else %} Intimidation / Perception Essence {% endif %} {% endif %}
-                </label>
-                <label class="btn btn-info active">
-                    <input autocomplete="off" id="use_sc" type="checkbox">Secret
-                </label>
+                    {% if car.niveau <= 13 %}
+                        {% if car.element == "glace" %} Ruse
+                        {% elif car.element == "feu" %} Séduction
+                        {% elif car.element == "ombre" %} Discrétion
+                        {% elif car.element == "vent" %} Adresse
+                        {% elif car.element == "terre" %} Force
+                        {% elif car.element == "foudre" %} Sagacité
+                        {% elif car.element == "lumiere" %} Tenacité
+                        {% elif car.element == "eau" %} Observatio
+                        {% elif car.element == "arbre" %} Nature
+                        {% elif car.element == "lion" %} Perception
+                        {% elif car.element == "illithid" %} Détection de mensonge
+                        {% elif car.element == "deva" %} Chaos
+                        {% elif car.element == "pacificateur" %} Résistance magique
+                        {% else %} Intimidation
+                        {% endif %}
+                    {% else %}
+                        {% if car.element == "glace" %} Ruse / Self-contrôle
+                        {% elif car.element == "feu" %} Séduction / Folie
+                        {% elif car.element == "ombre" %} Discrétion / Empathie
+                        {% elif car.element == "vent" %} Adresse / Vitess
+                        {% elif car.element == "terre" %} Force / Stratégie
+                        {% elif car.element == "foudre" %} Sagacité / Autorité
+                        {% elif car.element == "lumiere" %} Tenacité / Inspiration
+                        {% elif car.element == "eau" %} Observation / Apaisement
+                        {% elif car.element == "arbre" %} Nature
+                        {% elif car.element == "lion" %} Perception
+                        {% elif car.element == "illithid" %} Détection de mensonge
+                        {% elif car.element == "deva" %} Chaos
+                        {% elif car.element == "pacificateur" %} Résistance magique
+                        {% else %} Intimidation / Perception Essence
+                        {% endif %}
+                    {% endif %}
+                    </label>
+                    <label class="btn btn-info active">
+                        <input autocomplete="off" id="use_sc" type="checkbox">Secret
+                    </label>
             </div>
 
             <div data-toggle="buttons">
@@ -233,4 +265,5 @@
         </div>
     </div>
 </body>
+
 </html>
