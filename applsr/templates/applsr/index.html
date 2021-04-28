@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Les Sept Rois - la Guerre des Ombres</title>
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="/static/css/l7r.css" rel="stylesheet">
+    <link href="{% static 'applsr/css/l7r.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -57,7 +57,7 @@
                 niv. {{ car.niveau }}
             </h4>
 
-            <table align="center" class="perso" style="height:10px; width:300px;">
+            <table class="perso" style="height:10px;">
                 <tr>
                     <td rowspan="3">
                         {% with 'applsr/'|add:car.name|add:".png" as filepath %}

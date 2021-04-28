@@ -18,6 +18,8 @@
   margin-bottom: 0;
   height: auto;
   width: auto;
+  display: inline-flex;
+  justify-content: center;
 }
 
 perso .figure-img {
