@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 {% load static %}
-{% load bootstrap4 %}
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Les Sept Rois - la Guerre des Ombres</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'applsr/css/l7r.css' %}" rel="stylesheet">
 </head>
 
 <body>
-    <script src="{% static 'js/jquery-3.4.1.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
     <script>
         var parts = location.pathname.split("/"); var nompj = parts[parts.length - 1];
     </script>
@@ -105,6 +100,7 @@
             </table>
 
             <div data-toggle="buttons">
+                <!-- pv -->
                 <label>
                     <span class="btn-group">
                         <button class="btn btn-info" onclick="moinsPv();">-</button>
@@ -113,6 +109,7 @@
                         <button class="btn btn-info" onclick="plusPv();">+</button>
                     </span>
                 </label>
+                <!-- dettes -->
                 <label>
                     <span class="btn-group">
                         <button class="btn btn-info" onclick="moinsDt();">-</button>
@@ -120,6 +117,7 @@
                         <button class="btn btn-info" onclick="plusDt();">+</button>
                     </span>
                 </label>
+                <!-- arcanes -->
                 <label>
                     <span class="btn-group">
                         <button class="btn btn-info" onclick="moinsAk();">-</button>
@@ -131,6 +129,7 @@
             </div>
 
             <div data-toggle="buttons">
+                <!-- pf -->
                 <label>
                     <span class="btn-group">
                         <button class="btn btn-info" onclick="moinsPf();">-</button>
@@ -141,6 +140,7 @@
                     </span>
                 </label>
 
+                <!-- pp -->
                 <label>
                     <span class="btn-group" title="Ne peut pas être utilisé sur le jets d'arcane">
                         <button class="btn btn-info" onclick="moinsPp();">-</button>
@@ -153,8 +153,9 @@
             </div>
 
             <div data-toggle="buttons">
+                <!-- force -->
                 <label class="btn btn-info active" title="Une réussite supplémentaire">
-                    <input autocomplete="off" id="use_ra" type="checkbox">
+                    <input autocomplete="off" id="use_ra" type="checkbox" />
                     {% if car.niveau <= 13 %}
                         {% if car.element == "glace" %} Ruse
                         {% elif car.element == "feu" %} Séduction
@@ -188,13 +189,17 @@
                         {% else %} Intimidation / Perception Essence
                         {% endif %}
                     {% endif %}
-                    </label>
-                    <label class="btn btn-info active">
-                        <input autocomplete="off" id="use_sc" type="checkbox">Secret
-                    </label>
+                </label>
+
+                <!-- secret -->
+                <label class="btn btn-info active">
+                    <input autocomplete="off" id="use_sc" type="checkbox">Secret
+                </label>
             </div>
 
             <div data-toggle="buttons">
+
+                <!-- malédictions -->
                 <label>
                     <span class="btn-group">
                         <button class="btn btn-danger" onclick="moinsMalus();">-</button>
@@ -202,6 +207,8 @@
                         <button class="btn btn-danger" onclick="plusMalus();">+</button>
                     </span>
                 </label>
+
+                <!-- bénédictions -->
                 <label>
                     <span class="btn-group">
                         <button class="btn btn-success" onclick="moinsBonus();">-</button>
@@ -212,20 +219,22 @@
             </div>
 
             <div data-toggle="buttons">
+                <!-- jet chair -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JC', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet de Chair
                     </button>
                 </label>
+                <!-- jet esprit -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JS', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet d'Esprit
                     </button>
                 </label>
-
+                <!-- jet essence -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JE', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet d'Essence
                     </button>
                 </label>
-
+                <!-- jet mort -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancerJdSvM(nompj);">
                         Mort
@@ -234,33 +243,40 @@
             </div>
 
             <div data-toggle="buttons">
+                <!-- jet magie -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JM', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet de Magie
                     </button>
                 </label>
+                <!-- jet soin -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'Jsoin', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet de Soin
                     </button>
                 </label>
+                <!-- jet empirique -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancerEmpirique(document.getElementById('use_sc').checked);">Jet Empirique</button>
                 </label>
             </div>
 
             <div data-toggle="buttons">
+                <!-- utilisation arcane fixe -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JAF', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane Fixe
                     </button>
                 </label>
+                <!-- jet arcane esprit -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JAE', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane d'Esprit
                     </button>
                 </label>
+                <!-- jet arcane essence -->
                 <label>
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JAS', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane d'Essence
                     </button>
                 </label>
             </div>
+
             <div id="chat"></div>
         </div>
     </div>
