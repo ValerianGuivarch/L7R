@@ -249,9 +249,8 @@
 
             <div class="line">
                 <!-- jet magie -->
-                <label>
-                    <button class="btn btn-info" onclick="loadLancer(nompj, 'JM', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet de Magie
-                    </button>
+                <label title="Ajoute un dette et fait un jet d'essence">
+                    <button class="btn btn-info" onclick="loadLancer(nompj, 'JM', document.getElementById('use_pf').checked, document.getElementById('use_pp').checked, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked);">Jet de Magie</button>
                 </label>
                 <!-- jet soin -->
                 <label>
@@ -259,24 +258,23 @@
                     </button>
                 </label>
                 <!-- jet empirique -->
-                <label>
+                <label title="Jette n'importe quel type de dés">
                     <button class="btn btn-info" onclick="loadLancerEmpirique(document.getElementById('use_sc').checked);">Jet Empirique</button>
                 </label>
             </div>
 
             <div class="line">
                 <!-- utilisation arcane fixe -->
-                <label>
-                    <button class="btn btn-info" onclick="loadLancer(nompj, 'JAF', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane Fixe
-                    </button>
+                <label title="Enlève une utilisation d'arcane">
+                    <button class="btn btn-info" onclick="loadLancer(nompj, 'JAF', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane Fixe</button>
                 </label>
                 <!-- jet arcane esprit -->
-                <label>
+                <label title="Enlève une utilisation d'arcane et fait un jet d'esprit">
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JAE', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane d'Esprit
                     </button>
                 </label>
                 <!-- jet arcane essence -->
-                <label>
+                <label title="Enlève une utilisation d'arcane et fait un jet d'essence">
                     <button class="btn btn-info" onclick="loadLancer(nompj, 'JAS', document.getElementById('use_pf').checked, false, document.getElementById('use_ra').checked, document.getElementById('use_sc').checked );">Arcane d'Essence
                     </button>
                 </label>

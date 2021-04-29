@@ -567,8 +567,8 @@ def lancer_empirique(request, nom, valeur, secret):
     is_secret = secret == "true"
     dices_string = ""
     if is_secret:
-        dices_string += "(secret)"
-    dices_string += nom.capitalize()+" fait un <b>Jet Empirique</b> ("+valeur+"):<br/>"
+        dices_string += "[secret] "
+    dices_string += nom.capitalize()+" fait un <b>Jet Empirique</b> ("+valeur+") :<br/>"
     v = valeur.split("d")
     for i in range(0, int(v[0])):
         roll = random.randint(1, int(v[1]))
