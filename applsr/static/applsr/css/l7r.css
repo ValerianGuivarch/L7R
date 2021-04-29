@@ -22,14 +22,18 @@ body {
 .container {
   display: flex;
   justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  max-width: 540px;
+  margin: auto;
 }
 
-.control-panel {
-
+#chat {
+  text-align: left;
 }
 
 .line {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.4rem;
 }
 
 input[type="checkbox"] {
@@ -64,7 +68,7 @@ button input[type="checkbox"] {
   color: #fff;
   background-color: #17a2b8;
   border-color: #17a2b8;
-  padding: 0.1rem 0.5rem;
+  padding: 0.2rem 0.7rem;
 }
 
 .btn:disabled {
