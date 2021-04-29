@@ -53,11 +53,13 @@
 
         <table class="perso">
             <tr>
-                <td rowspan="3">
+                <td rowspan="4">
                     {% with 'applsr/'|add:car.name|add:".png" as filepath %}
                     <img alt="Ce PJ n'existe pas !" class="figure-img img-fluid rounded" src="{% static filepath %}" style="width:100px; height:auto" />
                     {% endwith %}
                 </td>
+            </tr>
+            <tr title="Force physique, malus de 1 pour chaque tranche de 6 PV en dessous du maximum">
                 <td>
                     <figure>
                         {% with 'applsr/'|add:"chair.png" as filepath %}
@@ -70,7 +72,7 @@
                     <p style="color:orange">{{ car.fl }}</p>
                 </td>
             </tr>
-            <tr>
+            <tr title="Force mentale, peut-être utilisé pour se défendre contre n'importe quel type d'attaque et aider n'importe quel action">
                 <td>
                     <figure>
                         {% with 'applsr/'|add:"esprit.png" as filepath %}
@@ -83,7 +85,7 @@
                     <p style="color:red">{{ car.fu }}</p>
                 </td>
             </tr>
-            <tr>
+            <tr title="Puissance magique">
                 <td>
                     <figure>
                         {% with 'applsr/'|add:"essence.png" as filepath %}
