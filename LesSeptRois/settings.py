@@ -114,7 +114,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static-res")
+    #os.path.join(BASE_DIR, "static-res")
 ]
 
 from LesSeptRois.local_settings import *
