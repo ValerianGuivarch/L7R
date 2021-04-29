@@ -5,6 +5,7 @@ import types
 
 from django.http import HttpResponse
 from django.template import loader
+from django.core import serializers
 
 from applsr.models import Character
 from applsr.models import Masterword
@@ -12,6 +13,17 @@ from applsr.models import DiceRoll
 from applsr.models import Viking
 from django.db.models import Q
 
+from django.forms import model_to_dict
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Model
+from django.http import JsonResponse
+
+class ExtendedEncoder(DjangoJSONEncoder):
+
+    def default(self, o):
+        if isinstance(o, Model):
+            return model_to_dict(o)
+        return super().default(o)
 
 
 def mj_viking(request):
@@ -355,7 +367,7 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
         dices_string += "utilise une <i>Arcane Fixe</i>."
         now = datetime.now()
         dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
-        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car)
+        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results="", pp=pouvoir, pf=focus, roll_type=test)
         dice.save()
         result = {
             'requete': test,
@@ -437,7 +449,7 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
 
     now = datetime.now()
     dices_string = ""+str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" - "+dices_string
-    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car)
+    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test)
     dice.save()
     result = {
         degats
@@ -543,25 +555,29 @@ def dice_roll_fake(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, 
 
 
 def afficher(request, nom, secret):
-    is_secret= secret == "true"
-    today = datetime.now().date()
-    tomorrow = today + timedelta(1)
-    today_start = datetime.combine(today, time())
-    today_end = datetime.combine(tomorrow, time())
-
-    if is_secret:
-        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end)
+    if "json" in request.GET:
+        data = {"a": 1}
+        return JsonResponse(data, encoder=ExtendedEncoder)
     else:
-        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
-    if queryset.count() > 10:
-        queryset = queryset[:10]
+        is_secret= secret == "true"
+        today = datetime.now().date()
+        tomorrow = today + timedelta(1)
+        today_start = datetime.combine(today, time())
+        today_end = datetime.combine(tomorrow, time())
 
-    aff = "<table class=\"table table-hover\">"
-    for q in queryset:
-        aff += "<tr><td>" + q.dices + "</td></tr>"
-    aff += "</table>"
-    print(aff)
-    return HttpResponse(aff)
+        if is_secret:
+            queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end)
+        else:
+            queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
+        if queryset.count() > 10:
+            queryset = queryset[:10]
+
+        aff = "<table class=\"table table-hover\">"
+        for q in queryset:
+            aff += "<tr><td>" + q.dices + "</td></tr>"
+        aff += "</table>"
+        print(aff)
+        return HttpResponse(aff)
 
 
 def lancer_empirique(request, nom, valeur, secret):

@@ -53,6 +53,13 @@ class DiceRoll(models.Model):
     secret = models.BooleanField(default=False)
     lancer = models.CharField(max_length=255, default="no one")
 
+    malediction_count = models.IntegerField(default=0)
+    benediction_count = models.IntegerField(default=0)
+    dice_results = models.CharField(default="", max_length=255)
+    pp = models.BooleanField(default=False)
+    pf = models.BooleanField(default=False)
+    roll_type = models.CharField(default="", max_length=32)
+
 
 class Viking(models.Model):
     joueur = models.CharField(max_length=255, default="personne")
