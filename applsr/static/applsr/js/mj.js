@@ -12,8 +12,11 @@ function afficher() {
     });
     afficherPJ();
 }
-setInterval(afficher, 2000);
-afficher();
+
+document.addEventListener("DOMContentLoaded", () => {
+    setInterval(afficher, 2000);
+    afficher();
+});
 
 
 

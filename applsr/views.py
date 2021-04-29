@@ -314,6 +314,7 @@ def afficher_mw(request):
 
     return HttpResponse(info)
 
+# L7R
 
 def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0):
     print(is_secret)

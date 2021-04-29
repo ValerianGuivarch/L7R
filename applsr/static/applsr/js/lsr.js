@@ -13,8 +13,10 @@ function afficher() {
     getCar(nompj);
 }
 
-setInterval(afficher, 2000);
-afficher();
+document.addEventListener("DOMContentLoaded", () => {
+    setInterval(afficher, 2000);
+    afficher();
+});
 
 function getCar(name) {
     fetch('/lsr/getcar/' + name)
