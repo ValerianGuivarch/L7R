@@ -161,12 +161,17 @@ function afficher() {
     }).catch(function(e) {
         console.error("error", e);
     });
-    getCar(nompj);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    setInterval(afficher, 2000);
-    afficher();
+    var cb = () => {
+        afficher();
+        if(nompj != "mj") {
+            getCar(nompj);
+        }
+    };
+    cb();
+    setInterval(cb, 2000);
 });
 
 function getCar(name) {

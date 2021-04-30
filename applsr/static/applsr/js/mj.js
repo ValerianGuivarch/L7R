@@ -5,6 +5,13 @@ var table = "";
 nompj = "mj";
 display_secret = true; // override value from lsr.js
 
+document.addEventListener("DOMContentLoaded", () => {
+    setInterval(() => {
+        afficherPJ();
+    }, 2000);
+
+    afficherPJ();
+});
 
 function afficher2() {
     const chat = document.querySelector('#chat');
@@ -13,15 +20,7 @@ function afficher2() {
     }).catch(function(e) {
         console.error("error", e);
     });
-    afficherPJ();
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    setInterval(afficher, 2000);
-    afficher();
-});
-
-
 
 function modif(nom, stat, valeur, add) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add)
@@ -72,7 +71,6 @@ function afficherPJ() {
             });
     });
 }
-
 
 function effacer_pnj(new_pnj_name) {
     pnj = document.querySelector('#pnj_' + new_pnj_name);
