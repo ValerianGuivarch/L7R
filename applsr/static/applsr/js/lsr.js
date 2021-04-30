@@ -1,11 +1,127 @@
+function rollTypeToString(rollType) {
+    if(rollType == 'Jsoin') {
+        return "<i>Soigne</i>";
+    }
+    else if(rollType == 'JM') {
+        return "lance un <i>Sort</i>";
+    }
+    else if(rollType == 'JAF') {
+        return "utilise une <i>Arcane Fixe</i>.";
+    }
+    if(rollType == 'JC') {
+        return "fait un <i>jet de Chair</i>";
+    }
+    else if(rollType == 'JS') {
+        return "fait un <i>jet d'Esprit</i>";
+    }
+    else if(rollType == 'JE') {
+        return "fait un <i>jet d'Essence</i>";
+    }
+    else if(rollType == 'JCH') {
+        return "fait un <i>jet de Charisme</i>";
+    }
+    else if(rollType == 'JAG') {
+        return "fait un <i>jet d'Agriculture</i>";
+    }
+    else if(rollType == 'JCB') {
+        return "fait un <i>jet de Combat</i>";
+    }
+    else if(rollType == 'JMG') {
+        return "fait un <i>jet de Magie</i>";
+    }
+    else if(rollType == 'JSV') {
+        return "fait un <i>jet de Savoir</i>";
+    }
+    else if(rollType == 'JNV') {
+        return "fait un <i>jet de Navigation</i>";
+    }
+    else if(rollType == 'JNT') {
+        return "fait un <i>jet de Nature</i>";
+    }
+    else {
+        return rollType + "?";
+    }
+}
+
+function formatRollResults(dice_results) {
+    var str = "";
+    for(var result of dice_results) {
+        str += " [&nbsp;" + result + "&nbsp;] "
+    }
+    return str;
+}
+
+function countSuccessesWith(dice_results, countAsOne, countAsTwo) {
+    var successCount = 0;
+    for(var result of dice_results) {
+        if(countAsOne.indexOf(result) !== -1) {
+            successCount += 1;
+        }
+        if(countAsTwo.indexOf(result) !== -1) {
+            successCount += 2;
+        }
+    }
+    return successCount;
+}
+
+function jsonRollToHtml(roll) {
+    var tr = document.createElement("tr");
+    
+    var secret = ""
+    if(roll.secret == true) {
+        secret = "(secret) ";
+    }
+
+    var benemal = "";
+    if(roll.malediction_count > 0 && roll.benediction_count > 0) {
+        benemal = "Avec " + roll.benediction_count + " bénédictions et " + roll.malediction_count + " malédictions, "
+    }
+    else if(roll.malediction_count > 0) {
+        benemal = "Avec " + roll.malediction_count + " malédictions, "
+    }
+    else if(roll.benediction_count > 0) {
+        benemal = "Avec " + roll.benediction_count + " bénédictions, "
+    }
+
+    var pp = "";
+    if(roll.pp == true) {
+        pp = " en y mettant toute sa <i>puissance</i> ";
+    }
+
+    var pf = "";
+    if(roll.pf == true) {
+        pf = " se <i>concentre</i> et "
+    }
+
+    tr.innerHTML = "<td>"
+        + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
+        + "</td><td>"
+        + secret // "(secret) "
+        + benemal
+        + "<b>" + roll.character + "</b>"
+        + pf
+        + " "
+        + rollTypeToString(roll.roll_type)
+        + pp
+        + " :<br />"
+        + formatRollResults(roll.dice_results)
+        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2]) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4]) + '">'
+        + countSuccessesWith(roll.dice_results, [5], [6])
+        + " succès</span>."
+        + "</td>";
+    return tr;
+}
+
 function afficher() {
-    const chat = document.querySelector('#chat');
-    fetch('/afficher/' + nompj + '/false').then((response) => response.text()).then(text => {
-        var newChat = document.createElement("div");
-        newChat.innerHTML = text;
-        if(chat.innerHTML != newChat.innerHTML) {
-            console.log("refresh");
-            chat.innerHTML = newChat.innerHTML;
+    fetch('/afficher/' + nompj + '/false?json').then((response) => response.text()).then(text => {
+        const chat = document.querySelector('#chat');
+        var rolls = JSON.parse(text);
+        if(rolls.length != 0 && chat.dataset.update != rolls[0].date) {
+            chat.innerHTML = "";
+            chat.dataset.update = rolls[0].date
+            for(var roll of rolls) {
+                chat.appendChild(jsonRollToHtml(roll));
+            }
         }
     }).catch(function(e) {
         console.error("error", e);

@@ -445,7 +445,6 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
         if degats < 0 :
             degats = 0
         dices_string += " Cela lui inflige " + str(degats) + "  dégats."
-    
 
     now = datetime.now()
     dices_string = ""+str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" - "+dices_string
@@ -453,10 +452,10 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
     dice.save()
     result = {
         degats
-#        'requete': test,
- #       'dices': dices,
-  #      'success': success,
-   #     'degats': degats
+        #'requete': test,
+        #'dices': dices,
+        #'success': success,
+        #'degats': degats
     }
     return result
 
@@ -576,10 +575,10 @@ def afficher(request, nom, secret):
             data.append({
                 "date": q.date,
                 "secret": q.secret,
-                "lancer": q.lancer,
+                "character": q.lancer,
                 "malediction_count": q.malediction_count,
                 "benediction_count": q.benediction_count,
-                "dice_results": q.dice_results,
+                "dice_results": [int(n) for n in q.dice_results.split(",")],
                 "pp": q.pp,
                 "pf": q.pf,
                 "roll_type": q.roll_type,
@@ -714,7 +713,6 @@ def lancer_pnj(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_cac
 
     return HttpResponse(dice)
 
-
 def lancer_pnj2(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_caches):
     use_pf = pf == "true"
     use_pp = pp == "true"
@@ -735,7 +733,6 @@ def lancer_pnj2(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_ca
     dice = dice_roll_fake(nom.capitalize(), action, focus, pouvoir, stat, more_dices, use_ra, mal, ben, is_secret,des_caches)
 
     return HttpResponse(dice)
-
 
 def lsr(request, nom):
     template = loader.get_template('applsr/index.html')

@@ -44,6 +44,10 @@ button input[type="checkbox"] {
   vertical-align: baseline;
 }
 
+#chat td {
+  padding: 0 0.5rem;
+}
+
 .perso {
   display: inline-flex;
   justify-content: center;
