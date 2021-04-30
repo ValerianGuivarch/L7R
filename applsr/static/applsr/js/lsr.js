@@ -139,8 +139,10 @@ function jsonRollToHtml(roll, sub) {
     return tr;
 }
 
+var display_secret = false; // override value from lsr.js
+
 function afficher() {
-    fetch('/afficher/' + nompj + '/false?json').then((response) => response.text()).then(text => {
+    fetch('/afficher/' + nompj + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
         const chat = document.querySelector('#chat');
         var chatHistory = JSON.parse(text);
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {

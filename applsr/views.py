@@ -329,8 +329,6 @@ def afficher_mw(request):
 # L7R
 
 def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0, parent_roll_id=None):
-    print(is_secret)
-    print("-----------------------------------------")
     dices = []
     success = 0
     dices_string = ""
@@ -461,8 +459,6 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
 
 
 def dice_roll_fake(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches):
-    print(is_secret)
-    print("-----------------------------------------")
     dices = []
     success = 0
     dices_string = ""
@@ -554,14 +550,11 @@ def dice_roll_fake(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, 
 
 
 def rollResultToDict(rollResult, computeRelated=True):
-    print("rollResultToDict for id", rollResult.id)
     related_rolls_results = DiceRoll.objects.order_by('-date').filter(parent_roll_id=rollResult.id)
 
     parentRoll = None
     if rollResult.parent_roll is not None:
-        print("parsing parent of", rollResult.parent_roll)
         parentRoll = rollResultToDict(rollResult.parent_roll, computeRelated=False)
-        pass
 
     roll = {
         "id": rollResult.id,
@@ -604,7 +597,7 @@ def afficher(request, nom, secret):
         for q in queryset:
             aff += "<tr><td>" + q.dices + "</td></tr>"
         aff += "</table>"
-        print(aff)
+        #print(aff)
         return HttpResponse(aff)
 
 
@@ -775,7 +768,7 @@ def lsr(request, nom):
                 action = 'JE'
             if 'JE-B' in request.POST:
                 action = 'JE-B'
-            print(action)
+            #print(action)
 
             # if form.is_valid():
             #    dice = lsr_js(form.cleaned_data['use_pf'], form.cleaned_data['use_pp'], nom, action)

@@ -2,8 +2,11 @@ var nbPJ = 0;
 var listPJ = [];
 var table="";
 
+nompj = "mj";
+display_secret = true; // override value from lsr.js
 
-function afficher() {
+
+function afficher2() {
     const chat = document.querySelector('#chat');
     fetch('/afficher/mj/true').then((response) => response.text()).then(text => {
         chat.innerHTML = text;
