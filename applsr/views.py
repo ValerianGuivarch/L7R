@@ -328,7 +328,7 @@ def afficher_mw(request):
 
 # L7R
 
-def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0):
+def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0, parent_roll_id=None):
     print(is_secret)
     print("-----------------------------------------")
     dices = []
@@ -367,7 +367,7 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
         dices_string += "utilise une <i>Arcane Fixe</i>."
         now = datetime.now()
         dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
-        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results="", pp=pouvoir, pf=focus, roll_type=test)
+        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results="", pp=pouvoir, pf=focus, roll_type=test, parent_roll_id=parent_roll_id)
         dice.save()
         result = {
             'requete': test,
@@ -448,7 +448,7 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
 
     now = datetime.now()
     dices_string = ""+str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" - "+dices_string
-    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test)
+    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test, parent_roll_id=parent_roll_id)
     dice.save()
     result = {
         degats
@@ -564,6 +564,7 @@ def rollResultToDict(rollResult, computeRelated=True):
         pass
 
     roll = {
+        "id": rollResult.id,
         "date": rollResult.date,
         "secret": rollResult.secret,
         "character": rollResult.lancer,
@@ -594,7 +595,7 @@ def afficher(request, nom, secret):
         queryset = queryset[:10]
 
     if "json" in request.GET:
-        data = {"datetime": None, "rolls": []}
+        data = {"update": None, "rolls": []}
         for q in queryset:
             data["rolls"].append(rollResultToDict(q))
         return JsonResponse(data, encoder=ExtendedEncoder, safe=False)
@@ -625,6 +626,9 @@ def lancer_empirique(request, nom, valeur, secret):
 
 
 def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
+    parent_roll_id = None
+    if "parent_roll_id" in request.GET and request.GET["parent_roll_id"] != "null":
+        parent_roll_id = int(request.GET["parent_roll_id"])
     use_pf = pf == "true"
     use_pp = pp == "true"
     use_ra = ra == "true"
@@ -650,24 +654,23 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
         #malus_chair = (char[0].point_de_vie_max - char[0].point_de_vie) // 6
         ##elem = "<<" + str(malus_chair) + ">>"
         #more_dices -= malus_chair
-        dice = dice_roll(char[0].name.capitalize(), 'JC', focus, pouvoir, char[0].chair, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JC', focus, pouvoir, char[0].chair, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JS' == action:
-        dice = dice_roll(char[0].name.capitalize(), 'JS', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JS', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JE' == action:
-        dice = dice_roll(char[0].name.capitalize(), 'JE', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JE', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JM' == action:
         Character.objects.filter(id=char[0].id).update(dettes=char[0].dettes + 1)
-        dice = dice_roll(char[0].name.capitalize(), 'JM', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JM', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JAF' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
-        dice = dice_roll(char[0].name.capitalize(), 'JAF', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JAF', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JAE' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
-        dice = dice_roll(char[0].name.capitalize(), 'JAE', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JAE', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JAS' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
-        dice = dice_roll(char[0].name.capitalize(), 'JAS', focus, pouvoir, char[0].essence, more_dices, use_ra, mal,
-                         ben, is_secret, is_des_caches, "")
+        dice = dice_roll(char[0].name.capitalize(), 'JAS', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'Jsoin' == action :
         Character.objects.filter(id=char[0].id).update(dettes=char[0].dettes + 1)
         Character.objects.filter(id=char[0].id).update(point_de_pouvoir=char[0].point_de_pouvoir - 1)
@@ -699,8 +702,7 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
             elem =" par l'esprit'"
         if char[0].element == "deva" :
             elem =" par la deva"
-        dice = dice_roll(char[0].name.capitalize(), 'Jsoin', focus, pouvoir, char[0].essence, more_dices, use_ra, mal,
-                         ben, is_secret, is_des_caches, elem)
+        dice = dice_roll(char[0].name.capitalize(), 'Jsoin', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, elem, parent_roll_id=parent_roll_id)
 
     return HttpResponse(dice)
 

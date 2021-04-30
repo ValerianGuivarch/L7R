@@ -64,7 +64,10 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo) {
     return successCount;
 }
 
-function jsonRollToHtml(roll) {
+function jsonRollToHtml(roll, sub) {
+    if(sub == undefined) {
+        sub = false;
+    }
     var tr = document.createElement("tr");
     
     var secret = ""
@@ -107,10 +110,17 @@ function jsonRollToHtml(roll) {
         }
     }
 
+    var resist = "";
+    if(sub == false) {
+        resist = ' <button onclick="loadLancer(nompj, \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">rChair</button>'
+        + '<button onclick="loadLancer(nompj, \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">rEsprit</button>'
+        + '<button onclick="loadLancer(nompj, \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">rEssence</button>';
+    }
+
     tr.innerHTML = '<td class="date">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + '</td>'
-        + '<td class="roll">'
+        + '<td class="roll" data-rollid="' + roll.id + '">'
         + secret // "(secret) "
         + benemal
         + "<b>" + roll.character + "</b>"
@@ -123,6 +133,7 @@ function jsonRollToHtml(roll) {
         + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2]) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4]) + '">'
         + countSuccessesWith(roll.dice_results, [5], [6])
         + " succès</span>."
+        + resist
         + delta
         + "</td>";
     return tr;
@@ -132,15 +143,15 @@ function afficher() {
     fetch('/afficher/' + nompj + '/false?json').then((response) => response.text()).then(text => {
         const chat = document.querySelector('#chat');
         var chatHistory = JSON.parse(text);
-        if(chatHistory.rolls.length != 0 && chat.dataset.update != chatHistory.rolls[0].date) {
+        if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
-            chat.dataset.update = chatHistory.rolls[0].date
+            chat.dataset.update = chatHistory.update
             for(var roll of chatHistory.rolls) {
                 var line = jsonRollToHtml(roll);
                 var subtable = document.createElement("table");
                 line.querySelector("td.roll").appendChild(subtable);
                 for(var related_roll of roll.related_rolls) {
-                    subtable.appendChild(jsonRollToHtml(related_roll));
+                    subtable.appendChild(jsonRollToHtml(related_roll, true));
                 }
                 chat.appendChild(line);
             }
@@ -197,12 +208,14 @@ function getCar(name) {
         });
 }
 
-function loadLancer(name, action, pf, pp, ra, sec, pv, pvmax) {
+function loadLancer(name, action, pf, pp, ra, sec, parentRollId) {
+    if(parentRollId == undefined) {
+        parentRollId = null;
+    }
     //mal=malus-obj.point_de_focus
-    //      car.point_de_vie,
-    //    car.point_de_vie_max
-    console.log('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + sec + '/false')
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + sec + '/false');
+    //car.point_de_vie,
+    //car.point_de_vie_max
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + sec + '/false?parent_roll_id=' + parentRollId);
 }
 
 function loadLancerEmpirique(sec) {
