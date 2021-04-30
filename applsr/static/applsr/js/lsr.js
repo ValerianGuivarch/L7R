@@ -54,7 +54,7 @@ function formatRollResults(dice_results) {
     return str;
 }
 
-function countSuccessesWith(dice_results, countAsOne, countAsTwo) {
+function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     var successCount = 0;
     for(var result of dice_results) {
         if(countAsOne.indexOf(result) !== -1) {
@@ -64,7 +64,7 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo) {
             successCount += 2;
         }
     }
-    return successCount;
+    return successCount + bonus;
 }
 
 function jsonRollToHtml(roll, sub) {
@@ -101,8 +101,8 @@ function jsonRollToHtml(roll, sub) {
 
     var delta = "";
     if(roll.parent_roll != null) {
-        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6]);
-        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6]);
+        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], roll.parent_roll.pp ? 1 : 0);
+        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], roll.pp ? 1 : 0);
         diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
         if(diff < 0) {
@@ -133,8 +133,8 @@ function jsonRollToHtml(roll, sub) {
         + pp
         + " :<br />"
         + formatRollResults(roll.dice_results)
-        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2]) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4]) + '">'
-        + countSuccessesWith(roll.dice_results, [5], [6])
+        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], roll.pp ? 1 : 0) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], roll.pp ? 1 : 0) + '">'
+        + countSuccessesWith(roll.dice_results, [5], [6], roll.pp ? 1 : 0)
         + " succès</span>."
         + resist
         + delta
