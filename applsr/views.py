@@ -553,6 +553,32 @@ def dice_roll_fake(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, 
     return result
 
 
+def rollResultToDict(rollResult, computeRelated=True):
+    print("rollResultToDict for id", rollResult.id)
+    related_rolls_results = DiceRoll.objects.order_by('-date').filter(parent_roll_id=rollResult.id)
+
+    parentRoll = None
+    if rollResult.parent_roll is not None:
+        print("parsing parent of", rollResult.parent_roll)
+        parentRoll = rollResultToDict(rollResult.parent_roll, computeRelated=False)
+        pass
+
+    roll = {
+        "date": rollResult.date,
+        "secret": rollResult.secret,
+        "character": rollResult.lancer,
+        "malediction_count": rollResult.malediction_count,
+        "benediction_count": rollResult.benediction_count,
+        "dice_results": [int(n) for n in rollResult.dice_results.split(",")],
+        "pp": rollResult.pp,
+        "pf": rollResult.pf,
+        "roll_type": rollResult.roll_type,
+        "parent_roll": parentRoll,
+        "related_rolls": [rollResultToDict(r) for r in related_rolls_results] if computeRelated else None
+    }
+
+    return roll
+
 def afficher(request, nom, secret):
     is_secret = (secret == "true")
     today = datetime.now().date()
@@ -561,29 +587,16 @@ def afficher(request, nom, secret):
     today_end = datetime.combine(tomorrow, time())
 
     if is_secret:
-        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end)
+        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(parent_roll_id=None).filter(date__lt=today_end)
     else:
-        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
+        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(parent_roll_id=None).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
     if queryset.count() > 10:
         queryset = queryset[:10]
 
     if "json" in request.GET:
-        data = []
-        print("=======", dir(queryset))
+        data = {"datetime": None, "rolls": []}
         for q in queryset:
-            print("======= q", dir(q))
-            data.append({
-                "date": q.date,
-                "secret": q.secret,
-                "character": q.lancer,
-                "malediction_count": q.malediction_count,
-                "benediction_count": q.benediction_count,
-                "dice_results": [int(n) for n in q.dice_results.split(",")],
-                "pp": q.pp,
-                "pf": q.pf,
-                "roll_type": q.roll_type,
-                "parent_roll": q.parent_roll
-            })
+            data["rolls"].append(rollResultToDict(q))
         return JsonResponse(data, encoder=ExtendedEncoder, safe=False)
     else:
         aff = "<table class=\"table table-hover\">"

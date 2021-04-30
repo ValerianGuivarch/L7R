@@ -93,9 +93,24 @@ function jsonRollToHtml(roll) {
         pf = " se <i>concentre</i> et "
     }
 
-    tr.innerHTML = "<td>"
+    var delta = "";
+    if(roll.parent_roll != null) {
+        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6]);
+        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6]);
+        diff = parentSuccessCount - thisSuccessCount;
+        delta = " Delta: " + diff + " ";
+        if(diff < 0) {
+            delta += " (aucun dégâts)"
+        }
+        else {
+            delta += " (" + Math.ceil(diff / 2) + " dégâts)."
+        }
+    }
+
+    tr.innerHTML = '<td class="date">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
-        + "</td><td>"
+        + '</td>'
+        + '<td class="roll">'
         + secret // "(secret) "
         + benemal
         + "<b>" + roll.character + "</b>"
@@ -108,6 +123,7 @@ function jsonRollToHtml(roll) {
         + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2]) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4]) + '">'
         + countSuccessesWith(roll.dice_results, [5], [6])
         + " succès</span>."
+        + delta
         + "</td>";
     return tr;
 }
@@ -115,12 +131,18 @@ function jsonRollToHtml(roll) {
 function afficher() {
     fetch('/afficher/' + nompj + '/false?json').then((response) => response.text()).then(text => {
         const chat = document.querySelector('#chat');
-        var rolls = JSON.parse(text);
-        if(rolls.length != 0 && chat.dataset.update != rolls[0].date) {
+        var chatHistory = JSON.parse(text);
+        if(chatHistory.rolls.length != 0 && chat.dataset.update != chatHistory.rolls[0].date) {
             chat.innerHTML = "";
-            chat.dataset.update = rolls[0].date
-            for(var roll of rolls) {
-                chat.appendChild(jsonRollToHtml(roll));
+            chat.dataset.update = chatHistory.rolls[0].date
+            for(var roll of chatHistory.rolls) {
+                var line = jsonRollToHtml(roll);
+                var subtable = document.createElement("table");
+                line.querySelector("td.roll").appendChild(subtable);
+                for(var related_roll of roll.related_rolls) {
+                    subtable.appendChild(jsonRollToHtml(related_roll));
+                }
+                chat.appendChild(line);
             }
         }
     }).catch(function(e) {
