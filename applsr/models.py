@@ -59,7 +59,7 @@ class DiceRoll(models.Model):
     pp = models.BooleanField(default=False)
     pf = models.BooleanField(default=False)
     roll_type = models.CharField(default="", max_length=32)
-    parent_roll = models.ForeignKey('self', on_delete=models.CASCADE)
+    parent_roll = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
 
 class Viking(models.Model):
