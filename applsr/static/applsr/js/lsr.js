@@ -115,9 +115,9 @@ function jsonRollToHtml(roll, sub) {
 
     var resist = "";
     if(sub == false) {
-        resist = ' <button onclick="loadLancer(nompj, \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">rChair</button>'
-        + '<button onclick="loadLancer(nompj, \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">rEsprit</button>'
-        + '<button onclick="loadLancer(nompj, \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">rEssence</button>';
+        resist = ' Résister avec <button class="btn resist" onclick="loadLancer(nompj, \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">chair</button>'
+        + '<button class="btn resist" onclick="loadLancer(nompj, \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">esprit</button>'
+        + '<button class="btn resist" onclick="loadLancer(nompj, \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">essence</button> ?';
     }
 
     tr.innerHTML = '<td class="date">'

@@ -119,3 +119,8 @@ button input[type="checkbox"] {
   color: #28a745;
   background-color: white;
 }
+
+.btn.resist {
+  padding: 1px;
+  margin-right: 0.2rem;
+}
