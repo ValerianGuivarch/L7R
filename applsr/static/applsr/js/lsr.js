@@ -38,6 +38,9 @@ function rollTypeToString(rollType) {
     else if(rollType == 'JNT') {
         return "fait un <i>jet de Nature</i>";
     }
+    else if(rollType.startsWith('Jemp-')) {
+        return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
+    }
     else {
         return rollType + "?";
     }
