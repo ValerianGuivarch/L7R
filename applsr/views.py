@@ -555,23 +555,38 @@ def dice_roll_fake(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, 
 
 
 def afficher(request, nom, secret):
-    if "json" in request.GET:
-        data = {"a": 1}
-        return JsonResponse(data, encoder=ExtendedEncoder)
+    is_secret = (secret == "true")
+    today = datetime.now().date()
+    tomorrow = today + timedelta(1)
+    today_start = datetime.combine(today, time())
+    today_end = datetime.combine(tomorrow, time())
+
+    if is_secret:
+        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end)
     else:
-        is_secret = (secret == "true")
-        today = datetime.now().date()
-        tomorrow = today + timedelta(1)
-        today_start = datetime.combine(today, time())
-        today_end = datetime.combine(tomorrow, time())
+        queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
+    if queryset.count() > 10:
+        queryset = queryset[:10]
 
-        if is_secret:
-            queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end)
-        else:
-            queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
-        if queryset.count() > 10:
-            queryset = queryset[:10]
-
+    if "json" in request.GET:
+        data = []
+        print("=======", dir(queryset))
+        for q in queryset:
+            print("======= q", dir(q))
+            data.append({
+                "date": q.date,
+                "secret": q.secret,
+                "lancer": q.lancer,
+                "malediction_count": q.malediction_count,
+                "benediction_count": q.benediction_count,
+                "dice_results": q.dice_results,
+                "pp": q.pp,
+                "pf": q.pf,
+                "roll_type": q.roll_type,
+                "parent_roll": q.parent_roll
+            })
+        return JsonResponse(data, encoder=ExtendedEncoder, safe=False)
+    else:
         aff = "<table class=\"table table-hover\">"
         for q in queryset:
             aff += "<tr><td>" + q.dices + "</td></tr>"
