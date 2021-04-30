@@ -559,7 +559,7 @@ def afficher(request, nom, secret):
         data = {"a": 1}
         return JsonResponse(data, encoder=ExtendedEncoder)
     else:
-        is_secret= secret == "true"
+        is_secret = (secret == "true")
         today = datetime.now().date()
         tomorrow = today + timedelta(1)
         today_start = datetime.combine(today, time())
