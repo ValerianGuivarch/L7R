@@ -222,7 +222,7 @@ function loadLancer(name, action, pf, pp, ra, sec, parentRollId) {
     //mal=malus-obj.point_de_focus
     //car.point_de_vie,
     //car.point_de_vie_max
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + sec + '/false?parent_roll_id=' + parentRollId);
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + sec + '/false?parent_roll_id=' + parentRollId).then(afficher);
 }
 
 function loadLancerEmpirique(sec) {
