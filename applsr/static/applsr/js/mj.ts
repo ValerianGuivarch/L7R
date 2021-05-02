@@ -32,30 +32,30 @@ function ajouter_pj(name: string) {
         + '<div class="line"><i><span id="pj_fl_' + name + '"></span></i></div>'
         + '<div class="line"><i><span id="pj_fu_' + name + '"></span></i></div>'
         + '<div class="line"><i><span id="pj_fs_' + name + '"></span></i></div>'
-        + '<div class="line">'
-            + '<button onclick="modif(\'' + name + '\',\'pv\',1, false);" >-</button>'
-            + '<span>PV = <span id="pj_pv_' + name + '">3</span>/<span id="pj_pv_max_' + name + '">6</span></span>'
-            + '<button onclick="modif(\'' + name + '\',\'pv\',1, true);" >+</button>'
+        + '<div class="btn-group line">'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'pv\',1, false);" >-</button>'
+            + '<span class="btn btn-info">PV = <span id="pj_pv_' + name + '">3</span>/<span id="pj_pv_max_' + name + '">6</span></span>'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'pv\',1, true);" >+</button>'
         + '</div>'
-        + '<div class="line">'
-            + '<button onclick="modif(\'' + name + '\',\'pf\',1, false);" >-</button>'
-            + '<span>PF = <span id="pj_pf_' + name + '">3</span>/<span id="pj_pf_max_' + name + '">6</span></span>'
-            + '<button onclick="modif(\'' + name + '\',\'pf\',1, true);" >+</button>'
+        + '<div class="btn-group line">'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'pf\',1, false);" >-</button>'
+            + '<span class="btn btn-info">PF = <span id="pj_pf_' + name + '">3</span>/<span id="pj_pf_max_' + name + '">6</span></span>'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'pf\',1, true);" >+</button>'
         + '</div>'
-        + '<div class="line">'
-            + '<button onclick="modif(\'' + name + '\',\'pp\',1, false);" >-</button>'
-            + '<span>PP = <span id="pj_pp_' + name + '">3</span>/<span id="pj_pp_max_' + name + '">6</span></span>'
-            + '<button onclick="modif(\'' + name + '\',\'pp\',1, true);" >+</button>'
+        + '<div class="btn-group line">'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'pp\',1, false);" >-</button>'
+            + '<span class="btn btn-info">PP = <span id="pj_pp_' + name + '">3</span>/<span id="pj_pp_max_' + name + '">6</span></span>'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'pp\',1, true);" >+</button>'
         + '</div>'
-        + '<div class="line">'
-            + '<button onclick="modif(\'' + name + '\',\'dettes\',1, false);" >-</button>'
-            + '<span>DT = <span id="pj_dettes_' + name + '">9</span></span>'
-            + '<button onclick="modif(\'' + name + '\',\'dettes\',1, true);" >+</button>'
+        + '<div class="btn-group line">'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'dettes\',1, false);" >-</button>'
+            + '<span class="btn btn-info">DT = <span id="pj_dettes_' + name + '">9</span></span>'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'dettes\',1, true);" >+</button>'
         + '</div>'
-        + '<div class="line">'
-            + '<button onclick="modif(\'' + name + '\',\'arcanes\',1, false);" >-</button>'
-            + '<span>AK = <span id="pj_arcanes_' + name + '">3</span>/<span id="pj_arcanes_max_' + name + '">6</span></span>'
-            + '<button onclick="modif(\'' + name + '\',\'arcanes\',1, true);" >+</button>'
+        + '<div class="btn-group line">'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'arcanes\',1, false);" >-</button>'
+            + '<span class="btn btn-info">AK = <span id="pj_arcanes_' + name + '">3</span>/<span id="pj_arcanes_max_' + name + '">6</span></span>'
+            + '<button class="btn" onclick="modif(\'' + name + '\',\'arcanes\',1, true);" >+</button>'
         + '</div>'
         + '</td>';
     liste_pj.innerHTML = '<table class="pj-for-mj"><tr>' + table + '</tr></table>';
@@ -90,6 +90,7 @@ function afficherPJ() {
 function effacer_pnj(new_pnj_name: string) {
     const pnj = document.querySelector('#pnj_' + new_pnj_name)!;
     pnj.innerHTML = "";
+    pnj.parentElement?.removeChild(pnj);
 }
 
 function modifPNJ(pnj_name: string, stat: Stat, valeur: number) {
@@ -127,7 +128,7 @@ function jetPNJ(name: string, action: RollType, stat: Stat, pf: boolean, pp: boo
 }
 
 function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, new_pnj_stat_name: string, action: RollType) {
-    return '<button onclick="jetPNJ(\'' + new_pnj_name + '\',\'' + action + '\',' + new_pnj_stat_value + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);">' + new_pnj_stat_name + '</button>'
+    return '<button class="btn" onclick="jetPNJ(\'' + new_pnj_name + '\',\'' + action + '\',' + new_pnj_stat_value + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);">' + new_pnj_stat_name + '</button>'
 }
 
 
@@ -144,61 +145,75 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         new_pnj_pp_max = parseInt(new_pnj_essence);
     }
     liste_pnj.innerHTML = liste_pnj.innerHTML
-        + '<span id="pnj_' + new_pnj_name + '"><br>'
-        + '<input type="radio" name="resist" /> '
-        + '<button onclick="effacer_pnj(\'' + new_pnj_name + '\');"> X </button><b>' + new_pnj_name + ' : '
+        + '<div class="pnj" id="pnj_' + new_pnj_name + '">'
+
+        + '<input type="radio" name="resist" />'
+        + '<button class="btn btn-danger" onclick="effacer_pnj(\'' + new_pnj_name + '\');"> X </button>'
+        + '<b>' + new_pnj_name + ' : </b>'
         
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);" >-</button>'
-        + 'PV = <span id="pnj_pv_' + new_pnj_name + '">' + new_pnj_pv_max
-        + '</span>/<span id="pj_pv_max_' + new_pnj_name + '">' + new_pnj_pv_max + '</span>'
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',1);" >+</button>'
+        + '<span class="btn-group">'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);" >-</button>'
+            + '<span class="btn btn-info">'
+                + 'PV = <span id="pnj_pv_' + new_pnj_name + '">' + new_pnj_pv_max
+                + '</span>/<span id="pj_pv_max_' + new_pnj_name + '">' + new_pnj_pv_max + '</span>'
+            + '</span>'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',1);" >+</button>'
+        + '</span>'
         
-        + '<label>'
-            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);" >-</button>'
-            + '<input id="use_pf_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
-            + 'PF: <span id="pnj_pf_' + new_pnj_name + '">' + new_pnj_pf_max + '</span>/' + new_pnj_pf_max
-            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',1);" >+</button>'
+        + '<span class="btn-group">'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);" >-</button>'
+            + '<span class="btn btn-info">'
+                + '<input id="use_pf_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
+                + 'PF: <span id="pnj_pf_' + new_pnj_name + '">' + new_pnj_pf_max + '</span>/' + new_pnj_pf_max
+            + '</span>'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',1);" >+</button>'
+        + '</span>'
+
+        + '<span class="btn-group">'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',-1);" >-</button>'
+            + '<span class="btn btn-info">'
+                + '<input id="use_pp_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
+                + 'PP: <span id="pnj_pp_' + new_pnj_name + '">' + new_pnj_pp_max + '</span>/' + new_pnj_pp_max
+            + '</span>'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',1);" >+</button>'
+        + '</span>'
+
+        + '<label class="btn">'
+            + '<input id="use_ra_' + new_pnj_name + '" type="checkbox" autocomplete="off"> RA'
         + '</label>'
 
-        + '<label>'
-            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',-1);" >-</button>'
-            + '<input id="use_pp_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
-            + 'PP: <span id="pnj_pp_' + new_pnj_name + '">' + new_pnj_pp_max + '</span>/' + new_pnj_pp_max
-            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',1);" >+</button>'
+        + '<label class="btn">'
+            + '<input id="use_sc_' + new_pnj_name + '" type="checkbox" autocomplete="off"> Secret'
         + '</label>'
 
-        + '<label>'
-            + '<input id="use_ra_' + new_pnj_name + '" type="checkbox" autocomplete="off">RA'
+        + '<label class="btn">'
+            + '<input id="use_dc_' + new_pnj_name + '" type="checkbox" checked="true" autocomplete="off"> Cachés'
         + '</label>'
-
-        + '<label>'
-            + '<input id="use_sc_' + new_pnj_name + '" type="checkbox" autocomplete="off">Secret'
-        + '</label>'
-
-        + '<label>'
-            + '<input id="use_dc_' + new_pnj_name + '" type="checkbox" checked="true" autocomplete="off">Dés cachés'
-        + '</label>'
-
-        + '<br>'
 
         + createJetPnjTemplate(new_pnj_name, new_pnj_chair, "Chair", "JC")
         + createJetPnjTemplate(new_pnj_name, new_pnj_esprit, "Esprit", "JS")
         + createJetPnjTemplate(new_pnj_name, new_pnj_essence, "Essence", "JE")
         + createJetPnjTemplate(new_pnj_name, new_pnj_essence, "Magie", "JM")
         
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',-1);" >-</button>'
-        + 'Mal: <span id="pnj_mal_' + new_pnj_name + '">0</span>'
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',1);" >+</button> '
-        
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',-1);" >-</button>'
-        + 'Ben: <span id="pnj_ben_' + new_pnj_name + '">0</span>'
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',1);" >+</button> '
-        
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',-1);" >-</button>'
-        + 'Dettes: <span id="pnj_dettes_' + new_pnj_name + '">' + new_pnj_dettes + '</span>'
-        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',1);" >+</button>'
-
+        + '<span class="btn-group">'
+            + '<button class="btn btn-danger" onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',-1);" >-</button>'
+            + '<span class="btn btn-outline-danger">Mal: <span id="pnj_mal_' + new_pnj_name + '">0</span></span>'
+            + '<button class="btn btn-danger" onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',1);" >+</button> '
         + '</span>'
+        
+        + '<span class="btn-group">'
+            + '<button class="btn btn-success" onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',-1);" >-</button>'
+            + '<span class="btn btn-outline-success">Ben: <span id="pnj_ben_' + new_pnj_name + '">0</span></span>'
+            + '<button class="btn btn-success" onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',1);" >+</button> '
+        + '</span>'
+        
+        + '<span class="btn-group">'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',-1);" >-</button>'
+            + '<span class="btn btn-info">Dettes: <span id="pnj_dettes_' + new_pnj_name + '">' + new_pnj_dettes + '</span></span>'
+            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',1);" >+</button>'
+        + '</span>'
+
+        + '</div>'
 }
 
 function effacerLancersDes() {
