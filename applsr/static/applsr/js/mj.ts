@@ -7,6 +7,10 @@ let table = "";
 nompj = "mj";
 display_secret = true; // override value from lsr.js
 
+function getCurrentCharacter() {
+    return document.querySelector<HTMLInputElement>("#pj-select")!.value;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     setInterval(() => {
         afficherPJ();

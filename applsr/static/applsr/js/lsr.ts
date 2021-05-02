@@ -138,9 +138,9 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     var resist = "";
     if(sub == false) {
-        resist = ' Résister avec <button class="btn resist" onclick="loadLancer(nompj, \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">chair</button>'
-            + '<button class="btn resist" onclick="loadLancer(nompj, \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">esprit</button>'
-            + '<button class="btn resist" onclick="loadLancer(nompj, \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">essence</button> ?';
+        resist = ' Résister avec <button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">chair</button>'
+            + '<button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">esprit</button>'
+            + '<button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">essence</button> ?';
     }
 
     tr.innerHTML = '<td class="date">'

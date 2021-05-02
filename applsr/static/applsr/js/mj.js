@@ -4,6 +4,9 @@ var listPJ = [];
 var table = "";
 nompj = "mj";
 display_secret = true; // override value from lsr.js
+function getCurrentCharacter() {
+    return document.querySelector("#pj-select").value;
+}
 document.addEventListener("DOMContentLoaded", function () {
     setInterval(function () {
         afficherPJ();

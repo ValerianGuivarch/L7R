@@ -13,7 +13,9 @@
 
 <script>
     var parts = location.pathname.split("/"); var nompj = parts[parts.length - 1];
-
+    function getCurrentCharacter() {
+        return nompj;
+    }
 </script>
 
 
@@ -62,6 +64,10 @@
                             document.getElementById('new_pnj_pf_max').value,
                             document.getElementById('new_pnj_pp_max').value)">Ajouter
 </button>
+<input id="use_pf" type="checkbox"> PF
+<input id="use_pp" type="checkbox"> PP
+<input id="use_ra" type="checkbox"> PP
+<input id="use_sc" type="checkbox"> PP
 
 
 
