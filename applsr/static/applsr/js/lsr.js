@@ -206,9 +206,6 @@ function getCar(name) {
 }
 function loadLancer(name, action, pf, pp, ra, secret, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
-    //mal=malus-obj.point_de_focus
-    //car.point_de_vie,
-    //car.point_de_vie_max
     fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(afficher);
 }
 function loadLancerEmpirique(secret) {

@@ -24,7 +24,6 @@ interface ChatHistory {
     "rolls": Roll[]
 }
 
-
 function rollTypeToString(rollType: RollType) {
     if(rollType == 'Jsoin') {
         return "<i>Soigne</i>";
@@ -243,10 +242,6 @@ function getCar(name: string) {
 }
 
 function loadLancer(name: string, action: RollType, pf: boolean, pp: boolean, ra: boolean, secret: boolean, parentRollId: number | null = null) {
-
-    //mal=malus-obj.point_de_focus
-    //car.point_de_vie,
-    //car.point_de_vie_max
     fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(afficher);
 }
 
@@ -273,8 +268,6 @@ function plusMalus() {
     document.querySelector('#malus')!.innerHTML = malus.toString();
 }
 
-
-
 function moinsBonus() {
     if(bonus > 0) {
         bonus = bonus - 1
@@ -287,14 +280,13 @@ function plusBonus() {
     document.querySelector('#bonus')!.innerHTML = bonus.toString();
 }
 
-
-
 function moinsPv() {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/false')
         .catch(function(e) {
             console.error("error", e);
         });
 }
+
 function plusPv() {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/true')
         .catch(function(e) {
@@ -308,6 +300,7 @@ function moinsAk() {
             console.error("error", e);
         });
 }
+
 function plusAk() {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/true')
         .catch(function(e) {
@@ -321,15 +314,13 @@ function moinsDt() {
             console.error("error", e);
         });
 }
+
 function plusDt() {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/true')
         .catch(function(e) {
             console.error("error", e);
         });
 }
-
-
-
 
 function moinsPf() {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/false')
@@ -344,9 +335,6 @@ function plusPf() {
         });
 }
 
-
-
-
 function moinsPp() {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/false')
         .catch(function(e) {
@@ -359,8 +347,6 @@ function plusPp() {
             console.error("error", e);
         });
 }
-
-
 
 function loadLancerJdSvM(name: string) {
     fetch('/lancer_empirique/' + name + '/1d20/true');
