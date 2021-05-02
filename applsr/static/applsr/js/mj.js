@@ -11,11 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
     afficherPJ();
 });
 function modif(nom, stat, valeur, add) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add)
-        .catch(function (e) {
+    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function (e) {
         console.error("error", e);
-    });
-    afficher();
+    }).then(function () { return afficher(nompj); });
 }
 function ajouter_pj(name) {
     var liste_pj = document.querySelector('#liste_pj');

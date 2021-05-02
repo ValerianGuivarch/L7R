@@ -1,4 +1,4 @@
-declare var nompj: string;
+declare var nompj: string; // set in html
 
 type JEMP = `Jemp-${string}`;
 type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT'
@@ -167,7 +167,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
 var display_secret = false; // override value from lsr.js
 
-function afficher() {
+function afficher(nompj: string) {
     fetch('/afficher/' + nompj + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
         const chat = document.querySelector<HTMLElement>('#chat')!;
         var chatHistory = JSON.parse(text);
@@ -191,7 +191,7 @@ function afficher() {
 
 document.addEventListener("DOMContentLoaded", () => {
     var cb = () => {
-        afficher();
+        afficher(nompj);
         if(nompj != "mj") {
             getCar(nompj);
         }
@@ -242,10 +242,10 @@ function getCar(name: string) {
 }
 
 function loadLancer(name: string, action: RollType, pf: boolean, pp: boolean, ra: boolean, secret: boolean, parentRollId: number | null = null) {
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(afficher);
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
 }
 
-function loadLancerEmpirique(secret: boolean) {
+function loadLancerEmpirique(nompj: string, secret: boolean) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
 
     fetch('/lancer_empirique/' + nompj + '/' + valeur + '/' + secret).catch(function(e) {
@@ -280,68 +280,69 @@ function plusBonus() {
     document.querySelector('#bonus')!.innerHTML = bonus.toString();
 }
 
-function moinsPv() {
+function moinsPv(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/false')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function plusPv() {
+function plusPv(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/true')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function moinsAk() {
+function moinsAk(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/false')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function plusAk() {
+function plusAk(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/true')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function moinsDt() {
+function moinsDt(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/false')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function plusDt() {
+function plusDt(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/true')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function moinsPf() {
+function moinsPf(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/false')
         .catch(function(e) {
             console.error("error", e);
         });
 }
-function plusPf() {
+
+function plusPf(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/true')
         .catch(function(e) {
             console.error("error", e);
         });
 }
 
-function moinsPp() {
+function moinsPp(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/false')
         .catch(function(e) {
             console.error("error", e);
         });
 }
-function plusPp() {
+function plusPp(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/true')
         .catch(function(e) {
             console.error("error", e);
