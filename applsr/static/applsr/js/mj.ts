@@ -7,8 +7,9 @@ let table = "";
 nompj = "mj";
 display_secret = true; // override value from lsr.js
 
-function getCurrentCharacter() {
-    return document.querySelector<HTMLInputElement>("#pj-select")!.value;
+function getCurrentCharacter(): string | HTMLElement | null {
+    //return document.querySelector<HTMLInputElement>("#pj-select")!.value;
+    return document.querySelector<HTMLElement>('input[name="resist"]:checked')?.parentElement ?? null;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -100,13 +101,13 @@ function modifPNJ(pnj_name: string, stat: Stat, valeur: number) {
     mod.innerHTML = (parseInt(mod.innerHTML) + valeur).toString();
 }
 
-function jetPNJ(name: string, action: RollType, stat: Stat, pf: boolean, pp: boolean, ra: boolean, sec: boolean, dc: boolean /** dés cachés */) {
+function jetPNJ(name: string, action: RollType, stat: number, pf: boolean, pp: boolean, ra: boolean, sec: boolean, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const mal = parseInt(document.querySelector('#pnj_mal_' + name)!.innerHTML);
     const ben = parseInt(document.querySelector('#pnj_ben_' + name)!.innerHTML);
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition).then(function(response) {
+        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
             response.text().then(function(text) {
                 const degats = parseInt(text);
                 modifPNJ(name, "pv", degats * -1);
@@ -114,7 +115,7 @@ function jetPNJ(name: string, action: RollType, stat: Stat, pf: boolean, pp: boo
             });
         });
     } else {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0').then(() => afficher("mj"));
+        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => afficher("mj"));
     }
     if(action == 'JM')
         modifPNJ(name, 'dettes', 1);
@@ -144,11 +145,11 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         new_pnj_pp_max = parseInt(new_pnj_essence);
     }
     liste_pnj.innerHTML = liste_pnj.innerHTML
-        + '<div class="pnj" id="pnj_' + new_pnj_name + '">'
+        + '<div class="pnj" id="pnj_' + new_pnj_name + '" data-jc="' + new_pnj_chair + '" data-js="' + new_pnj_esprit + '" data-je="' + new_pnj_essence + '">'
 
         + '<input type="radio" name="resist" />'
         + '<button class="btn btn-danger" onclick="effacer_pnj(\'' + new_pnj_name + '\');"> X </button>'
-        + '<b>' + new_pnj_name + ' : </b>'
+        + '<span><b class="name">' + new_pnj_name + '</b> : </span>'
         
         + '<span class="btn-group">'
             + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);" >-</button>'

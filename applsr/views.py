@@ -707,6 +707,9 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
     return HttpResponse(dice)
 
 def lancer_pnj(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_caches, opposition):
+    parent_roll_id = None
+    if "parent_roll_id" in request.GET and request.GET["parent_roll_id"] != "null":
+        parent_roll_id = int(request.GET["parent_roll_id"])
     use_pf = pf == "true"
     use_pp = pp == "true"
     use_ra = ra == "true"
@@ -724,7 +727,7 @@ def lancer_pnj(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_cac
 
     dice = ""
     is_des_caches = des_caches == "true"
-    dice = dice_roll(nom.capitalize(), action, focus, pouvoir, stat, more_dices, use_ra, mal, ben, is_secret,is_des_caches, "", opposition)
+    dice = dice_roll(nom.capitalize(), action, focus, pouvoir, stat, more_dices, use_ra, mal, ben, is_secret,is_des_caches, "", opposition, parent_roll_id=parent_roll_id)
 
     return HttpResponse(dice)
 

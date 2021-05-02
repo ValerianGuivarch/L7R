@@ -68,7 +68,19 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     return successCount + bonus;
 }
 function resist(elem, action) {
-    loadLancer(getCurrentCharacter(), action, document.querySelector('#use_pf').checked, document.querySelector('#use_pp').checked, document.querySelector('#use_ra').checked, document.querySelector('#use_sc').checked, elem.closest('.roll').dataset.rollid);
+    var char = getCurrentCharacter();
+    if (char === null) {
+        console.error("Cannot roll with no character");
+        return;
+    }
+    else if (typeof (char) === "string") {
+        loadLancer(char, action, document.querySelector('#use_pf').checked, document.querySelector('#use_pp').checked, document.querySelector('#use_ra').checked, document.querySelector('#use_sc').checked, elem.closest('.roll').dataset.rollid);
+    }
+    else {
+        var new_pnj_name = char.querySelector(".name").innerHTML;
+        var new_pnj_stat_value = parseInt(char.dataset[action.toLowerCase()]);
+        jetPNJ(new_pnj_name, action, new_pnj_stat_value, document.querySelector('#use_pf').checked, document.querySelector('#use_pp').checked, document.querySelector('#use_ra').checked, document.querySelector('#use_sc').checked, document.querySelector('#use_dc').checked, elem.closest('.roll').dataset.rollid);
+    }
 }
 function jsonRollToHtml(roll, sub) {
     if (sub === void 0) { sub = false; }
