@@ -102,6 +102,7 @@ button input[type="checkbox"] {
 
 .btn.btn-danger, .btn-group .btn.btn-danger {
   background-color: #dc3545;
+  border-color: #dc3545;
 }
 
 .btn.btn-success, .btn-group .btn.btn-success {
@@ -123,4 +124,37 @@ button input[type="checkbox"] {
 .btn.resist {
   padding: 1px;
   margin-right: 0.2rem;
+}
+
+.pj-for-mj td {
+  border: 1px solid black;
+  padding: 2px;
+}
+
+.pj-for-mj .line {
+  display: flex;
+}
+
+.pj-for-mj .line > *{
+  flex: 1;
+}
+
+.pj-for-mj .line > .btn:first-child, .pj-for-mj .line > .btn:last-child {
+  flex: 0;
+}
+
+.pnj {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-bottom: 2px solid #aaa;
+  padding: 0.1rem
+}
+
+.pnj:last-child {
+  border-bottom: none;
+}
+
+.pnj > * {
+  margin:0.1rem 0.25rem;
 }

@@ -9,9 +9,10 @@
     <link href="{% static 'applsr/css/l7r.css' %}" rel="stylesheet">
 </head>
 
-<body>
+<body class="pc-page">
     <script>
-        var parts = location.pathname.split("/"); var nompj = parts[parts.length - 1];
+        var parts = location.pathname.split("/");
+        var nompj = parts[parts.length - 1];
     </script>
     <script src="{% static 'applsr/js/lsr.js' %}"></script>
 
@@ -106,27 +107,27 @@
                 <!-- pv -->
                 <label>
                     <span class="btn-group">
-                        <button class="btn btn-info" onclick="moinsPv();">-</button>
+                        <button class="btn btn-info" onclick="moinsPv(nompj);">-</button>
                         <button class="btn btn-info" disabled>PV : <span id="pv">{{ car.point_de_vie }}</span> / {{ car.point_de_vie_max }}
                         </button>
-                        <button class="btn btn-info" onclick="plusPv();">+</button>
+                        <button class="btn btn-info" onclick="plusPv(nompj);">+</button>
                     </span>
                 </label>
                 <!-- dettes -->
                 <label>
                     <span class="btn-group">
-                        <button class="btn btn-info" onclick="moinsDt();">-</button>
+                        <button class="btn btn-info" onclick="moinsDt(nompj);">-</button>
                         <button class="btn btn-info" disabled>Dettes : <span id="dettes">{{ car.dettes }}</span></button>
-                        <button class="btn btn-info" onclick="plusDt();">+</button>
+                        <button class="btn btn-info" onclick="plusDt(nompj);">+</button>
                     </span>
                 </label>
                 <!-- arcanes -->
                 <label>
                     <span class="btn-group">
-                        <button class="btn btn-info" onclick="moinsAk();">-</button>
+                        <button class="btn btn-info" onclick="moinsAk(nompj);">-</button>
                         <button class="btn btn-info" disabled>Arcanes : <span id="arcanes">{{ car.arcanes }}</span> / {{ car.arcanes_max }}
                         </button>
-                        <button class="btn btn-info" onclick="plusAk();">+</button>
+                        <button class="btn btn-info" onclick="plusAk(nompj);">+</button>
                     </span>
                 </label>
             </div>
@@ -135,22 +136,22 @@
                 <!-- pf -->
                 <label>
                     <span class="btn-group">
-                        <button class="btn btn-info" onclick="moinsPf();">-</button>
+                        <button class="btn btn-info" onclick="moinsPf(nompj);">-</button>
                         <button class="btn btn-info">
                             <input autocomplete="off" id="use_pf" type="checkbox"> PF : <span id="pf">{{ car.point_de_focus_ }}</span> / {{ car.point_de_focus_max }}
                         </button>
-                        <button class="btn btn-info" onclick="plusPf();">+</button>
+                        <button class="btn btn-info" onclick="plusPf(nompj);">+</button>
                     </span>
                 </label>
 
                 <!-- pp -->
                 <label>
                     <span class="btn-group" title="Ne peut pas être utilisé sur le jets d'arcane">
-                        <button class="btn btn-info" onclick="moinsPp();">-</button>
+                        <button class="btn btn-info" onclick="moinsPp(nompj);">-</button>
                         <button class="btn btn-info">
                             <input autocomplete="off" id="use_pp" type="checkbox"> PP : <span id="pp">{{ car.point_de_pouvoir }}</span> / {{ car.point_de_pouvoir_max }}
                         </button>
-                        <button class="btn btn-info" onclick="plusPp();">+</button>
+                        <button class="btn btn-info" onclick="plusPp(nompj);">+</button>
                     </span>
                 </label>
             </div>
@@ -209,18 +210,18 @@
                 <!-- malédictions -->
                 <label>
                     <span class="btn-group">
-                        <button class="btn btn-danger" onclick="moinsMalus();">-</button>
+                        <button class="btn btn-danger" onclick="moinsMalus(nompj);">-</button>
                         <button class="btn btn-outline-danger">Malédictions : <span id="malus">0</span></button>
-                        <button class="btn btn-danger" onclick="plusMalus();">+</button>
+                        <button class="btn btn-danger" onclick="plusMalus(nompj);">+</button>
                     </span>
                 </label>
 
                 <!-- bénédictions -->
                 <label>
                     <span class="btn-group">
-                        <button class="btn btn-success" onclick="moinsBonus();">-</button>
+                        <button class="btn btn-success" onclick="moinsBonus(nompj);">-</button>
                         <button class="btn btn-outline-success">Bénédictions : <span id="bonus">0</span></button>
-                        <button class="btn btn-success" onclick="plusBonus();">+</button>
+                        <button class="btn btn-success" onclick="plusBonus(nompj);">+</button>
                     </span>
                 </label>
             </div>

@@ -5,21 +5,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Page du MJ - interdit aux joueurs !</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'applsr/css/l7r.css' %}" rel="stylesheet">
 </head>
-<body>
-<script src="{% static 'js/jquery-3.4.1.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<body class="gm-page">
 
 <script>
     var parts = location.pathname.split("/"); var nompj = parts[parts.length - 1];
-
+    function getCurrentCharacter() {
+        return nompj;
+    }
 </script>
 
-
 <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
-<br\>
-
+<br>
 
 <label for="pj-select"></label>
 
@@ -54,28 +52,21 @@
 <input id="new_pnj_pv_max" size="2" type="text" value="PVmax">
 <input id="new_pnj_pf_max" size="2" type="text" value="PFmax">
 <input id="new_pnj_pp_max" size="2" type="text" value="PPmax">
-<button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value,
-                            document.getElementById('new_pnj_chair').value,
-                            document.getElementById('new_pnj_esprit').value,
-                            document.getElementById('new_pnj_essence').value,
-                            document.getElementById('new_pnj_pv_max').value,
-                            document.getElementById('new_pnj_pf_max').value,
-                            document.getElementById('new_pnj_pp_max').value)">Ajouter
-</button>
-
-
+<button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
+<input id="use_pf" type="checkbox"> PF
+<input id="use_pp" type="checkbox"> PP
+<input id="use_ra" type="checkbox"> RA
+<input id="use_sc" type="checkbox"> SC
 
 <span id="liste_pj"></span>
 
 <span id="liste_pnj"></span>
-
 
 <div id="chat"></div>
 
 
 <script src="{% static 'applsr/js/lsr.js' %}"></script>
 <script src="{% static 'applsr/js/mj.js' %}"></script>
-
 
 </body>
 </html>

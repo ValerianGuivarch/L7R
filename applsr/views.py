@@ -589,7 +589,7 @@ def afficher(request, nom, secret):
 
     if "json" in request.GET:
         date_queryset = DiceRoll.objects.order_by('-date')[:1]
-        data = {"update": date_queryset[0].date, "rolls": []}
+        data = {"update": date_queryset[0].date if len(date_queryset) > 0 else None, "rolls": []}
         for q in queryset:
             data["rolls"].append(rollResultToDict(q))
         return JsonResponse(data, encoder=ExtendedEncoder, safe=False)
