@@ -108,14 +108,13 @@ function jetPNJ(name: string, action: RollType, stat: Stat, pf: boolean, pp: boo
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
         fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition).then(function(response) {
             response.text().then(function(text) {
-                console.log(text);
                 const degats = parseInt(text);
-                console.log(degats);
                 modifPNJ(name, "pv", degats * -1);
+                afficher("mj");
             });
         });
     } else {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0');
+        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0').then(() => afficher("mj"));
     }
     if(action == 'JM')
         modifPNJ(name, 'dettes', 1);
@@ -219,6 +218,3 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
 function effacerLancersDes() {
     fetch('/mj_interdit_aux_joueurs/effacerLancersDes');
 }
-
-
-

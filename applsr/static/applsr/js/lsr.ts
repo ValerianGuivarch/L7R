@@ -93,6 +93,10 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
     return successCount + bonus;
 }
 
+function resist(elem: HTMLElement, action: RollType) {
+    loadLancer(getCurrentCharacter(), action, document.querySelector<HTMLInputElement>('#use_pf')!.checked, document.querySelector<HTMLInputElement>('#use_pp')!.checked, document.querySelector<HTMLInputElement>('#use_ra')!.checked, document.querySelector<HTMLInputElement>('#use_sc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
+}
+
 function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     var tr = document.createElement("tr");
 
@@ -138,9 +142,9 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     var resist = "";
     if(sub == false) {
-        resist = ' Résister avec <button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">chair</button>'
-            + '<button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">esprit</button>'
-            + '<button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">essence</button> ?';
+        resist = ' Résister avec <button class="btn resist" onclick="resist(this, \'JC\')">chair</button>'
+            + '<button class="btn resist" onclick="resist(this, \'JS\')">esprit</button>'
+            + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
     }
 
     tr.innerHTML = '<td class="date">'
@@ -241,7 +245,7 @@ function getCar(name: string) {
         });
 }
 
-function loadLancer(name: string, action: RollType, pf: boolean, pp: boolean, ra: boolean, secret: boolean, parentRollId: number | null = null) {
+function loadLancer(name: string, action: RollType, pf: boolean, pp: boolean, ra: boolean, secret: boolean, parentRollId: string | null = null) {
     fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
 }
 

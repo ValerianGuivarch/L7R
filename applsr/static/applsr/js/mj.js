@@ -97,15 +97,14 @@ function jetPNJ(name, action, stat, pf, pp, ra, sec, dc /** dés cachés */) {
     if (document.querySelector('#opposition_checked').checked) {
         fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition).then(function (response) {
             response.text().then(function (text) {
-                console.log(text);
                 var degats = parseInt(text);
-                console.log(degats);
                 modifPNJ(name, "pv", degats * -1);
+                afficher("mj");
             });
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0');
+        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0').then(function () { return afficher("mj"); });
     }
     if (action == 'JM')
         modifPNJ(name, 'dettes', 1);

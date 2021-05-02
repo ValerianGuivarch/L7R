@@ -67,6 +67,9 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     }
     return successCount + bonus;
 }
+function resist(elem, action) {
+    loadLancer(getCurrentCharacter(), action, document.querySelector('#use_pf').checked, document.querySelector('#use_pp').checked, document.querySelector('#use_ra').checked, document.querySelector('#use_sc').checked, elem.closest('.roll').dataset.rollid);
+}
 function jsonRollToHtml(roll, sub) {
     if (sub === void 0) { sub = false; }
     var tr = document.createElement("tr");
@@ -107,9 +110,9 @@ function jsonRollToHtml(roll, sub) {
     }
     var resist = "";
     if (sub == false) {
-        resist = ' Résister avec <button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JC\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">chair</button>'
-            + '<button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JS\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">esprit</button>'
-            + '<button class="btn resist" onclick="loadLancer(getCurrentCharacter(), \'JE\', document.getElementById(\'use_pf\').checked, document.getElementById(\'use_pp\').checked, document.getElementById(\'use_ra\').checked, document.getElementById(\'use_sc\').checked, this.closest(\'.roll\').dataset.rollid)">essence</button> ?';
+        resist = ' Résister avec <button class="btn resist" onclick="resist(this, \'JC\')">chair</button>'
+            + '<button class="btn resist" onclick="resist(this, \'JS\')">esprit</button>'
+            + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
     }
     tr.innerHTML = '<td class="date">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
