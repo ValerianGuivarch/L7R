@@ -22,16 +22,36 @@ function ajouter_pj(name) {
     var liste_pj = document.querySelector('#liste_pj');
     table = table +
         '<td align="center">' + '<span id="pj_name"><b>' + name + '</b></span>'
-        + '<br/><i><span id="pj_fl_' + name + '"></span></i>'
-        + '<br/><i><span id="pj_fu_' + name + '"></span></i>'
-        + '<br/><i><span id="pj_fs_' + name + '"></span></i>'
-        + '<br/><button onclick="modif(\'' + name + '\',\'pv\',1, false);" >-</button>PV = <span id="pj_pv_' + name + '">3</span>/<span id="pj_pv_max_' + name + '">6</span><button onclick="modif(\'' + name + '\',\'pv\',1, true);" >+</button>'
-        + '<br/><button onclick="modif(\'' + name + '\',\'pf\',1, false);" >-</button>PF = <span id="pj_pf_' + name + '">3</span>/<span id="pj_pf_max_' + name + '">6</span><button onclick="modif(\'' + name + '\',\'pf\',1, true);" >+</button>'
-        + '<br/><button onclick="modif(\'' + name + '\',\'pp\',1, false);" >-</button>PP = <span id="pj_pp_' + name + '">3</span>/<span id="pj_pp_max_' + name + '">6</span><button onclick="modif(\'' + name + '\',\'pp\',1, true);" >+</button>'
-        + '<br/><button onclick="modif(\'' + name + '\',\'dettes\',1, false);" >-</button>DT = <span id="pj_dettes_' + name + '">9</span><button onclick="modif(\'' + name + '\',\'dettes\',1, true);" >+</button>'
-        + '<br/><button onclick="modif(\'' + name + '\',\'arcanes\',1, false);" >-</button>AK = <span id="pj_arcanes_' + name + '">3</span>/<span id="pj_arcanes_max_' + name + '">6</span><button onclick="modif(\'' + name + '\',\'arcanes\',1, true);" >+</button>'
+        + '<div class="line"><i><span id="pj_fl_' + name + '"></span></i></div>'
+        + '<div class="line"><i><span id="pj_fu_' + name + '"></span></i></div>'
+        + '<div class="line"><i><span id="pj_fs_' + name + '"></span></i></div>'
+        + '<div class="line">'
+        + '<button onclick="modif(\'' + name + '\',\'pv\',1, false);" >-</button>'
+        + '<span>PV = <span id="pj_pv_' + name + '">3</span>/<span id="pj_pv_max_' + name + '">6</span></span>'
+        + '<button onclick="modif(\'' + name + '\',\'pv\',1, true);" >+</button>'
+        + '</div>'
+        + '<div class="line">'
+        + '<button onclick="modif(\'' + name + '\',\'pf\',1, false);" >-</button>'
+        + '<span>PF = <span id="pj_pf_' + name + '">3</span>/<span id="pj_pf_max_' + name + '">6</span></span>'
+        + '<button onclick="modif(\'' + name + '\',\'pf\',1, true);" >+</button>'
+        + '</div>'
+        + '<div class="line">'
+        + '<button onclick="modif(\'' + name + '\',\'pp\',1, false);" >-</button>'
+        + '<span>PP = <span id="pj_pp_' + name + '">3</span>/<span id="pj_pp_max_' + name + '">6</span></span>'
+        + '<button onclick="modif(\'' + name + '\',\'pp\',1, true);" >+</button>'
+        + '</div>'
+        + '<div class="line">'
+        + '<button onclick="modif(\'' + name + '\',\'dettes\',1, false);" >-</button>'
+        + '<span>DT = <span id="pj_dettes_' + name + '">9</span></span>'
+        + '<button onclick="modif(\'' + name + '\',\'dettes\',1, true);" >+</button>'
+        + '</div>'
+        + '<div class="line">'
+        + '<button onclick="modif(\'' + name + '\',\'arcanes\',1, false);" >-</button>'
+        + '<span>AK = <span id="pj_arcanes_' + name + '">3</span>/<span id="pj_arcanes_max_' + name + '">6</span></span>'
+        + '<button onclick="modif(\'' + name + '\',\'arcanes\',1, true);" >+</button>'
+        + '</div>'
         + '</td>';
-    liste_pj.innerHTML = '<table border="1"><tr>' + table + '</tr></table>';
+    liste_pj.innerHTML = '<table class="pj-for-mj"><tr>' + table + '</tr></table>';
     nbPJ++;
     listPJ.push(name);
 }
@@ -107,7 +127,7 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
         new_pnj_pp_max = parseInt(new_pnj_essence);
     }
     liste_pnj.innerHTML = liste_pnj.innerHTML
-        + '<span id=\"pnj_' + new_pnj_name + '\"><br><button onclick=\"effacer_pnj(\'' + new_pnj_name + '\');\"> X </button><b>' + new_pnj_name
+        + '<span id=\"pnj_' + new_pnj_name + '\"><br><input type="radio" name="resist" /> <button onclick=\"effacer_pnj(\'' + new_pnj_name + '\');\"> X </button><b>' + new_pnj_name
         + '</> : <button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);\" >-</button>PV = <span id=\"pnj_pv_' + new_pnj_name + '\">' + new_pnj_pv_max
         + '</span>/<span id=\"pj_pv_max_' + new_pnj_name + '\">' + new_pnj_pv_max + '</span><button onclick=\"modifPNJ(\'' + new_pnj_name +
         '\',\'pv\',1);\" >+</button><label class=\"btn active\"><button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);\" >-</button><input id=\"use_pf_' + new_pnj_name + '\" type=\"checkbox\" autocomplete=\"off\">PF:<span id=\"pnj_pf_'

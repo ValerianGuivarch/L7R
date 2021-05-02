@@ -124,3 +124,12 @@ button input[type="checkbox"] {
   padding: 1px;
   margin-right: 0.2rem;
 }
+
+.pj-for-mj td {
+  border: 1px solid black;
+}
+
+.pj-for-mj .line {
+  display: flex;
+  justify-content: space-between;
+}
