@@ -127,6 +127,7 @@ button input[type="checkbox"] {
 
 .pj-for-mj td {
   border: 1px solid black;
+  padding: 2px;
 }
 
 .pj-for-mj .line {

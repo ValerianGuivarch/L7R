@@ -1,4 +1,4 @@
-type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp";
+type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 
 let nbPJ = 0;
 let listPJ: string[] = [];
@@ -126,6 +126,9 @@ function jetPNJ(name: string, action: RollType, stat: Stat, pf: boolean, pp: boo
     }
 }
 
+function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, new_pnj_stat_name: string, action: RollType) {
+    return '<button onclick="jetPNJ(\'' + new_pnj_name + '\',\'' + action + '\',' + new_pnj_stat_value + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);">' + new_pnj_stat_name + '</button>'
+}
 
 
 function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: number | "PVmax", new_pnj_pf_max: number | "PFmax", new_pnj_pp_max: number | "PPmax") {
@@ -141,27 +144,59 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         new_pnj_pp_max = parseInt(new_pnj_essence);
     }
     liste_pnj.innerHTML = liste_pnj.innerHTML
-        + '<span id=\"pnj_' + new_pnj_name + '\"><br><input type="radio" name="resist" /> <button onclick=\"effacer_pnj(\'' + new_pnj_name + '\');\"> X </button><b>' + new_pnj_name
-        + '</> : <button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);\" >-</button>PV = <span id=\"pnj_pv_' + new_pnj_name + '\">' + new_pnj_pv_max
-        + '</span>/<span id=\"pj_pv_max_' + new_pnj_name + '\">' + new_pnj_pv_max + '</span><button onclick=\"modifPNJ(\'' + new_pnj_name +
-        '\',\'pv\',1);\" >+</button><label class=\"btn active\"><button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);\" >-</button><input id=\"use_pf_' + new_pnj_name + '\" type=\"checkbox\" autocomplete=\"off\">PF:<span id=\"pnj_pf_'
-        + new_pnj_name + '\">' + new_pnj_pf_max + '</span> / ' + new_pnj_pf_max + '<button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pf\',1);\" >+</button></label><label class=\"btn active\"><button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pp\',-1);\" >-</button><input id=\"use_pp_' + new_pnj_name
-        + '\" type=\"checkbox\" autocomplete=\"off\">PP:<span id=\"pnj_pp_' + new_pnj_name + '\">' + new_pnj_pp_max + '</span> / ' + new_pnj_pp_max
-        + '<button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'pp\',1);\" >+</button></label><label class=\"btn active\"><input id=\"use_ra_' + new_pnj_name + '\" type=\"checkbox\" autocomplete=\"off\">RA</label><label class=\"btn active\"><input id=\"use_sc_'
-        + new_pnj_name + '\" type=\"checkbox\" autocomplete=\"off\">Secret</label><label class=\"btn active\"><input id=\"use_dc_'
-        + new_pnj_name + '\" type=\"checkbox\" checked=\"true\" autocomplete=\"off\">Dés cachés</label><br><button onclick=\"jetPNJ(\''
-        + new_pnj_name + '\',\'JC\',' + new_pnj_chair + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name
-        + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);\">Chair</button><button onclick=\"jetPNJ(\''
-        + new_pnj_name + '\',\'JS\',' + new_pnj_esprit + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name
-        + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);\">Esprit</button><button onclick=\"jetPNJ(\''
-        + new_pnj_name + '\',\'JE\',' + new_pnj_essence + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name
-        + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);\">Essence</button><button onclick=\"jetPNJ(\''
-        + new_pnj_name + '\',\'JM\',' + new_pnj_essence + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name
-        + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);\">Magie</button> <button onclick=\"modifPNJ(\'' +
-        new_pnj_name + '\',\'mal\',-1);\" >-</button>Mal = <span id=\"pnj_mal_' + new_pnj_name + '\">0</span><button onclick=\"modifPNJ(\'' + new_pnj_name +
-        '\',\'mal\',1);\" >+</button> <button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'ben\',-1);\" >-</button>Ben = <span id=\"pnj_ben_'
-        + new_pnj_name + '\">0</span><button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'ben\',1);\" >+</button> <button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'dettes\',-1);\" >-</button>Dettes = <span id=\"pnj_dettes_'
-        + new_pnj_name + '\">' + new_pnj_dettes + '</span><button onclick=\"modifPNJ(\'' + new_pnj_name + '\',\'dettes\',1);\" >+</button></span>'
+        + '<span id="pnj_' + new_pnj_name + '"><br>'
+        + '<input type="radio" name="resist" /> '
+        + '<button onclick="effacer_pnj(\'' + new_pnj_name + '\');"> X </button><b>' + new_pnj_name + ' : '
+        
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);" >-</button>'
+        + 'PV = <span id="pnj_pv_' + new_pnj_name + '">' + new_pnj_pv_max
+        + '</span>/<span id="pj_pv_max_' + new_pnj_name + '">' + new_pnj_pv_max + '</span>'
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',1);" >+</button>'
+        
+        + '<label class="btn active">'
+            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);" >-</button>'
+            + '<input id="use_pf_' + new_pnj_name + '" type="checkbox" autocomplete="off">PF:<span id="pnj_pf_' + new_pnj_name + '">' + new_pnj_pf_max + '</span> / ' + new_pnj_pf_max
+            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',1);" >+</button>'
+        + '</label>'
+
+        + '<label class="btn active">'
+            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',-1);" >-</button>'
+            + '<input id="use_pp_' + new_pnj_name + '" type="checkbox" autocomplete="off">PP:<span id="pnj_pp_' + new_pnj_name + '">' + new_pnj_pp_max + '</span> / ' + new_pnj_pp_max
+            + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',1);" >+</button>'
+        + '</label>'
+
+        + '<label class="btn active">'
+            + '<input id="use_ra_' + new_pnj_name + '" type="checkbox" autocomplete="off">RA'
+        + '</label>'
+
+        + '<label class="btn active">'
+            + '<input id="use_sc_' + new_pnj_name + '" type="checkbox" autocomplete="off">Secret'
+        + '</label>'
+
+        + '<label class="btn active">'
+            + '<input id="use_dc_' + new_pnj_name + '" type="checkbox" checked="true" autocomplete="off">Dés cachés'
+        + '</label>'
+
+        + '<br>'
+
+        + createJetPnjTemplate(new_pnj_name, new_pnj_chair, "Chair", "JC")
+        + createJetPnjTemplate(new_pnj_name, new_pnj_esprit, "Esprit", "JS")
+        + createJetPnjTemplate(new_pnj_name, new_pnj_essence, "Essence", "JE")
+        + createJetPnjTemplate(new_pnj_name, new_pnj_essence, "Magie", "JM")
+        
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',-1);" >-</button>'
+        + 'Mal = <span id="pnj_mal_' + new_pnj_name + '">0</span>'
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',1);" >+</button> '
+        
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',-1);" >-</button>'
+        + 'Ben = <span id="pnj_ben_' + new_pnj_name + '">0</span>'
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',1);" >+</button> '
+        
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',-1);" >-</button>'
+        + 'Dettes = <span id="pnj_dettes_' + new_pnj_name + '">' + new_pnj_dettes + '</span>'
+        + '<button onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',1);" >+</button>'
+
+        + '</span>'
 }
 
 function effacerLancersDes() {
