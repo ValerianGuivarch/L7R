@@ -13,6 +13,9 @@
     <script>
         var parts = location.pathname.split("/");
         var nompj = parts[parts.length - 1];
+        function getCurrentCharacter() {
+            return nompj;
+        }
     </script>
     <script src="{% static 'applsr/js/lsr.js' %}"></script>
 

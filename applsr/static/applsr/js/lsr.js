@@ -132,7 +132,7 @@ function jsonRollToHtml(roll, sub) {
     }
     var roll_string = " ";
     if (roll.hidden_dice == false || nompj == "mj") {
-        roll_string = " : " + formatRollResults(roll.dice_results) + "<br />";
+        roll_string = " :<br />" + formatRollResults(roll.dice_results) + "<br />";
     }
     tr.innerHTML = '<td class="date">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
