@@ -15,6 +15,7 @@ interface Roll {
     pp: boolean,
     pf: boolean,
     ra: boolean,
+    hidden_dice: boolean,
     roll_type: RollType,
     parent_roll?: Roll,
     related_rolls: Roll[]
@@ -165,6 +166,11 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
             + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
     }
 
+    var roll_string = " ";
+    if(roll.hidden_dice == false || nompj == "mj") {
+        roll_string = " : " + formatRollResults(roll.dice_results) + "<br />";
+    }
+
     tr.innerHTML = '<td class="date">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + '</td>'
@@ -176,9 +182,8 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         + " "
         + rollTypeToString(roll.roll_type)
         + pp
-        + " :<br />"
-        + formatRollResults(roll.dice_results)
-        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+        + roll_string
+        + 'et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
         + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
         + " succès</span>"
         + ra
