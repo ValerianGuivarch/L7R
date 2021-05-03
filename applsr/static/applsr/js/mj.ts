@@ -88,10 +88,34 @@ function afficherPJ() {
     });
 }
 
-function effacer_pnj(new_pnj_name: string) {
-    const pnj = document.querySelector('#pnj_' + new_pnj_name)!;
-    pnj.innerHTML = "";
-    pnj.parentElement?.removeChild(pnj);
+let remove_pnj_timeout: null | number = null;
+var remove_pnj_ok = false;
+
+function effacer_pnj(pnjElement: HTMLElement) {
+    if(remove_pnj_ok == false) {
+        remove_pnj_ok = true;
+        document.querySelectorAll(".delete-npc").forEach(btn => {
+            btn.classList.replace("btn-danger", "btn-success");
+        });
+        remove_pnj_timeout = setTimeout(() => {
+            remove_pnj_ok = false;
+            document.querySelectorAll(".delete-npc").forEach(btn => {
+                btn.classList.replace("btn-success", "btn-danger");
+            });
+        }, 5000);
+    }
+    else {
+        if(remove_pnj_timeout != null) {
+            clearTimeout(remove_pnj_timeout);
+        }
+        remove_pnj_timeout = setTimeout(() => {
+            remove_pnj_ok = false;
+            document.querySelectorAll(".delete-npc").forEach(btn => {
+                btn.classList.replace("btn-success", "btn-danger");
+            });
+        }, 5000);
+        pnjElement.parentElement?.removeChild(pnjElement);
+    }
 }
 
 function modifPNJ(pnjElement: HTMLElement, stat: Stat, valeur: number) {
@@ -146,7 +170,7 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         + '<div class="pnj" id="pnj_' + new_pnj_name + '" data-jc="' + new_pnj_chair + '" data-js="' + new_pnj_esprit + '" data-je="' + new_pnj_essence + '">'
 
         + '<input type="radio" name="resist" />'
-        + '<button class="btn btn-danger" onclick="effacer_pnj(\'' + new_pnj_name + '\');"> X </button>'
+        + '<button class="btn btn-danger delete-npc" onclick="effacer_pnj(this.closest(\'.pnj\'));"> X </button>'
         + '<span><b class="name">' + new_pnj_name + '</b> : </span>'
         
         + '<span class="btn-group">'

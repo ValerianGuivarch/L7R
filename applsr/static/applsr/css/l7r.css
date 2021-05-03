@@ -73,6 +73,7 @@ button input[type="checkbox"] {
   background-color: #17a2b8;
   border-color: #17a2b8;
   padding: 0.2rem 0.7rem;
+  transition: background-color 1000ms linear, border-color 1000ms linear;
 }
 
 .btn:disabled {
