@@ -16,43 +16,48 @@
     }
 </script>
 
-<button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
-<br>
+<div class="menu">
 
-<label for="pj-select"></label>
+    <div>
+        <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
+    </div>
 
-<select id="pj-select" name="pj">
-    <option value="">Nom du PJ</option>
-    <option value="aurelien">aurelien</option>
-    <option value="ayoub">ayoub</option>
-    <option value="camille">camille</option>
-    <option value="cora">cora</option>
-    <option value="deirdre">deirdre</option>
-    <option value="gertrude">gertrude</option>
-    <option value="isycho">isycho</option>O
-    <option value="john">john</option>
-    <option value="jonathan">jonathan</option>
-    <option value="kyma">kyma</option>
-    <option value="mathieu">mathieu</option>
-    <option value="roger">roger</option>
-    <option value="roy">roy</option>
-    <option value="tara">tara</option>
-    <option value="tibo">tibo</option>
-    <option value="viktor">viktor</option>
-</select>
-<button onclick="ajouter_pj(document.getElementById('pj-select').value)">Ajouter</button>
+    <div class="pc">
+        <select id="pj-select" name="pj">
+            <option value="">Nom du PJ</option>
+            <option value="aurelien">aurelien</option>
+            <option value="ayoub">ayoub</option>
+            <option value="camille">camille</option>
+            <option value="cora">cora</option>
+            <option value="deirdre">deirdre</option>
+            <option value="gertrude">gertrude</option>
+            <option value="isycho">isycho</option>O
+            <option value="john">john</option>
+            <option value="jonathan">jonathan</option>
+            <option value="kyma">kyma</option>
+            <option value="mathieu">mathieu</option>
+            <option value="roger">roger</option>
+            <option value="roy">roy</option>
+            <option value="tara">tara</option>
+            <option value="tibo">tibo</option>
+            <option value="viktor">viktor</option>
+        </select>
 
-<input id="opposition" size="2" type="text" value="opposition">
-<label class="btn active"><input id="opposition_checked" type="checkbox" autocomplete="off">Opposition</label>
-<br>
-<input id="new_pnj_name" size="2" type="text" placeholder="name">
-<input id="new_pnj_chair" size="2" type="text" placeholder="chair">
-<input id="new_pnj_esprit" size="2" type="text" placeholder="esprit">
-<input id="new_pnj_essence" size="2" type="text" placeholder="essence">
-<input id="new_pnj_pv_max" size="2" type="text" placeholder="PV" title="leave empty for max">
-<input id="new_pnj_pf_max" size="2" type="text" placeholder="PF" title="leave empty for max">
-<input id="new_pnj_pp_max" size="2" type="text" placeholder="PP" title="leave empty for max">
-<button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
+        <button onclick="ajouter_pj(document.getElementById('pj-select').value)">Ajouter</button>
+    </div>
+
+    <div class="npc">
+        <input id="new_pnj_name" size="2" type="text" placeholder="name">
+        <input id="new_pnj_chair" size="2" type="text" placeholder="chair">
+        <input id="new_pnj_esprit" size="2" type="text" placeholder="esprit">
+        <input id="new_pnj_essence" size="2" type="text" placeholder="essence">
+        <input id="new_pnj_pv_max" size="2" type="text" placeholder="PV" title="leave empty for max">
+        <input id="new_pnj_pf_max" size="2" type="text" placeholder="PF" title="leave empty for max">
+        <input id="new_pnj_pp_max" size="2" type="text" placeholder="PP" title="leave empty for max">
+        <button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
+    </div>
+
+</div>
 
 <span id="liste_pj"></span>
 
