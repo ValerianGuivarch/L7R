@@ -101,8 +101,8 @@ function modifPNJ(pnjElement: HTMLElement, stat: Stat, valeur: number) {
 
 function jetPNJ(pnjElement: HTMLElement, action: RollType, stat: number, pf: boolean, pp: boolean, ra: boolean, sec: boolean, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const name = pnjElement.querySelector(".name")!.innerHTML;
-    const mal = parseInt(document.querySelector('#pnj_mal_' + name)!.innerHTML);
-    const ben = parseInt(document.querySelector('#pnj_ben_' + name)!.innerHTML);
+    const mal = parseInt(pnjElement.querySelector('.mal')!.innerHTML);
+    const ben = parseInt(pnjElement.querySelector('.ben')!.innerHTML);
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
@@ -195,13 +195,13 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         
         + '<span class="btn-group">'
             + '<button class="btn btn-danger" onclick="modifPNJ(this.closest(\'.pnj\'),\'mal\',-1);" >-</button>'
-            + '<span class="btn btn-outline-danger">Mal: <span id="pnj_mal_' + new_pnj_name + '">0</span></span>'
+            + '<span class="btn btn-outline-danger">Mal: <span class="mal" id="pnj_mal_' + new_pnj_name + '">0</span></span>'
             + '<button class="btn btn-danger" onclick="modifPNJ(this.closest(\'.pnj\'),\'mal\',1);" >+</button> '
         + '</span>'
         
         + '<span class="btn-group">'
             + '<button class="btn btn-success" onclick="modifPNJ(this.closest(\'.pnj\'),\'ben\',-1);" >-</button>'
-            + '<span class="btn btn-outline-success">Ben: <span id="pnj_ben_' + new_pnj_name + '">0</span></span>'
+            + '<span class="btn btn-outline-success">Ben: <span class="ben" id="pnj_ben_' + new_pnj_name + '">0</span></span>'
             + '<button class="btn btn-success" onclick="modifPNJ(this.closest(\'.pnj\'),\'ben\',1);" >+</button> '
         + '</span>'
         

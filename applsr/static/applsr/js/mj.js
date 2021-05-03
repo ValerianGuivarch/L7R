@@ -93,8 +93,8 @@ function modifPNJ(pnjElement, stat, valeur) {
 function jetPNJ(pnjElement, action, stat, pf, pp, ra, sec, dc /** dés cachés */, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
     var name = pnjElement.querySelector(".name").innerHTML;
-    var mal = parseInt(document.querySelector('#pnj_mal_' + name).innerHTML);
-    var ben = parseInt(document.querySelector('#pnj_ben_' + name).innerHTML);
+    var mal = parseInt(pnjElement.querySelector('.mal').innerHTML);
+    var ben = parseInt(pnjElement.querySelector('.ben').innerHTML);
     var opposition = parseInt(document.querySelector('#opposition').value);
     if (document.querySelector('#opposition_checked').checked) {
         fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function (response) {
@@ -176,12 +176,12 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
         + createJetPnjTemplate(new_pnj_name, new_pnj_essence, "Magie", "JM")
         + '<span class="btn-group">'
         + '<button class="btn btn-danger" onclick="modifPNJ(this.closest(\'.pnj\'),\'mal\',-1);" >-</button>'
-        + '<span class="btn btn-outline-danger">Mal: <span id="pnj_mal_' + new_pnj_name + '">0</span></span>'
+        + '<span class="btn btn-outline-danger">Mal: <span class="mal" id="pnj_mal_' + new_pnj_name + '">0</span></span>'
         + '<button class="btn btn-danger" onclick="modifPNJ(this.closest(\'.pnj\'),\'mal\',1);" >+</button> '
         + '</span>'
         + '<span class="btn-group">'
         + '<button class="btn btn-success" onclick="modifPNJ(this.closest(\'.pnj\'),\'ben\',-1);" >-</button>'
-        + '<span class="btn btn-outline-success">Ben: <span id="pnj_ben_' + new_pnj_name + '">0</span></span>'
+        + '<span class="btn btn-outline-success">Ben: <span class="ben" id="pnj_ben_' + new_pnj_name + '">0</span></span>'
         + '<button class="btn btn-success" onclick="modifPNJ(this.closest(\'.pnj\'),\'ben\',1);" >+</button> '
         + '</span>'
         + '<span class="btn-group">'

@@ -563,7 +563,7 @@ def rollResultToDict(rollResult, computeRelated=True):
         "character": rollResult.lancer,
         "malediction_count": rollResult.malediction_count,
         "benediction_count": rollResult.benediction_count,
-        "dice_results": [int(n) for n in rollResult.dice_results.split(",")],
+        "dice_results": [int(n) for n in rollResult.dice_results.split(",") if n != ""],
         "pp": rollResult.pp,
         "pf": rollResult.pf,
         "ra": rollResult.ra,
