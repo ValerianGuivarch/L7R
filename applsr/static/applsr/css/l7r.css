@@ -38,6 +38,7 @@ body {
 
 input[type="checkbox"] {
   margin: 0;
+  vertical-align: middle;
 }
 
 button input[type="checkbox"] {
