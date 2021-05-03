@@ -79,7 +79,7 @@ function resist(elem, action) {
     else {
         var new_pnj_name = char.querySelector(".name").innerHTML;
         var new_pnj_stat_value = parseInt(char.dataset[action.toLowerCase()]);
-        jetPNJ(new_pnj_name, action, new_pnj_stat_value, document.querySelector('#use_pf').checked, document.querySelector('#use_pp').checked, document.querySelector('#use_ra').checked, document.querySelector('#use_sc').checked, document.querySelector('#use_dc').checked, elem.closest('.roll').dataset.rollid);
+        jetPNJ(new_pnj_name, action, new_pnj_stat_value, char.querySelector('.use_pf').checked, char.querySelector('.use_pp').checked, char.querySelector('.use_ra').checked, char.querySelector('.use_sc').checked, char.querySelector('.use_dc').checked, elem.closest('.roll').dataset.rollid);
     }
 }
 function jsonRollToHtml(roll, sub) {
@@ -107,10 +107,14 @@ function jsonRollToHtml(roll, sub) {
     if (roll.pf == true) {
         pf = " se <i>concentre</i> et ";
     }
+    var ra = "";
+    if (roll.ra == true) {
+        ra = ", grâce à son <i>héritage latent</i>";
+    }
     var delta = "";
     if (roll.parent_roll != null) {
-        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], roll.parent_roll.pp ? 1 : 0);
-        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], roll.pp ? 1 : 0);
+        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
+        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
         var diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
         if (diff < 0) {
@@ -139,9 +143,11 @@ function jsonRollToHtml(roll, sub) {
         + pp
         + " :<br />"
         + formatRollResults(roll.dice_results)
-        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], roll.pp ? 1 : 0) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], roll.pp ? 1 : 0) + '">'
-        + countSuccessesWith(roll.dice_results, [5], [6], roll.pp ? 1 : 0)
-        + " succès</span>."
+        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+        + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+        + " succès</span>"
+        + ra
+        + "."
         + resist
         + delta
         + "</td>";

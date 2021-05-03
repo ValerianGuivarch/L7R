@@ -162,7 +162,7 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         + '<span class="btn-group">'
             + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);" >-</button>'
             + '<span class="btn btn-info">'
-                + '<input id="use_pf_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
+                + '<input class="use_pf" id="use_pf_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
                 + 'PF: <span id="pnj_pf_' + new_pnj_name + '">' + new_pnj_pf_max + '</span>/' + new_pnj_pf_max
             + '</span>'
             + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',1);" >+</button>'
@@ -171,22 +171,22 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         + '<span class="btn-group">'
             + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',-1);" >-</button>'
             + '<span class="btn btn-info">'
-                + '<input id="use_pp_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
+                + '<input class="use_pp" id="use_pp_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
                 + 'PP: <span id="pnj_pp_' + new_pnj_name + '">' + new_pnj_pp_max + '</span>/' + new_pnj_pp_max
             + '</span>'
             + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',1);" >+</button>'
         + '</span>'
 
         + '<label class="btn">'
-            + '<input id="use_ra_' + new_pnj_name + '" type="checkbox" autocomplete="off"> RA'
+            + '<input class="use_ra" id="use_ra_' + new_pnj_name + '" type="checkbox" autocomplete="off"> RA'
         + '</label>'
 
         + '<label class="btn">'
-            + '<input id="use_sc_' + new_pnj_name + '" type="checkbox" autocomplete="off"> Secret'
+            + '<input class="use_sc" id="use_sc_' + new_pnj_name + '" type="checkbox" autocomplete="off"> Secret'
         + '</label>'
 
         + '<label class="btn">'
-            + '<input id="use_dc_' + new_pnj_name + '" type="checkbox" checked="true" autocomplete="off"> Cachés'
+            + '<input class="use_dc" id="use_dc_' + new_pnj_name + '" type="checkbox" checked="true" autocomplete="off"> Cachés'
         + '</label>'
 
         + createJetPnjTemplate(new_pnj_name, new_pnj_chair, "Chair", "JC")

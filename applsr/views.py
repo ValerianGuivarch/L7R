@@ -365,7 +365,7 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
         dices_string += "utilise une <i>Arcane Fixe</i>."
         now = datetime.now()
         dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
-        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results="", pp=pouvoir, pf=focus, roll_type=test, parent_roll_id=parent_roll_id)
+        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results="", pp=pouvoir, pf=focus, roll_type=test, ta=use_ra, parent_roll_id=parent_roll_id)
         dice.save()
         result = {
             'requete': test,
@@ -446,7 +446,7 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
 
     now = datetime.now()
     dices_string = ""+str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" - "+dices_string
-    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test, parent_roll_id=parent_roll_id)
+    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test, ra=use_ra, parent_roll_id=parent_roll_id)
     dice.save()
     result = {
         degats
@@ -566,6 +566,7 @@ def rollResultToDict(rollResult, computeRelated=True):
         "dice_results": [int(n) for n in rollResult.dice_results.split(",")],
         "pp": rollResult.pp,
         "pf": rollResult.pf,
+        "ra": rollResult.ra,
         "roll_type": rollResult.roll_type,
         "parent_roll": parentRoll,
         "related_rolls": [rollResultToDict(r) for r in related_rolls_results] if computeRelated else None

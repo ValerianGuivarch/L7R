@@ -14,6 +14,7 @@ interface Roll {
     dice_results: number[],
     pp: boolean,
     pf: boolean,
+    ra: boolean,
     roll_type: RollType,
     parent_roll?: Roll,
     related_rolls: Roll[]
@@ -105,7 +106,7 @@ function resist(elem: HTMLElement, action: RollType) {
     else {
         const new_pnj_name = char.querySelector(".name")!.innerHTML;
         const new_pnj_stat_value = parseInt(char.dataset[action.toLowerCase()]!);
-        jetPNJ(new_pnj_name, action, new_pnj_stat_value, document.querySelector<HTMLInputElement>('#use_pf')!.checked,document.querySelector<HTMLInputElement>('#use_pp')!.checked, document.querySelector<HTMLInputElement>('#use_ra')!.checked, document.querySelector<HTMLInputElement>('#use_sc')!.checked, document.querySelector<HTMLInputElement>('#use_dc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
+        jetPNJ(new_pnj_name, action, new_pnj_stat_value, char.querySelector<HTMLInputElement>('.use_pf')!.checked,char.querySelector<HTMLInputElement>('.use_pp')!.checked, char.querySelector<HTMLInputElement>('.use_ra')!.checked, char.querySelector<HTMLInputElement>('.use_sc')!.checked, char.querySelector<HTMLInputElement>('.use_dc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
     }
 }
 
@@ -138,10 +139,15 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         pf = " se <i>concentre</i> et "
     }
 
+    var ra = "";
+    if(roll.ra == true) {
+        ra = ", grâce à son <i>héritage latent</i>"
+    }
+
     var delta = "";
     if(roll.parent_roll != null) {
-        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], roll.parent_roll.pp ? 1 : 0);
-        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], roll.pp ? 1 : 0);
+        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
+        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
         var diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
         if(diff < 0) {
@@ -172,9 +178,11 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         + pp
         + " :<br />"
         + formatRollResults(roll.dice_results)
-        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], roll.pp ? 1 : 0) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], roll.pp ? 1 : 0) + '">'
-        + countSuccessesWith(roll.dice_results, [5], [6], roll.pp ? 1 : 0)
-        + " succès</span>."
+        + '<br />et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+        + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+        + " succès</span>"
+        + ra
+        + "."
         + resist
         + delta
         + "</td>";

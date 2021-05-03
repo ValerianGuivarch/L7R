@@ -58,6 +58,7 @@ class DiceRoll(models.Model):
     dice_results = models.CharField(default="", max_length=255)
     pp = models.BooleanField(default=False)
     pf = models.BooleanField(default=False)
+    ra = models.BooleanField(default=False)
     roll_type = models.CharField(default="", max_length=32)
     parent_roll = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
