@@ -146,14 +146,26 @@ function createJetPnjTemplate(new_pnj_name, new_pnj_stat_value, new_pnj_stat_nam
 function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {
     var new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     var liste_pnj = document.querySelector('#liste_pnj');
-    if (new_pnj_pv_max == "PVmax") {
-        new_pnj_pv_max = parseInt(new_pnj_chair) * 2;
+    if (new_pnj_name == "") {
+        new_pnj_name = "Name";
     }
-    if (new_pnj_pf_max == "PFmax") {
-        new_pnj_pf_max = parseInt(new_pnj_esprit);
+    if (new_pnj_chair == "") {
+        new_pnj_chair = "2";
     }
-    if (new_pnj_pp_max == "PPmax") {
-        new_pnj_pp_max = parseInt(new_pnj_essence);
+    if (new_pnj_esprit == "") {
+        new_pnj_esprit = new_pnj_chair;
+    }
+    if (new_pnj_essence == "") {
+        new_pnj_essence = new_pnj_chair;
+    }
+    if (new_pnj_pv_max == "") {
+        new_pnj_pv_max = "" + parseInt(new_pnj_chair) * 2;
+    }
+    if (new_pnj_pf_max == "") {
+        new_pnj_pf_max = new_pnj_esprit;
+    }
+    if (new_pnj_pp_max == "") {
+        new_pnj_pp_max = new_pnj_essence;
     }
     liste_pnj.innerHTML = liste_pnj.innerHTML
         + '<div class="pnj" id="pnj_' + new_pnj_name + '" data-jc="' + new_pnj_chair + '" data-js="' + new_pnj_esprit + '" data-je="' + new_pnj_essence + '">'

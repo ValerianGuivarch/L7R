@@ -154,18 +154,36 @@ function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, 
     return '<button class="btn" onclick="jetPNJ(this.closest(\'.pnj\'),\'' + action + '\',' + new_pnj_stat_value + ',this.closest(\'.pnj\').querySelector(\'.use_pf\').checked,this.closest(\'.pnj\').querySelector(\'.use_pp\').checked,this.closest(\'.pnj\').querySelector(\'.use_ra\').checked, this.closest(\'.pnj\').querySelector(\'.use_sc\').checked, this.closest(\'.pnj\').querySelector(\'.use_dc\').checked);">' + new_pnj_stat_name + '</button>'
 }
 
-function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: number | "PVmax", new_pnj_pf_max: number | "PFmax", new_pnj_pp_max: number | "PPmax") {
+function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: string | "PVmax", new_pnj_pf_max: string | "PFmax", new_pnj_pp_max: string | "PPmax") {
     const new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     const liste_pnj = document.querySelector('#liste_pnj')!;
-    if(new_pnj_pv_max == "PVmax") {
-        new_pnj_pv_max = parseInt(new_pnj_chair) * 2;
+    
+    if(new_pnj_name == "") {
+        new_pnj_name = "Name";
     }
-    if(new_pnj_pf_max == "PFmax") {
-        new_pnj_pf_max = parseInt(new_pnj_esprit);
+
+    if(new_pnj_chair == "") {
+        new_pnj_chair = "2";
     }
-    if(new_pnj_pp_max == "PPmax") {
-        new_pnj_pp_max = parseInt(new_pnj_essence);
+
+    if(new_pnj_esprit == "") {
+        new_pnj_esprit = new_pnj_chair;
     }
+
+    if(new_pnj_essence == "") {
+        new_pnj_essence = new_pnj_chair;
+    }
+
+    if(new_pnj_pv_max == "") {
+        new_pnj_pv_max = "" + parseInt(new_pnj_chair) * 2;
+    }
+    if(new_pnj_pf_max == "") {
+        new_pnj_pf_max = new_pnj_esprit;
+    }
+    if(new_pnj_pp_max == "") {
+        new_pnj_pp_max = new_pnj_essence;
+    }
+    
     liste_pnj.innerHTML = liste_pnj.innerHTML
         + '<div class="pnj" id="pnj_' + new_pnj_name + '" data-jc="' + new_pnj_chair + '" data-js="' + new_pnj_esprit + '" data-je="' + new_pnj_essence + '">'
 
