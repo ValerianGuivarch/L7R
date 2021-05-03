@@ -131,7 +131,6 @@ function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, 
     return '<button class="btn" onclick="jetPNJ(\'' + new_pnj_name + '\',\'' + action + '\',' + new_pnj_stat_value + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);">' + new_pnj_stat_name + '</button>'
 }
 
-
 function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: number | "PVmax", new_pnj_pf_max: number | "PFmax", new_pnj_pp_max: number | "PPmax") {
     const new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     const liste_pnj = document.querySelector('#liste_pnj')!;

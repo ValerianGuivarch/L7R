@@ -358,6 +358,7 @@ function moinsPp(nompj: string) {
             console.error("error", e);
         });
 }
+
 function plusPp(nompj: string) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/true')
         .catch(function(e) {
