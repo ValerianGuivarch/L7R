@@ -106,7 +106,7 @@ function resist(elem: HTMLElement, action: RollType) {
     else {
         const new_pnj_name = char.querySelector(".name")!.innerHTML;
         const new_pnj_stat_value = parseInt(char.dataset[action.toLowerCase()]!);
-        jetPNJ(new_pnj_name, action, new_pnj_stat_value, char.querySelector<HTMLInputElement>('.use_pf')!.checked,char.querySelector<HTMLInputElement>('.use_pp')!.checked, char.querySelector<HTMLInputElement>('.use_ra')!.checked, char.querySelector<HTMLInputElement>('.use_sc')!.checked, char.querySelector<HTMLInputElement>('.use_dc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
+        jetPNJ(char, action, new_pnj_stat_value, char.querySelector<HTMLInputElement>('.use_pf')!.checked, char.querySelector<HTMLInputElement>('.use_pp')!.checked, char.querySelector<HTMLInputElement>('.use_ra')!.checked, char.querySelector<HTMLInputElement>('.use_sc')!.checked, char.querySelector<HTMLInputElement>('.use_dc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
     }
 }
 

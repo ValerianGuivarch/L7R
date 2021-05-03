@@ -79,7 +79,7 @@ function resist(elem, action) {
     else {
         var new_pnj_name = char.querySelector(".name").innerHTML;
         var new_pnj_stat_value = parseInt(char.dataset[action.toLowerCase()]);
-        jetPNJ(new_pnj_name, action, new_pnj_stat_value, char.querySelector('.use_pf').checked, char.querySelector('.use_pp').checked, char.querySelector('.use_ra').checked, char.querySelector('.use_sc').checked, char.querySelector('.use_dc').checked, elem.closest('.roll').dataset.rollid);
+        jetPNJ(char, action, new_pnj_stat_value, char.querySelector('.use_pf').checked, char.querySelector('.use_pp').checked, char.querySelector('.use_ra').checked, char.querySelector('.use_sc').checked, char.querySelector('.use_dc').checked, elem.closest('.roll').dataset.rollid);
     }
 }
 function jsonRollToHtml(roll, sub) {

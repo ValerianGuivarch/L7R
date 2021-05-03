@@ -94,14 +94,13 @@ function effacer_pnj(new_pnj_name: string) {
     pnj.parentElement?.removeChild(pnj);
 }
 
-function modifPNJ(pnj_name: string, stat: Stat, valeur: number) {
-    const mod = document.querySelector('#pnj_' + stat + '_' + pnj_name)!;
-    console.log('#pnj_' + stat + '_' + pnj_name)
-    console.log(valeur)
+function modifPNJ(pnjElement: HTMLElement, stat: Stat, valeur: number) {
+    const mod = pnjElement.querySelector("." + stat)!;
     mod.innerHTML = (parseInt(mod.innerHTML) + valeur).toString();
 }
 
-function jetPNJ(name: string, action: RollType, stat: number, pf: boolean, pp: boolean, ra: boolean, sec: boolean, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
+function jetPNJ(pnjElement: HTMLElement, action: RollType, stat: number, pf: boolean, pp: boolean, ra: boolean, sec: boolean, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
+    const name = pnjElement.querySelector(".name")!.innerHTML;
     const mal = parseInt(document.querySelector('#pnj_mal_' + name)!.innerHTML);
     const ben = parseInt(document.querySelector('#pnj_ben_' + name)!.innerHTML);
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
@@ -110,7 +109,7 @@ function jetPNJ(name: string, action: RollType, stat: number, pf: boolean, pp: b
         fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
             response.text().then(function(text) {
                 const degats = parseInt(text);
-                modifPNJ(name, "pv", degats * -1);
+                modifPNJ(pnjElement, "pv", degats * -1);
                 afficher("mj");
             });
         });
@@ -118,17 +117,17 @@ function jetPNJ(name: string, action: RollType, stat: number, pf: boolean, pp: b
         fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => afficher("mj"));
     }
     if(action == 'JM')
-        modifPNJ(name, 'dettes', 1);
+        modifPNJ(pnjElement, 'dettes', 1);
     if(pf)
-        modifPNJ(name, 'pf', -1);
+        modifPNJ(pnjElement, 'pf', -1);
     if(pp) {
-        modifPNJ(name, 'pp', -1);
-        modifPNJ(name, 'dettes', 1);
+        modifPNJ(pnjElement, 'pp', -1);
+        modifPNJ(pnjElement, 'dettes', 1);
     }
 }
 
 function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, new_pnj_stat_name: string, action: RollType) {
-    return '<button class="btn" onclick="jetPNJ(\'' + new_pnj_name + '\',\'' + action + '\',' + new_pnj_stat_value + ',document.getElementById(\'use_pf_' + new_pnj_name + '\').checked,document.getElementById(\'use_pp_' + new_pnj_name + '\').checked,document.getElementById(\'use_ra_' + new_pnj_name + '\').checked, document.getElementById(\'use_sc_' + new_pnj_name + '\').checked, document.getElementById(\'use_dc_' + new_pnj_name + '\').checked);">' + new_pnj_stat_name + '</button>'
+    return '<button class="btn" onclick="jetPNJ(this.closest(\'.pnj\'),\'' + action + '\',' + new_pnj_stat_value + ',this.closest(\'.pnj\').querySelector(\'.use_pf\').checked,this.closest(\'.pnj\').querySelector(\'.use_pp\').checked,this.closest(\'.pnj\').querySelector(\'.use_ra\').checked, this.closest(\'.pnj\').querySelector(\'.use_sc\').checked, this.closest(\'.pnj\').querySelector(\'.use_dc\').checked);">' + new_pnj_stat_name + '</button>'
 }
 
 function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: number | "PVmax", new_pnj_pf_max: number | "PFmax", new_pnj_pp_max: number | "PPmax") {
@@ -151,30 +150,30 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         + '<span><b class="name">' + new_pnj_name + '</b> : </span>'
         
         + '<span class="btn-group">'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',-1);" >-</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'pv\',-1);" >-</button>'
             + '<span class="btn btn-info">'
-                + 'PV = <span id="pnj_pv_' + new_pnj_name + '">' + new_pnj_pv_max
-                + '</span>/<span id="pj_pv_max_' + new_pnj_name + '">' + new_pnj_pv_max + '</span>'
+                + 'PV = <span class="pv" id="pnj_pv_' + new_pnj_name + '">' + new_pnj_pv_max
+                + '</span>/<span class="pv_max" id="pnj_pv_max_' + new_pnj_name + '">' + new_pnj_pv_max + '</span>'
             + '</span>'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pv\',1);" >+</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'pv\',1);" >+</button>'
         + '</span>'
         
         + '<span class="btn-group">'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',-1);" >-</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'pf\',-1);" >-</button>'
             + '<span class="btn btn-info">'
                 + '<input class="use_pf" id="use_pf_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
-                + 'PF: <span id="pnj_pf_' + new_pnj_name + '">' + new_pnj_pf_max + '</span>/' + new_pnj_pf_max
+                + 'PF: <span class="pf" id="pnj_pf_' + new_pnj_name + '">' + new_pnj_pf_max + '</span>/' + new_pnj_pf_max
             + '</span>'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pf\',1);" >+</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'pf\',1);" >+</button>'
         + '</span>'
 
         + '<span class="btn-group">'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',-1);" >-</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'pp\',-1);" >-</button>'
             + '<span class="btn btn-info">'
                 + '<input class="use_pp" id="use_pp_' + new_pnj_name + '" type="checkbox" autocomplete="off">'
-                + 'PP: <span id="pnj_pp_' + new_pnj_name + '">' + new_pnj_pp_max + '</span>/' + new_pnj_pp_max
+                + 'PP: <span class="pp" id="pnj_pp_' + new_pnj_name + '">' + new_pnj_pp_max + '</span>/' + new_pnj_pp_max
             + '</span>'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'pp\',1);" >+</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'pp\',1);" >+</button>'
         + '</span>'
 
         + '<label class="btn">'
@@ -195,22 +194,24 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         + createJetPnjTemplate(new_pnj_name, new_pnj_essence, "Magie", "JM")
         
         + '<span class="btn-group">'
-            + '<button class="btn btn-danger" onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',-1);" >-</button>'
+            + '<button class="btn btn-danger" onclick="modifPNJ(this.closest(\'.pnj\'),\'mal\',-1);" >-</button>'
             + '<span class="btn btn-outline-danger">Mal: <span id="pnj_mal_' + new_pnj_name + '">0</span></span>'
-            + '<button class="btn btn-danger" onclick="modifPNJ(\'' + new_pnj_name + '\',\'mal\',1);" >+</button> '
+            + '<button class="btn btn-danger" onclick="modifPNJ(this.closest(\'.pnj\'),\'mal\',1);" >+</button> '
         + '</span>'
         
         + '<span class="btn-group">'
-            + '<button class="btn btn-success" onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',-1);" >-</button>'
+            + '<button class="btn btn-success" onclick="modifPNJ(this.closest(\'.pnj\'),\'ben\',-1);" >-</button>'
             + '<span class="btn btn-outline-success">Ben: <span id="pnj_ben_' + new_pnj_name + '">0</span></span>'
-            + '<button class="btn btn-success" onclick="modifPNJ(\'' + new_pnj_name + '\',\'ben\',1);" >+</button> '
+            + '<button class="btn btn-success" onclick="modifPNJ(this.closest(\'.pnj\'),\'ben\',1);" >+</button> '
         + '</span>'
         
         + '<span class="btn-group">'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',-1);" >-</button>'
-            + '<span class="btn btn-info">Dettes: <span id="pnj_dettes_' + new_pnj_name + '">' + new_pnj_dettes + '</span></span>'
-            + '<button class="btn" onclick="modifPNJ(\'' + new_pnj_name + '\',\'dettes\',1);" >+</button>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'dettes\',-1);" >-</button>'
+            + '<span class="btn btn-info">Dettes: <span class="dettes" id="pnj_dettes_' + new_pnj_name + '">' + new_pnj_dettes + '</span></span>'
+            + '<button class="btn" onclick="modifPNJ(this.closest(\'.pnj\'),\'dettes\',1);" >+</button>'
         + '</span>'
+
+        + ' <input type="text" />'
 
         + '</div>'
 }
