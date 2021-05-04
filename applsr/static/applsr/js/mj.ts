@@ -184,8 +184,9 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         new_pnj_pp_max = new_pnj_essence;
     }
     
-    liste_pnj.innerHTML = liste_pnj.innerHTML
-        + '<div class="pnj" id="pnj_' + new_pnj_name + '" data-jc="' + new_pnj_chair + '" data-js="' + new_pnj_esprit + '" data-je="' + new_pnj_essence + '">'
+    
+    const pnjElement = document.createElement("div");
+    pnjElement.innerHTML = '<div class="pnj" id="pnj_' + new_pnj_name + '" data-jc="' + new_pnj_chair + '" data-js="' + new_pnj_esprit + '" data-je="' + new_pnj_essence + '">'
 
         + '<input type="radio" name="resist" />'
         + '<button class="btn btn-danger delete-npc" onclick="effacer_pnj(this.closest(\'.pnj\'));"> X </button>'
@@ -256,6 +257,8 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
         + ' <input type="text" />'
 
         + '</div>'
+
+        liste_pnj.appendChild(pnjElement.firstChild!);
 }
 
 function effacerLancersDes() {
