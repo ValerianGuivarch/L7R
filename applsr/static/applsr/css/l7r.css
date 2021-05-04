@@ -133,15 +133,15 @@ button input[type="checkbox"] {
   padding: 2px;
 }
 
-.pj-for-mj .line {
+.line {
   display: flex;
 }
 
-.pj-for-mj .line > *{
+.line > * {
   flex: 1;
 }
 
-.pj-for-mj .line > .btn:first-child, .pj-for-mj .line > .btn:last-child {
+.line > .btn:first-child, .line > .btn:last-child {
   flex: 0;
 }
 
@@ -178,4 +178,23 @@ button input[type="checkbox"] {
 
 .menu > *:last-child {
   border-right: none;
+}
+
+#liste_pj {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pc {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.pc .name {
+  font-weight: bold;
+}
+
+.pc .line {
+  display: flex;
 }

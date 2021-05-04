@@ -22,9 +22,8 @@
         <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
     </div>
 
-    <div class="pc">
-        <select id="pj-select" name="pj">
-            <option value="">Nom du PJ</option>
+    <div class="pc-menu">
+        PJ : <select id="pj-select">
             <option value="aurelien">aurelien</option>
             <option value="ayoub">ayoub</option>
             <option value="camille">camille</option>
@@ -46,7 +45,7 @@
         <button onclick="ajouter_pj(document.getElementById('pj-select').value)">Ajouter</button>
     </div>
 
-    <div class="npc">
+    <div class="npc-menu">
         <input id="new_pnj_name" size="2" type="text" placeholder="name">
         <input id="new_pnj_chair" size="2" type="text" placeholder="chair">
         <input id="new_pnj_esprit" size="2" type="text" placeholder="esprit">
@@ -64,9 +63,9 @@
 
 </div>
 
-<span id="liste_pj"></span>
+<div id="liste_pj"></div>
 
-<span id="liste_pnj"></span>
+<div id="liste_pnj"></div>
 
 <div id="chat"></div>
 

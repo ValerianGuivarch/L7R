@@ -1,9 +1,5 @@
 type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 
-let nbPJ = 0;
-let listPJ: string[] = [];
-let table = "";
-
 nompj = "mj";
 display_secret = true; // override value from lsr.js
 
@@ -23,65 +19,70 @@ document.addEventListener("DOMContentLoaded", () => {
 function modif(nom: string, stat: Stat, valeur: number, add: boolean) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function(e) {
         console.error("error", e);
-    }).then(() => afficher(nompj));
+    }).then(() => afficherPJ(nompj));
 }
 
 function ajouter_pj(name: string) {
-    let liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
-    table = table +
-        '<td align="center">' + '<span id="pj_name"><b>' + name + '</b></span>'
-        + '<div class="line"><i><span id="pj_fl_' + name + '"></span></i></div>'
-        + '<div class="line"><i><span id="pj_fu_' + name + '"></span></i></div>'
-        + '<div class="line"><i><span id="pj_fs_' + name + '"></span></i></div>'
+    const option = document.querySelector('#pj-select option[value="' + name + '"]');
+    option?.parentElement?.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
+
+    const pcElement = document.createElement("div");
+    pcElement.className = "pc";
+    pcElement.innerHTML = '<div class="name line">' + name + '</div>'
+        + '<div class="line"><i><span class="pj_fl" id="pj_fl_' + name + '">&nbsp;</span></i></div>'
+        + '<div class="line"><i><span class="pj_fu" id="pj_fu_' + name + '">&nbsp;</span></i></div>'
+        + '<div class="line"><i><span class="pj_fs" id="pj_fs_' + name + '">&nbsp;</span></i></div>'
         + '<div class="btn-group line">'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'pv\',1, false);" >-</button>'
-            + '<span class="btn btn-info">PV = <span id="pj_pv_' + name + '">3</span>/<span id="pj_pv_max_' + name + '">6</span></span>'
+            + '<span class="btn btn-info">PV = <span class="pj_pv" id="pj_pv_' + name + '">3</span>/<span class="pj_pv_max" id="pj_pv_max_' + name + '">6</span></span>'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'pv\',1, true);" >+</button>'
         + '</div>'
         + '<div class="btn-group line">'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'pf\',1, false);" >-</button>'
-            + '<span class="btn btn-info">PF = <span id="pj_pf_' + name + '">3</span>/<span id="pj_pf_max_' + name + '">6</span></span>'
+            + '<span class="btn btn-info">PF = <span class="pj_pf" id="pj_pf_' + name + '">3</span>/<span class="pj_pf_max" id="pj_pf_max_' + name + '">6</span></span>'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'pf\',1, true);" >+</button>'
         + '</div>'
         + '<div class="btn-group line">'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'pp\',1, false);" >-</button>'
-            + '<span class="btn btn-info">PP = <span id="pj_pp_' + name + '">3</span>/<span id="pj_pp_max_' + name + '">6</span></span>'
+            + '<span class="btn btn-info">PP = <span class="pj_pp" id="pj_pp_' + name + '">3</span>/<span class="pj_pp_max" id="pj_pp_max_' + name + '">6</span></span>'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'pp\',1, true);" >+</button>'
         + '</div>'
         + '<div class="btn-group line">'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'dettes\',1, false);" >-</button>'
-            + '<span class="btn btn-info">DT = <span id="pj_dettes_' + name + '">9</span></span>'
+            + '<span class="btn btn-info">DT = <span class="pj_dettes" id="pj_dettes_' + name + '">9</span></span>'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'dettes\',1, true);" >+</button>'
         + '</div>'
         + '<div class="btn-group line">'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'arcanes\',1, false);" >-</button>'
-            + '<span class="btn btn-info">AK = <span id="pj_arcanes_' + name + '">3</span>/<span id="pj_arcanes_max_' + name + '">6</span></span>'
+            + '<span class="btn btn-info">AK = <span class="pj_arcanes" id="pj_arcanes_' + name + '">3</span>/<span class="pj_arcanes_max" id="pj_arcanes_max_' + name + '">6</span></span>'
             + '<button class="btn" onclick="modif(\'' + name + '\',\'arcanes\',1, true);" >+</button>'
-        + '</div>'
-        + '</td>';
-    liste_pj.innerHTML = '<table class="pj-for-mj"><tr>' + table + '</tr></table>';
-    nbPJ++;
-    listPJ.push(name);
+        + '</div>';
+    const liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
+    liste_pj.appendChild(pcElement);
+    afficherPJ();
 }
 
 function afficherPJ() {
-    listPJ.forEach(function(name, index, array) {
+    const liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
+    liste_pj.childNodes.forEach(function(pcNode) {
+        const pcElement = pcNode as HTMLElement;
+        const name = pcElement.querySelector(".name")!.innerHTML;
         fetch('/lsr/getcar/' + name)
             .then((response) => response.text())
             .then(json => {
                 const obj = JSON.parse(json);
-                document.querySelector('#pj_pv_' + name)!.innerHTML = obj.point_de_vie;
-                document.querySelector('#pj_pv_max_' + name)!.innerHTML = obj.point_de_vie_max;
-                document.querySelector('#pj_pf_' + name)!.innerHTML = obj.point_de_focus;
-                document.querySelector('#pj_pf_max_' + name)!.innerHTML = obj.point_de_focus_max;
-                document.querySelector('#pj_pp_' + name)!.innerHTML = obj.point_de_pouvoir;
-                document.querySelector('#pj_pp_max_' + name)!.innerHTML = obj.point_de_pouvoir_max;
-                document.querySelector('#pj_dettes_' + name)!.innerHTML = obj.dettes;
-                document.querySelector('#pj_arcanes_' + name)!.innerHTML = obj.arcanes;
-                document.querySelector('#pj_arcanes_max_' + name)!.innerHTML = obj.arcanes_max;
-                document.querySelector('#pj_fl_' + name)!.innerHTML = obj.fl;
-                document.querySelector('#pj_fu_' + name)!.innerHTML = obj.fu;
-                document.querySelector('#pj_fs_' + name)!.innerHTML = obj.fs;
+                pcElement.querySelector('.pj_pv')!.innerHTML = obj.point_de_vie;
+                pcElement.querySelector('.pj_pv_max')!.innerHTML = obj.point_de_vie_max;
+                pcElement.querySelector('.pj_pf')!.innerHTML = obj.point_de_focus;
+                pcElement.querySelector('.pj_pf_max')!.innerHTML = obj.point_de_focus_max;
+                pcElement.querySelector('.pj_pp')!.innerHTML = obj.point_de_pouvoir;
+                pcElement.querySelector('.pj_pp_max')!.innerHTML = obj.point_de_pouvoir_max;
+                pcElement.querySelector('.pj_dettes')!.innerHTML = obj.dettes;
+                pcElement.querySelector('.pj_arcanes')!.innerHTML = obj.arcanes;
+                pcElement.querySelector('.pj_arcanes_max')!.innerHTML = obj.arcanes_max;
+                pcElement.querySelector('.pj_fl')!.innerHTML = obj.fl;
+                pcElement.querySelector('.pj_fu')!.innerHTML = obj.fu;
+                pcElement.querySelector('.pj_fs')!.innerHTML = obj.fs;
             }).catch(function(e) {
                 console.error("error", e);
             });
