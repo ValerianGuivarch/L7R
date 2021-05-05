@@ -819,7 +819,6 @@ def lsr(request, nom):
 
             # if form.is_valid():
             #    dice = lsr_js(form.cleaned_data['use_pf'], form.cleaned_data['use_pp'], nom, action)
-    print("!!!!!!!", char[0].element)
     context = {
         'car': char[0],
         'element': element_to_flavor(char[0].element),
@@ -892,4 +891,12 @@ def updatepj(request, nom, chair, esprit, essence, point_de_vie_max,point_de_foc
     return HttpResponse("")
 
 def list_characters(request):
-    return HttpResponse("list")
+    characters = Character.objects.all()
+    
+    template = loader.get_template('applsr/character_list.html')
+    characters_names = [c.name for c in characters if c.hidden == False]
+    print("!!!!", characters_names)
+    context = {
+        'characters_names': characters_names
+    }
+    return HttpResponse(template.render(context, request))
