@@ -605,6 +605,7 @@ def afficher(request, nom, secret):
 
 
 def lancer_empirique(request, nom, valeur, secret):
+    print("lancer_empirique", nom)
     is_secret = secret == "true"
     dices_string = ""
     if is_secret:
