@@ -1,7 +1,7 @@
 declare var nompj: string; // set in html
 
 type JEMP = `Jemp-${string}`;
-type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT'
+type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT'
     | JEMP;
 
 interface Roll {
@@ -34,9 +34,15 @@ function rollTypeToString(rollType: RollType) {
         return "lance un <i>Sort</i>";
     }
     else if(rollType == 'JAF') {
-        return "utilise une <i>Arcane Fixe</i>.";
+        return "utilise une <i>Arcane Fixe</i>";
     }
-    if(rollType == 'JC') {
+    else if(rollType == 'JAS') {
+        return "utilise une <i>Arcane d'Esprit</i>";
+    }
+    else if(rollType == 'JAE') {
+        return "utilise une <i>Arcane d'Essence</i>";
+    }
+    else if(rollType == 'JC') {
         return "fait un <i>jet de Chair</i>";
     }
     else if(rollType == 'JS') {
@@ -166,8 +172,19 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
             + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
     }
 
+    var success = 'et obtient <span title="Juge12: '
+        + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+        + ', Juge34: '
+        + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+        + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+        + " succès</span>"
+
     var roll_string = " ";
-    if(roll.hidden_dice == false || nompj == "mj") {
+    if(roll.roll_type == "JAF") {
+        roll_string = "";
+        success = "";
+    }
+    else if(roll.hidden_dice == false || nompj == "mj") {
         roll_string = " :<br />" + formatRollResults(roll.dice_results) + "<br />";
     }
 
@@ -183,9 +200,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         + rollTypeToString(roll.roll_type)
         + pp
         + roll_string
-        + 'et obtient <span title="Juge12: ' + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + ', Juge34: ' + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
-        + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-        + " succès</span>"
+        
         + ra
         + "."
         + resist
