@@ -135,6 +135,7 @@ button input[type="checkbox"] {
 
 .line {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .line > * {
