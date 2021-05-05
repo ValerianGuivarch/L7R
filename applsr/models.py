@@ -28,23 +28,12 @@ class Character(models.Model):
     fl = models.CharField(max_length=255, default="")
     fu = models.CharField(max_length=255, default="")
     fs = models.CharField(max_length=255, default="")
+    force1 = models.CharField(max_length=255, default="")
+    force2 = models.CharField(max_length=255, default="")
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{}-{} niv. {} ({}-{}-{}) - pv= {}/{} - pf= {}/{} - pp= {}/{} - dettes = {} - arcanes = {}/{}'.format(self.name,
-                                                                                                             self.element,
-                                                                                                             self.niveau,
-                                                                                                             self.chair,
-                                                                                                             self.esprit,
-                                                                                                             self.essence,
-                                                                                                             self.point_de_vie,
-                                                                                                             self.point_de_vie_max,
-                                                                                                             self.point_de_focus,
-                                                                                                             self.point_de_focus_max,
-                                                                                                             self.point_de_pouvoir,
-                                                                                                             self.point_de_pouvoir_max,
-                                                                                                             self.dettes,
-                                                                                                             self.arcanes,
-                                                                                                             self.arcanes_max)
+        return '{}-{} niv. {} ({}-{}-{}) - pv= {}/{} - pf= {}/{} - pp= {}/{} - dettes = {} - arcanes = {}/{}'.format(self.name, self.element, self.niveau, self.chair, self.esprit, self.essence, self.point_de_vie, self.point_de_vie_max, self.point_de_focus, self.point_de_focus_max, self.point_de_pouvoir, self.point_de_pouvoir_max, self.dettes, self.arcanes, self.arcanes_max)
 
 
 class DiceRoll(models.Model):

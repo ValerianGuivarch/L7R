@@ -46,6 +46,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin/', admin.site.urls),
     path('mj_interdit_aux_joueurs/', applsr_views.mj),
+    path('lsr/', applsr_views.list_characters),
     path('lsr/<str:nom>', applsr_views.lsr, name='lsr'),
     path('afficher/<str:nom>/<str:secret>', applsr_views.afficher),
     path('mj_interdit_aux_joueurs/effacerLancersDes', applsr_views.effacer_lancers_des),

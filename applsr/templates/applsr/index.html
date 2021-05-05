@@ -20,38 +20,7 @@
     <script src="{% static 'applsr/js/lsr.js' %}"></script>
 
     <div class="container">
-        <h4 class="text-center"><b>{{ car.name|title }}</b> -
-            {% if car.element == "glace" %}
-            Champion de la Glace
-            {% elif car.element == "eau" %}
-            Champion de l'Eau
-            {% elif car.element == "feu" %}
-            Championne du Feu
-            {% elif car.element == "ombre" %}
-            Champion des Ombres
-            {% elif car.element == "vent" %}
-            Champion.ne du Vent
-            {% elif car.element == "terre" %}
-            Champion de la Terre
-            {% elif car.element == "foudre" %}
-            Championne de la Foudre
-            {% elif car.element == "lumiere" %}
-            Champion de la Lumière
-            {% elif car.element == "lion" %}
-            Rejeté du Lion
-            {% elif car.element == "deva" %}
-            Rejeté deva
-            {% elif car.element == "illithid" %}
-            Rejeté illithid
-            {% elif car.element == "arbre" %}
-            Arcane de l'Arbre
-            {% elif car.element == "pacificateur" %}
-            Pacificateur Atlantéen
-            {% elif car.element == "spirite" %}
-            Spirite
-            {% else %}
-            Rejeté de la Gorgonne
-            {% endif %}
+        <h4 class="text-center"><b>{{ car.name|title }}</b> - {{ element }}
             niv. {{ car.niveau }}
         </h4>
 
@@ -59,7 +28,7 @@
             <tr>
                 <td rowspan="4">
                     {% with 'applsr/'|add:car.name|add:".png" as filepath %}
-                    <img alt="Ce PJ n'existe pas !" class="figure-img img-fluid rounded" src="{% static filepath %}" style="width:100px; height:auto" />
+                    <img alt="Ce PJ n'a pas d'image" class="figure-img img-fluid rounded" src="{% static filepath %}" style="width:100px; height:auto" />
                     {% endwith %}
                 </td>
             </tr>
@@ -165,37 +134,9 @@
                     <span class="btn">
                         <input autocomplete="off" id="use_ra" type="checkbox" />
                         {% if car.niveau <= 13 %}
-                            {% if car.element == "glace" %} Ruse
-                            {% elif car.element == "feu" %} Séduction
-                            {% elif car.element == "ombre" %} Discrétion
-                            {% elif car.element == "vent" %} Adresse
-                            {% elif car.element == "terre" %} Force
-                            {% elif car.element == "foudre" %} Sagacité
-                            {% elif car.element == "lumiere" %} Tenacité
-                            {% elif car.element == "eau" %} Observatio
-                            {% elif car.element == "arbre" %} Nature
-                            {% elif car.element == "lion" %} Perception
-                            {% elif car.element == "illithid" %} Détection de mensonge
-                            {% elif car.element == "deva" %} Chaos
-                            {% elif car.element == "pacificateur" %} Résistance magique
-                            {% else %} Intimidation
-                            {% endif %}
+                            {{ force1 }}
                         {% else %}
-                            {% if car.element == "glace" %} Ruse / Self-contrôle
-                            {% elif car.element == "feu" %} Séduction / Folie
-                            {% elif car.element == "ombre" %} Discrétion / Empathie
-                            {% elif car.element == "vent" %} Adresse / Vitess
-                            {% elif car.element == "terre" %} Force / Stratégie
-                            {% elif car.element == "foudre" %} Sagacité / Autorité
-                            {% elif car.element == "lumiere" %} Tenacité / Inspiration
-                            {% elif car.element == "eau" %} Observation / Apaisement
-                            {% elif car.element == "arbre" %} Nature
-                            {% elif car.element == "lion" %} Perception
-                            {% elif car.element == "illithid" %} Détection de mensonge
-                            {% elif car.element == "deva" %} Chaos
-                            {% elif car.element == "pacificateur" %} Résistance magique
-                            {% else %} Intimidation / Perception Essence
-                            {% endif %}
+                            {{ force1 }} / {{ force2 }}
                         {% endif %}
                     </span>
                 </label>

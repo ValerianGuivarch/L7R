@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Les Sept Rois - la Guerre des Ombres</title>
+    <link href="{% static 'applsr/css/l7r.css' %}" rel="stylesheet">
+</head>
+
+<body class="pc-page">
+    {% for name in characters_names %}
+        <p><a href="{{ name }}">{{ name }}</a></p>
+    {% endfor %}
+</body>
+
+</html>
