@@ -28,6 +28,8 @@ class Character(models.Model):
     fl = models.CharField(max_length=255, default="")
     fu = models.CharField(max_length=255, default="")
     fs = models.CharField(max_length=255, default="")
+    force1 = models.CharField(max_length=255, default="")
+    force2 = models.CharField(max_length=255, default="")
 
     def __str__(self):
         return '{}-{} niv. {} ({}-{}-{}) - pv= {}/{} - pf= {}/{} - pp= {}/{} - dettes = {} - arcanes = {}/{}'.format(self.name,

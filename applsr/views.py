@@ -240,16 +240,12 @@ def getvik(request, nom):
         car.point_de_vie_max) + ',"point_de_pouvoir":' + str(car.point_de_pouvoir) + '}'
     return HttpResponse(json)
 
-
-
-
 def mj(request):
     template = loader.get_template('applsr/mj.html')
     context = {
 
     }
     return HttpResponse((template.render(context, request)))
-
 
 def masterwords(request, role):
     template = loader.get_template('applsr/masterwords.html')
@@ -327,6 +323,41 @@ def afficher_mw(request):
     return HttpResponse(info)
 
 # L7R
+
+
+def element_to_flavor(element):
+    if element == "glace":
+        return "Champion de la Glace"
+    elif element == "eau":
+        return "Champion de l'Eau"
+    elif element == "feu":
+        return "Championne du Feu"
+    elif element == "ombre":
+        return "Champion des Ombres"
+    elif element == "vent":
+        return "Champion.ne du Vent"
+    elif element == "terre":
+        return "Champion de la Terre"
+    elif element == "foudre":
+        return "Championne de la Foudre"
+    elif element == "lumiere":
+        return "Champion de la Lumière"
+    elif element == "lion":
+        return "Rejeté du Lion"
+    elif element == "deva":
+        return "Rejeté deva"
+    elif element == "illithid":
+        return "Rejeté illithid"
+    elif element == "arbre":
+        return "Arcane de l'Arbre"
+    elif element == "pacificateur":
+        return "Pacificateur Atlantéen"
+    elif element == "spirite":
+        return "Spirite"
+    elif element == "gorgonne":
+        return "Rejeté de la Gorgonne"
+    else:
+        return "Heros de " + element
 
 def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0, parent_roll_id=None):
     dices = []
@@ -575,6 +606,7 @@ def rollResultToDict(rollResult, computeRelated=True):
 
     return roll
 
+
 def afficher(request, nom, secret):
     is_secret = (secret == "true")
     today = datetime.now().date()
@@ -709,6 +741,7 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
 
     return HttpResponse(dice)
 
+
 def lancer_pnj(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_caches, opposition):
     parent_roll_id = None
     if "parent_roll_id" in request.GET and request.GET["parent_roll_id"] != "null":
@@ -734,6 +767,7 @@ def lancer_pnj(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_cac
 
     return HttpResponse(dice)
 
+
 def lancer_pnj2(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_caches):
     use_pf = pf == "true"
     use_pp = pp == "true"
@@ -755,9 +789,9 @@ def lancer_pnj2(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_ca
 
     return HttpResponse(dice)
 
+
 def lsr(request, nom):
     template = loader.get_template('applsr/index.html')
-
     char = Character.objects.filter(name=nom)
     if char.count() == 1:
         if request.method == 'POST':
@@ -785,8 +819,12 @@ def lsr(request, nom):
 
             # if form.is_valid():
             #    dice = lsr_js(form.cleaned_data['use_pf'], form.cleaned_data['use_pp'], nom, action)
+    print("!!!!!!!", char[0].element)
     context = {
         'car': char[0],
+        'element': element_to_flavor(char[0].element),
+        'force1': char[0].force1,
+        'force2': char[0].force2,
     }
     return HttpResponse(template.render(context, request))
 
@@ -852,3 +890,6 @@ def updatepj(request, nom, chair, esprit, essence, point_de_vie_max,point_de_foc
     char.update(niveau=niveau)
 
     return HttpResponse("")
+
+def list_characters(request):
+    return HttpResponse("list")
