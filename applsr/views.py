@@ -242,8 +242,10 @@ def getvik(request, nom):
 
 def mj(request):
     template = loader.get_template('applsr/mj.html')
+    characters = Character.objects.all().order_by('name')
+    characters_names = [c.name for c in characters]
     context = {
-
+        'characters_names': characters_names
     }
     return HttpResponse((template.render(context, request)))
 
@@ -890,9 +892,8 @@ def updatepj(request, nom, chair, esprit, essence, point_de_vie_max,point_de_foc
     return HttpResponse("")
 
 def list_characters(request):
-    characters = Character.objects.all()
-    
     template = loader.get_template('applsr/character_list.html')
+    characters = Character.objects.all()
     characters_names = [c.name for c in characters if c.hidden == False]
     context = {
         'characters_names': characters_names

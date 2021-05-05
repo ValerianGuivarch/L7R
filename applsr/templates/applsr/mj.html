@@ -24,22 +24,9 @@
 
     <div class="pc-menu">
         PJ : <select id="pj-select">
-            <option value="aurelien">aurelien</option>
-            <option value="ayoub">ayoub</option>
-            <option value="camille">camille</option>
-            <option value="cora">cora</option>
-            <option value="deirdre">deirdre</option>
-            <option value="gertrude">gertrude</option>
-            <option value="isycho">isycho</option>O
-            <option value="john">john</option>
-            <option value="jonathan">jonathan</option>
-            <option value="kyma">kyma</option>
-            <option value="mathieu">mathieu</option>
-            <option value="roger">roger</option>
-            <option value="roy">roy</option>
-            <option value="tara">tara</option>
-            <option value="tibo">tibo</option>
-            <option value="viktor">viktor</option>
+            {% for name in characters_names %}
+            <option value="{{ name }}">{{ name }}</option>
+            {% endfor %}
         </select>
 
         <button onclick="ajouter_pj(document.getElementById('pj-select').value)">Ajouter</button>
