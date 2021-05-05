@@ -198,3 +198,12 @@ button input[type="checkbox"] {
 .pc .line {
   display: flex;
 }
+
+.pc-page .line {
+  justify-content: center;
+}
+
+.pc-page .line > * {
+  flex: initial;
+  margin-right: 0.3rem;
+}
