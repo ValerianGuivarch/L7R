@@ -208,3 +208,14 @@ button input[type="checkbox"] {
   flex: initial;
   margin-right: 0.3rem;
 }
+
+.btn.minmax {
+  display: none;
+}
+
+body.show-minmax .btn.minmax {
+  display: initial;
+  background-color: #dc3545;
+  border-color: #dc3545;
+  padding: 0.1rem;
+}
