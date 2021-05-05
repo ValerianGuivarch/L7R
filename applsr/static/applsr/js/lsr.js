@@ -236,7 +236,7 @@ function loadLancerEmpirique(nompj, secret) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
     fetch('/lancer_empirique/' + nompj + '/' + valeur + '/' + secret).catch(function (e) {
         console.error("error", e);
-    });
+    }).then(function () { return afficher(nompj); });
 }
 var malus = 0;
 var bonus = 0;
@@ -262,64 +262,74 @@ function plusBonus() {
 }
 function moinsPv(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/false')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function plusPv(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/true')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function moinsAk(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/false')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function plusAk(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/true')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function moinsDt(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/false')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function plusDt(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/true')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function moinsPf(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/false')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function plusPf(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/true')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function moinsPp(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/false')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function plusPp(nompj) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/true')
+        .then(function () { return getCar(nompj); })
         .catch(function (e) {
         console.error("error", e);
     });
 }
 function loadLancerJdSvM(name) {
-    fetch('/lancer_empirique/' + name + '/1d20/true');
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return getCar(nompj); });
 }

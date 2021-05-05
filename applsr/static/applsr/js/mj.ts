@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function modif(nom: string, stat: Stat, valeur: number, add: boolean) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function(e) {
         console.error("error", e);
-    }).then(() => afficherPJ(nompj));
+    }).then(() => afficherPJ());
 }
 
 function ajouter_pj(name: string) {
