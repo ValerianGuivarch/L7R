@@ -637,7 +637,6 @@ def afficher(request, nom, secret):
 
 
 def lancer_empirique(request, nom, valeur, secret):
-    print("lancer_empirique", nom)
     is_secret = secret == "true"
     dices_string = ""
     if is_secret:
@@ -895,7 +894,6 @@ def list_characters(request):
     
     template = loader.get_template('applsr/character_list.html')
     characters_names = [c.name for c in characters if c.hidden == False]
-    print("!!!!", characters_names)
     context = {
         'characters_names': characters_names
     }
