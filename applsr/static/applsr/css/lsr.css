@@ -65,7 +65,7 @@ body {
 .character > * {
   display: flex;
   width: 100%;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -174,10 +174,10 @@ body {
 }
 .roller .group > * {
   flex: content;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
 }
 
-.pc-page2 .minus-max, .pc-page2 .plus-max, .pc-page2 .edit, .pc-page2 .curse2 button, .pc-page2 .curse2 .enabled {
+.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled, .pc-page .notes, .pc-page .level button {
   display: none;
 }
 
