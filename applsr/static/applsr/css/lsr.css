@@ -59,10 +59,27 @@
 .character .main {
   flex: content;
 }
+.character .label:empty {
+  display: none;
+}
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
   display: flex;
   justify-content: space-between;
+}
+.name .logo img, .title .logo img, .level .logo img, .lux .logo img, .umbra .logo img, .secunda .logo img, .flesh .logo img, .spirit .logo img, .essence .logo img, .hp .logo img, .debt .logo img, .arcana .logo img, .focus .logo img, .power .logo img, .curse .logo img, .curse2 .logo img, .blessing .logo img {
+  height: 1.5rem;
+}
+.name > *, .title > *, .level > *, .lux > *, .umbra > *, .secunda > *, .flesh > *, .spirit > *, .essence > *, .hp > *, .debt > *, .arcana > *, .focus > *, .power > *, .curse > *, .curse2 > *, .blessing > * {
+  background-color: #67c2d0;
+  color: white;
+  flex-grow: 1;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+}
+.name > button, .title > button, .level > button, .lux > button, .umbra > button, .secunda > button, .flesh > button, .spirit > button, .essence > button, .hp > button, .debt > button, .arcana > button, .focus > button, .power > button, .curse > button, .curse2 > button, .blessing > button {
+  flex-grow: 0;
 }
 .name > button:first-child, .title > button:first-child, .level > button:first-child, .lux > button:first-child, .umbra > button:first-child, .secunda > button:first-child, .flesh > button:first-child, .spirit > button:first-child, .essence > button:first-child, .hp > button:first-child, .debt > button:first-child, .arcana > button:first-child, .focus > button:first-child, .power > button:first-child, .curse > button:first-child, .curse2 > button:first-child, .blessing > button:first-child {
   border-radius: 0.25rem;

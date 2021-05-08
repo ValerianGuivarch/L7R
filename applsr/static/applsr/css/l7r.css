@@ -36,15 +36,6 @@ body {
   margin-bottom: 0.4rem;
 }
 
-input[type="checkbox"] {
-  margin: 0;
-  vertical-align: middle;
-}
-
-button input[type="checkbox"] {
-  vertical-align: baseline;
-}
-
 #chat td {
   padding: 0 0.5rem;
 }

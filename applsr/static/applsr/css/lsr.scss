@@ -125,13 +125,28 @@
   .main {
     flex: content;
   }
+  .label:empty {
+    display: none;
+  }
 }
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
   display: flex;
   justify-content: space-between;
+  .logo img {
+    height: 1.5rem;
+  }
+  & > * {
+    background-color: #67c2d0;
+    color: white;
+    flex-grow: 1;
+    padding: 0.2rem; // like the buttons
+    display: flex;
+    align-items: center;
+  }
   & > button {
     @extend .button;
+    flex-grow: 0;
   }
   & > button:first-child {
     border-radius: .25rem;

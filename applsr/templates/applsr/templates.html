@@ -1,3 +1,5 @@
+{% load static %}
+
 <div class="templates" style="display: none;">
     <div class="character">
         <div class="summary">
@@ -23,18 +25,27 @@
             <div class="abilities">
                 <div class="flesh" title="Chair">
                     <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                    <span class="logo">
+                        {% with 'applsr/'|add:"chair.png" as filepath %}<img alt="chair" src="{% static filepath %}" />{% endwith %}
+                    </span>
                     <span class="label">Chair :</span>
                     <span class="current">1</span>
                     <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
                 </div>
                 <div class="spirit" title="Esprit">
                     <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                    <span class="logo">
+                        {% with 'applsr/'|add:"esprit.png" as filepath %}<img alt="chair" src="{% static filepath %}" />{% endwith %}
+                    </span>
                     <span class="label">Esprit :</span>
                     <span class="current">1</span>
                     <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
                 </div>
                 <div class="essence" title="Essence">
                     <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                    <span class="logo">
+                        {% with 'applsr/'|add:"essence.png" as filepath %}<img alt="chair" src="{% static filepath %}" />{% endwith %}
+                    </span>
                     <span class="label">Essence :</span>
                     <span class="current">1</span>
                     <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
