@@ -217,17 +217,18 @@ body {
   .logo img {
     height: 1.5rem;
   }
+  .current {
+    flex-grow: 1;
+  }
   & > * {
     background-color: #67c2d0;
     color: white;
-    flex-grow: 1;
     padding: 0.2rem; // like the buttons
     display: flex;
     align-items: center;
   }
   & > button {
     @extend .button;
-    flex-grow: 0;
   }
   & > button:first-child {
     border-radius: .25rem;
