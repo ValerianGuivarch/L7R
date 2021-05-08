@@ -1,25 +1,47 @@
-.ability, .flesh, .spirit, .essence {
+.flesh input[type=text], .spirit input[type=text], .essence input[type=text], .hp input[type=text], .debt input[type=text], .arcana input[type=text], .focus input[type=text], .power input[type=text], .curse input[type=text], .blessing input[type=text], .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  color: #212529;
+}
+
+.roller button {
+  display: inline-block;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid;
+  line-height: 1.5;
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  padding: 0.2rem 0.7rem;
+  transition: background-color 1000ms linear, border-color 1000ms linear;
+}
+
+.flesh, .spirit, .essence {
   background-color: red;
 }
 
-.stat, .hp, .focus, .power {
+.hp, .focus, .power {
   background-color: green;
 }
 
-.flavor, .lux, .umbra, .secunda {
+.lux, .umbra, .secunda {
   background-color: yellow;
 }
 
-.bonus, .curse, .blessing {
+.curse, .blessing {
   background-color: blueviolet;
 }
 
-.options, .proficiency, .secret {
+.proficiency, .secret {
   background-color: pink;
 }
 
-.input-as-text, .character input[type=text] {
-  background-color: blue;
+.flesh input[type=text], .spirit input[type=text], .essence input[type=text], .hp input[type=text], .debt input[type=text], .arcana input[type=text], .focus input[type=text], .power input[type=text], .curse input[type=text], .blessing input[type=text], .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
+  border: none;
+  width: 100%;
+  background-color: transparent;
 }
 
 .notes {
@@ -32,6 +54,75 @@
 
 .arcana {
   background-color: chartreuse;
+}
+
+.text-container {
+  display: inline-block;
+}
+
+.flesh input[type=text].current, .spirit input[type=text].current, .essence input[type=text].current, .hp input[type=text].current, .debt input[type=text].current, .arcana input[type=text].current, .focus input[type=text].current, .power input[type=text].current, .curse input[type=text].current, .blessing input[type=text].current {
+  text-align: right;
+  width: 1em;
+}
+
+.lux input[type=text], .secunda input[type=text], .umbra input[type=text] {
+  width: 10em;
+}
+
+.character {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.character > * {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1em;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.character > * > * {
+  margin-right: 1em;
+}
+.character .main {
+  flex: content;
+}
+
+.character .abilities, .character .story {
+  flex-direction: column;
+}
+
+.character .notes {
+  flex-basis: 100%;
+  display: block;
+}
+.character .notes > * {
+  display: block;
+  width: 100%;
+}
+.character .notes textarea {
+  height: 5em;
+}
+
+.roller {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.roller button {
+  margin: 0 0.5rem;
+}
+.roller .group {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.roller .group > * {
+  flex: content;
+  margin-bottom: 1em;
 }
 
 /*# sourceMappingURL=lsr.css.map */

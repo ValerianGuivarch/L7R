@@ -1,88 +1,136 @@
-<div class="templates">
+<div class="templates" style="display: none;">
     <div class="character">
-        <div class="flesh" title="Chair">
-            <span class="label">Chair :</span>
-            <input type="text" class="current" placeholder="chair" value="?" />
-        </div>
-        <div class="spirit" title="Esprit">
-            <span class="label">Esprit :</span>
-            <input type="text" class="current" placeholder="esprit" value="?" />
-        </div>
-        <div class="essence" title="Essence">
-            <span class="label">Essence :</span>
-            <input type="text" class="current" placeholder="essence" value="?" />
+        <div class="summary">
+            <span class="name">Name</span>
+            <span class="title">Champion de truc</span>
+            <span class="level">niv. 3</span>
         </div>
 
-        <div class="lux" title="Lux">
-            <span class="label">Lux :</span>
-            <input type="text" placeholder="lux" />
+        <div class="main">
+            <div class="portrait">Portait</div>
+
+            <div class="abilities">
+                <div class="flesh" title="Chair">
+                    <span class="label">Chair :</span>
+                    <span class="current">1</span>
+                </div>
+                <div class="spirit" title="Esprit">
+                    <span class="label">Esprit :</span>
+                    <span class="current">1</span>
+                </div>
+                <div class="essence" title="Essence">
+                    <span class="label">Essence :</span>
+                    <span class="current">1</span>
+                </div>
+            </div>
+
+            <div class="story">
+                <div class="lux" title="Lux">
+                    <span class="label">Lux :</span>
+                    <span class="current">lux</span>
+                </div>
+                <div class="umbra" title="Umbra">
+                    <span class="label">Umbra :</span>
+                    <span class="current">umbra</span>
+                </div>
+                <div class="secunda" title="Secunda">
+                    <span class="label">Secunda :</span>
+                    <span class="current">secunda</span>
+                </div>
+            </div>
+
         </div>
-        <div class="umbra" title="Umbra">
-            <span class="label">Umbra :</span>
-            <input type="text" placeholder="umbra"/>
+
+        <div class="hp-debt-arcana">
+            <div class="hp" title="Points de vie">
+                <span class="label">PV :</span>
+                <span class="current">1</span>
+                <span class="sep">/</span>
+                <span class="max">?</span>
+            </div>
+            <div class="debt" title="Dettes">
+                <span class="label">Dettes :</span>
+                <span class="current">1</span>
+            </div>
+            <div class="arcana">
+                <span class="label">Arcanes :</span>
+                <span class="current">1</span>
+                <span class="sep">/</span>
+                <span class="max">?</span>
+            </div>
         </div>
-        <div class="secunda" title="Secunda">
-            <span class="label">Secunda :</span>
-            <input type="text" placeholder="secunda"/>
+
+        <div class="boosts">
+            <div class="focus" title="Points de focus">
+                <span class="enabled">
+                    <input type="checkbox" />
+                </span>
+                <span class="label">PF :</span>
+                <span class="current">1</span>
+                <span class="sep">/</span>
+                <span class="max">?</span>
+            </div>
+            <div class="power" title="Points de pouvoir">
+                <span class="enabled">
+                    <input type="checkbox" />
+                </span>
+                <span class="label">PP :</span>
+                <span class="current">1</span>
+                <span class="sep">/</span>
+                <span class="max">?</span>
+            </div>
+        </div>
+
+        <div class="graces">
+            <div class="curse" title="Malédiction">
+                <span class="label">Malédictions :</span>
+                <span class="current">1</span>
+                <span class="bonus">2</span>
+            </div>
+            <div class="blessing" title="Bénédiction">
+                <span class="label">Bénédiction :</span>
+                <span class="current">1</span>
+            </div>
+        </div>
+
+        <div class="options">
+            <div class="proficiency" title="">
+                <span class="enabled">
+                    <input type="checkbox" />
+                </span>
+                <span class="label">proficiency</span>
+            </div>
+
+            <div class="secret" title="Seul le MJ verra vos lancers">
+                <span class="enabled">
+                    <input type="checkbox" />
+                </span>
+                <span class="label">Secret</span>
+            </div>
         </div>
 
         <div class="notes" title="Notes">
-            <input type="text" placeholder="notes" />
+            <span class="label">Notes :</span>
+            <textarea placeholder="notes"></textarea>
         </div>
+    </div>
 
-        <div class="hp" title="Points de vie">
-            <span class="label">PV :</span>
-            <input type="text" class="current" value="?" />
-            <span class="sep">/</span>
-            <span class="max">?</span>
+    <div class="roller">
+        <div class="group">
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="flesh">Jet de Chair</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="spirit">Jet d'Esprit</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="essence">Jet d'Essence</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="death">Mort</button>
         </div>
-        <div class="debt" title="Dettes">
-            <span class="label">Dettes :</span>
-            <input type="text" class="current" value="?" />
+        <div class="group">
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="magic">Jet de Magie</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="heal">Jet de Soin</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="empirical">Jet Empirique</button>
         </div>
-        <div class="arcana">
-            <span class="label">Arcanes :</span>
-            <input type="text" class="current" value="?" />
-            <span class="sep">/</span>
-            <span class="max">?</span>
-        </div>
-        <div class="focus" title="Points de focus">
-            <span class="enabled">
-                <input type="checkbox" />
-            </span>
-            <span class="label">PF :</span>
-            <input type="text" class="current" value="?" />
-            <span class="sep">/</span>
-            <span class="max">?</span>
-        </div>
-        <div class="power" title="Points de pouvoir">
-            <span class="enabled">
-                <input type="checkbox" />
-            </span>
-            <span class="label">PP :</span>
-            <input type="text" class="current" value="?" />
-            <span class="sep">/</span>
-            <span class="max">?</span>
-        </div>
-        <div class="curse" title="Malédiction">
-            <input type="text" class="current" value="?" />
-            <input type="text" class="fromhp" value="?" />
-        </div>
-        <div class="blessing" title="Bénédiction">
-            <input type="text" class="current" value="?" />
-        </div>
-
-        <div class="proficiency" title="">
-            <span class="enabled">
-                <input type="checkbox" />
-            </span>
-            <span class="label">proficiency</span>
-        </div>
-        <div class="secret" title="Seul le MJ verra vos lancers">
-            <span class="enabled">
-                <input type="checkbox" />
-            </span>
-            <span class="label">Secret</span>
+        <div class="group">
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="arcana">Arcane Fixe</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="arcana-spirit">Arcane d'Esprit</button>
+            <button onclick="getCharacter(this).autoRoll(this);" data-roll="arcana-essence">Arcane d'Essence</button>
         </div>
     </div>
 </div>
