@@ -1,0 +1,62 @@
+// Generic styles
+.ability {
+  background-color: red;
+}
+
+.stat {
+  background-color: green;
+}
+
+.flavor {
+  background-color: yellow;
+}
+
+.bonus {
+  background-color: blueviolet;
+}
+
+.options {
+  background-color: pink;
+}
+
+.input-as-text {
+  background-color: blue;
+}
+
+// Actual styles
+
+.flesh, .spirit, .essence {
+  @extend .ability;
+}
+
+.hp, .focus, .power {
+  @extend .stat;
+}
+
+.lux, .umbra, .secunda {
+  @extend .flavor;
+}
+
+.notes {
+  background-color: aqua;
+}
+
+.curse, .blessing {
+  @extend .bonus;
+}
+
+.debt {
+  background-color: darkorange;
+}
+
+.proficiency, .secret {
+  @extend .options;
+}
+
+.arcana {
+  background-color: chartreuse;
+}
+
+.character input[type="text"] {
+  @extend .input-as-text;
+}

@@ -1,0 +1,37 @@
+.ability, .flesh, .spirit, .essence {
+  background-color: red;
+}
+
+.stat, .hp, .focus, .power {
+  background-color: green;
+}
+
+.flavor, .lux, .umbra, .secunda {
+  background-color: yellow;
+}
+
+.bonus, .curse, .blessing {
+  background-color: blueviolet;
+}
+
+.options, .proficiency, .secret {
+  background-color: pink;
+}
+
+.input-as-text, .character input[type=text] {
+  background-color: blue;
+}
+
+.notes {
+  background-color: aqua;
+}
+
+.debt {
+  background-color: darkorange;
+}
+
+.arcana {
+  background-color: chartreuse;
+}
+
+/*# sourceMappingURL=lsr.css.map */
