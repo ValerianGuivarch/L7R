@@ -94,6 +94,9 @@
   flex-direction: column;
 }
 
+.character .name::first-letter {
+  text-transform: capitalize;
+}
 .character .notes {
   flex-basis: 100%;
   display: block;
@@ -123,6 +126,10 @@
 .roller .group > * {
   flex: content;
   margin-bottom: 1em;
+}
+
+.pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
+  display: none;
 }
 
 /*# sourceMappingURL=lsr.css.map */

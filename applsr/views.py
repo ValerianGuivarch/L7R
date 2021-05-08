@@ -869,14 +869,30 @@ def modifs_valeurs(request, nom, stat, valeur, add):
 
 def getcar(request, nom):
     car = Character.objects.all().filter(name=nom)[0]
-    json = '{"name":"' + car.name + '","chair":' + str(car.chair) + ',"esprit":' + str(
-        car.esprit) + ',"essence":' + str(car.essence) + ',"point_de_vie":' + str(
-        car.point_de_vie) + ',"point_de_vie_max":' + str(car.point_de_vie_max) \
-           + ',"point_de_focus":' + str(car.point_de_focus) + ',"point_de_focus_max":' + str(
-        car.point_de_focus_max) + ',"point_de_pouvoir":' + str(car.point_de_pouvoir) + ',"point_de_pouvoir_max":' + str(
-        car.point_de_pouvoir_max) + ',"dettes":' + str(car.dettes) + ',"arcanes":' + str(car.arcanes) + ',"arcanes_max":' + str(
-        car.arcanes_max) + ',"fl":"' + car.fl + '","fu":"' + car.fu + '","fs":"' + car.fs + '"}'
-    return HttpResponse(json)
+    data = {
+        "name": car.name,
+        "chair": car.chair,
+        "esprit": car.esprit,
+        "essence": car.essence,
+        "point_de_vie": car.point_de_vie,
+        "point_de_vie_max": car.point_de_vie_max,
+        "point_de_focus": car.point_de_focus,
+        "point_de_focus_max": car.point_de_focus_max,
+        "point_de_pouvoir": car.point_de_pouvoir,
+        "point_de_pouvoir_max": car.point_de_pouvoir_max,
+        "dettes": car.dettes,
+        "arcanes": car.arcanes,
+        "arcanes_max": car.arcanes_max,
+        "niveau": car.niveau,
+        "fl": car.fl,
+        "fu": car.fu,
+        "fs": car.fs,
+        "force1": car.force1,
+        "force2": car.force2 if car.niveau >= 13 else None,
+        "element": car.element,
+        "titre": element_to_flavor(car.element)
+    }
+    return JsonResponse(data, encoder=ExtendedEncoder, safe=False)
 
 
 def updatepj(request, nom, chair, esprit, essence, point_de_vie_max,point_de_focus_max,point_de_pouvoir_max,niveau):

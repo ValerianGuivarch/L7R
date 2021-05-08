@@ -139,6 +139,9 @@
 }
 
 .character {
+  .name::first-letter {
+    text-transform: capitalize;
+  }
   .notes {
     flex-basis: 100%;
     display: block;
@@ -172,4 +175,10 @@
       margin-bottom: 1em;
     }
   }
+}
+
+// hide old elements
+
+.pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
+  display: none;
 }

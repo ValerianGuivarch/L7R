@@ -22,14 +22,10 @@
     </script>
     <script src="{% static 'applsr/js/lsr.js' %}"></script>
 
-    <div class="container">
-        <h4 class="text-center"><b>{{ car.name|title }}</b> - {{ element }}
+    <div class="main container">
+        <h4 class="perso-title text-center"><b>{{ car.name|title }}</b> - {{ element }}
             niv. {{ car.niveau }}
         </h4>
-
-        <div class="pc">
-
-        </div>
 
         <table class="perso">
             <tr>
@@ -80,7 +76,7 @@
             </tr>
         </table>
 
-        <dic class="control-panel">
+        <div class="control-panel">
 
             <div class="line">
                 <!-- pv -->
@@ -234,10 +230,16 @@
                 </label>
             </div>
 
-        </dic>
+        </div>
+
+        <div class="pc-container"></div>
 
         <div id="chat"></div>
     </div>
+
+    <script>
+        document.querySelector(".pc-container").appendChild(createCharacter("{{ car.name }}"));
+    </script>
 </body>
 
 </html>

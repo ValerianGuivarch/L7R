@@ -4,6 +4,228 @@ type JEMP = `Jemp-${string}`;
 type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT'
     | JEMP;
 
+class WithLabel {
+    constructor(protected element: HTMLElement) { }
+
+    public get label(): string {
+        return this.element.querySelector(".label")!.innerHTML;
+    }
+
+    public set label(value: string) {
+        const label = this.element.querySelector(".label")!;
+        if(label.innerHTML != value.toString()) {
+            label.innerHTML = value.toString();
+        }
+    }
+}
+
+class Attribute extends WithLabel {
+    constructor(element: HTMLElement) {
+        super(element);
+    }
+
+    public get current(): number {
+        return parseInt(this.element.querySelector(".current")!.innerHTML);
+    }
+
+    public set current(value: number) {
+        const current = this.element.querySelector(".current")!;
+        if(current.innerHTML != value.toString()) {
+            current.innerHTML = value.toString();
+        }
+    }
+}
+
+class AttributeWithMax extends Attribute {
+    constructor(element: HTMLElement) {
+        super(element);
+    }
+
+    public get max(): number {
+        return parseInt(this.element.querySelector(".max")!.innerHTML);
+    }
+    
+    public set max(value: number) {
+        const max = this.element.querySelector(".max")!;
+        if(max.innerHTML != value.toString()) {
+            max.innerHTML = value.toString();
+        }
+    }
+}
+
+class SmartStringAttribute {
+    constructor(protected element: HTMLElement) { }
+
+    public get current(): string {
+        return this.element.querySelector(".current")!.innerHTML;
+    }
+
+    public set current(value: string) {
+        let current = this.element.querySelector(".current");
+        if(current == null) {
+            current = this.element;
+        }
+        if(current.innerHTML != value.toString()) {
+            current.innerHTML = value.toString();
+        }
+    }
+}
+
+class AttributeActivable extends WithLabel {
+    constructor(element: HTMLElement) {
+        super(element);
+    }
+
+    public get enabled(): boolean {
+        return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
+    }
+    
+    public set enabled(value: boolean) {
+        this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
+    }
+}
+
+class AttributeWithMaxActivable extends AttributeWithMax {
+    constructor(element: HTMLElement) {
+        super(element);
+    }
+
+    public get enabled(): boolean {
+        return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
+    }
+    
+    public set enabled(value: boolean) {
+        this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
+    }
+}
+
+class LocalCharacterView {
+    constructor(private element: HTMLElement) {
+    }
+
+    updateFromDatabase(characterFromDatabase: CharacterFromDatabase) {
+        this.name.current = characterFromDatabase.name;
+        this.title.current = characterFromDatabase.titre;
+        this.level.current = characterFromDatabase.niveau;
+        this.lux.current = characterFromDatabase.fl;
+        this.umbra.current = characterFromDatabase.fu;
+        this.secunda.current = characterFromDatabase.fs;
+        this.flesh.current = characterFromDatabase.chair;
+        this.spirit.current = characterFromDatabase.essence;
+        this.essence.current = characterFromDatabase.essence;
+        this.hp.current = characterFromDatabase.point_de_vie;
+        this.hp.max = characterFromDatabase.point_de_vie_max;
+        this.debt.current = characterFromDatabase.dettes;
+        this.arcana.current = characterFromDatabase.arcanes;
+        this.arcana.max = characterFromDatabase.arcanes_max;
+        this.focus.current = characterFromDatabase.point_de_focus;
+        this.focus.max = characterFromDatabase.point_de_focus_max;
+        this.power.current = characterFromDatabase.point_de_pouvoir;
+        this.power.max = characterFromDatabase.point_de_pouvoir_max;
+        this.proficiency.label = characterFromDatabase.force1;
+        if(characterFromDatabase.force2) {
+            this.proficiency.label += " / " + characterFromDatabase.force2;
+        }
+        this.notes.current = characterFromDatabase.notes ?? "";
+    }
+
+    public get name(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".name")!);
+    }
+
+    public get title(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".title")!);
+    }
+
+    public get lux(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".lux .current")!);
+    }
+
+    public get umbra(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".umbra .current")!);
+    }
+
+    public get secunda(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".secunda .current")!);
+    }
+
+    public get notes(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".notes .current")!);
+    }
+
+    public get level(): Attribute {
+        return new Attribute(this.element.querySelector(".level")!);
+    }
+
+    public get flesh(): Attribute {
+        return new Attribute(this.element.querySelector(".flesh")!);
+    }
+
+    public get spirit(): Attribute {
+        return new Attribute(this.element.querySelector(".spirit")!);
+    }
+
+    public get essence(): Attribute {
+        return new Attribute(this.element.querySelector(".essence")!);
+    }
+
+    public get hp(): AttributeWithMax {
+        return new AttributeWithMax(this.element.querySelector(".hp")!);
+    }
+
+    public get debt(): Attribute {
+        return new Attribute(this.element.querySelector(".debt")!);
+    }
+
+    public get arcana(): AttributeWithMax {
+        return new AttributeWithMax(this.element.querySelector(".arcana")!);
+    }
+
+    public get focus(): AttributeWithMaxActivable {
+        return new AttributeWithMaxActivable(this.element.querySelector(".focus")!);
+    }
+
+    public get power(): AttributeWithMaxActivable {
+        return new AttributeWithMaxActivable(this.element.querySelector(".power")!);
+    }
+
+    public get proficiency(): AttributeActivable {
+        return new AttributeActivable(this.element.querySelector(".proficiency")!);
+    }
+
+    public get secret(): AttributeActivable {
+        return new AttributeActivable(this.element.querySelector(".secret")!);
+    }
+}
+
+interface CharacterFromDatabase {
+    name: string,
+    titre: string,
+    niveau: number,
+    element: string,
+    force1: string,
+    force2: string | null,
+    chair: number,
+    esprit: number,
+    essence: number,
+    point_de_vie: number,
+    point_de_vie_max: number,
+    point_de_focus: number,
+    point_de_focus_max: number,
+    point_de_pouvoir: number,
+    point_de_pouvoir_max: number,
+    dettes: number,
+    arcanes: number,
+    arcanes_max: number,
+    /** lux */
+    fl: string,
+    /** umbra */
+    fu: string,
+    /** secunda */
+    fs: string,
+    notes: string | undefined,
+}
+
 interface Roll {
     id: number,
     date: string, // 2021-05-02T18:03:41.551Z
@@ -72,6 +294,7 @@ function rollTypeToString(rollType: RollType) {
     else if(rollType == 'JNT') {
         return "fait un <i>jet de Nature</i>";
     }
+    //@ts-expect-error
     else if(rollType.startsWith('Jemp-')) {
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
     }
@@ -233,8 +456,32 @@ function afficher(nompj: string) {
     });
 }
 
+function updateCharactersOnPage() {
+    document.querySelectorAll<HTMLElement>("body > .main .character").forEach(e => updateCharacter(e));
+}
+
+function createCharacter(name: string) {
+    const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
+    const character = new LocalCharacterView(characterElement);
+    character.name.current = name;
+    return characterElement;
+}
+
+function updateCharacter(characterElement: HTMLElement) {
+    console.log("Update", characterElement);
+    const name = characterElement.querySelector<HTMLElement>(".name")!.innerHTML;
+    fetch('/lsr/getcar/' + name + "?json")
+    .then(response => response.text())
+    .then(text => {
+        const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
+        const character = new LocalCharacterView(characterElement);
+        character.updateFromDatabase(characterFromDatabase);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     var cb = () => {
+        updateCharactersOnPage();
         afficher(nompj);
         if(nompj != "mj") {
             getCar(nompj);

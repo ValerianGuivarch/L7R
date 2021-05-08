@@ -1,4 +1,285 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var WithLabel = /** @class */ (function () {
+    function WithLabel(element) {
+        this.element = element;
+    }
+    Object.defineProperty(WithLabel.prototype, "label", {
+        get: function () {
+            return this.element.querySelector(".label").innerHTML;
+        },
+        set: function (value) {
+            var label = this.element.querySelector(".label");
+            if (label.innerHTML != value.toString()) {
+                label.innerHTML = value.toString();
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return WithLabel;
+}());
+var Attribute = /** @class */ (function (_super) {
+    __extends(Attribute, _super);
+    function Attribute(element) {
+        return _super.call(this, element) || this;
+    }
+    Object.defineProperty(Attribute.prototype, "current", {
+        get: function () {
+            return parseInt(this.element.querySelector(".current").innerHTML);
+        },
+        set: function (value) {
+            var current = this.element.querySelector(".current");
+            if (current.innerHTML != value.toString()) {
+                current.innerHTML = value.toString();
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return Attribute;
+}(WithLabel));
+var AttributeWithMax = /** @class */ (function (_super) {
+    __extends(AttributeWithMax, _super);
+    function AttributeWithMax(element) {
+        return _super.call(this, element) || this;
+    }
+    Object.defineProperty(AttributeWithMax.prototype, "max", {
+        get: function () {
+            return parseInt(this.element.querySelector(".max").innerHTML);
+        },
+        set: function (value) {
+            var max = this.element.querySelector(".max");
+            if (max.innerHTML != value.toString()) {
+                max.innerHTML = value.toString();
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return AttributeWithMax;
+}(Attribute));
+var SmartStringAttribute = /** @class */ (function () {
+    function SmartStringAttribute(element) {
+        this.element = element;
+    }
+    Object.defineProperty(SmartStringAttribute.prototype, "current", {
+        get: function () {
+            return this.element.querySelector(".current").innerHTML;
+        },
+        set: function (value) {
+            var current = this.element.querySelector(".current");
+            if (current == null) {
+                current = this.element;
+            }
+            if (current.innerHTML != value.toString()) {
+                current.innerHTML = value.toString();
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return SmartStringAttribute;
+}());
+var AttributeActivable = /** @class */ (function (_super) {
+    __extends(AttributeActivable, _super);
+    function AttributeActivable(element) {
+        return _super.call(this, element) || this;
+    }
+    Object.defineProperty(AttributeActivable.prototype, "enabled", {
+        get: function () {
+            return this.element.querySelector(".enabled input").checked;
+        },
+        set: function (value) {
+            this.element.querySelector(".enabled input").checked = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return AttributeActivable;
+}(WithLabel));
+var AttributeWithMaxActivable = /** @class */ (function (_super) {
+    __extends(AttributeWithMaxActivable, _super);
+    function AttributeWithMaxActivable(element) {
+        return _super.call(this, element) || this;
+    }
+    Object.defineProperty(AttributeWithMaxActivable.prototype, "enabled", {
+        get: function () {
+            return this.element.querySelector(".enabled input").checked;
+        },
+        set: function (value) {
+            this.element.querySelector(".enabled input").checked = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return AttributeWithMaxActivable;
+}(AttributeWithMax));
+var LocalCharacterView = /** @class */ (function () {
+    function LocalCharacterView(element) {
+        this.element = element;
+    }
+    LocalCharacterView.prototype.updateFromDatabase = function (characterFromDatabase) {
+        var _a;
+        this.name.current = characterFromDatabase.name;
+        this.title.current = characterFromDatabase.titre;
+        this.level.current = characterFromDatabase.niveau;
+        this.lux.current = characterFromDatabase.fl;
+        this.umbra.current = characterFromDatabase.fu;
+        this.secunda.current = characterFromDatabase.fs;
+        this.flesh.current = characterFromDatabase.chair;
+        this.spirit.current = characterFromDatabase.essence;
+        this.essence.current = characterFromDatabase.essence;
+        this.hp.current = characterFromDatabase.point_de_vie;
+        this.hp.max = characterFromDatabase.point_de_vie_max;
+        this.debt.current = characterFromDatabase.dettes;
+        this.arcana.current = characterFromDatabase.arcanes;
+        this.arcana.max = characterFromDatabase.arcanes_max;
+        this.focus.current = characterFromDatabase.point_de_focus;
+        this.focus.max = characterFromDatabase.point_de_focus_max;
+        this.power.current = characterFromDatabase.point_de_pouvoir;
+        this.power.max = characterFromDatabase.point_de_pouvoir_max;
+        this.proficiency.label = characterFromDatabase.force1;
+        if (characterFromDatabase.force2) {
+            this.proficiency.label += " / " + characterFromDatabase.force2;
+        }
+        this.notes.current = (_a = characterFromDatabase.notes) !== null && _a !== void 0 ? _a : "";
+    };
+    Object.defineProperty(LocalCharacterView.prototype, "name", {
+        get: function () {
+            return new SmartStringAttribute(this.element.querySelector(".name"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "title", {
+        get: function () {
+            return new SmartStringAttribute(this.element.querySelector(".title"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "lux", {
+        get: function () {
+            return new SmartStringAttribute(this.element.querySelector(".lux .current"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "umbra", {
+        get: function () {
+            return new SmartStringAttribute(this.element.querySelector(".umbra .current"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "secunda", {
+        get: function () {
+            return new SmartStringAttribute(this.element.querySelector(".secunda .current"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "notes", {
+        get: function () {
+            return new SmartStringAttribute(this.element.querySelector(".notes .current"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "level", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".level"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "flesh", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".flesh"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "spirit", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".spirit"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "essence", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".essence"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "hp", {
+        get: function () {
+            return new AttributeWithMax(this.element.querySelector(".hp"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "debt", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".debt"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "arcana", {
+        get: function () {
+            return new AttributeWithMax(this.element.querySelector(".arcana"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "focus", {
+        get: function () {
+            return new AttributeWithMaxActivable(this.element.querySelector(".focus"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "power", {
+        get: function () {
+            return new AttributeWithMaxActivable(this.element.querySelector(".power"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "proficiency", {
+        get: function () {
+            return new AttributeActivable(this.element.querySelector(".proficiency"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "secret", {
+        get: function () {
+            return new AttributeActivable(this.element.querySelector(".secret"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return LocalCharacterView;
+}());
 function rollTypeToString(rollType) {
     if (rollType == 'Jsoin') {
         return "<i>Soigne</i>";
@@ -45,6 +326,7 @@ function rollTypeToString(rollType) {
     else if (rollType == 'JNT') {
         return "fait un <i>jet de Nature</i>";
     }
+    //@ts-expect-error
     else if (rollType.startsWith('Jemp-')) {
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
     }
@@ -194,8 +476,29 @@ function afficher(nompj) {
         console.error("error", e);
     });
 }
+function updateCharactersOnPage() {
+    document.querySelectorAll("body > .main .character").forEach(function (e) { return updateCharacter(e); });
+}
+function createCharacter(name) {
+    var characterElement = document.querySelector(".templates > .character").cloneNode(true);
+    var character = new LocalCharacterView(characterElement);
+    character.name.current = name;
+    return characterElement;
+}
+function updateCharacter(characterElement) {
+    console.log("Update", characterElement);
+    var name = characterElement.querySelector(".name").innerHTML;
+    fetch('/lsr/getcar/' + name + "?json")
+        .then(function (response) { return response.text(); })
+        .then(function (text) {
+        var characterFromDatabase = JSON.parse(text);
+        var character = new LocalCharacterView(characterElement);
+        character.updateFromDatabase(characterFromDatabase);
+    });
+}
 document.addEventListener("DOMContentLoaded", function () {
     var cb = function () {
+        updateCharactersOnPage();
         afficher(nompj);
         if (nompj != "mj") {
             getCar(nompj);
