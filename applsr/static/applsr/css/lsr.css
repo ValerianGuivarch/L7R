@@ -87,6 +87,47 @@ body {
 .character .portrait img {
   max-height: 90px;
 }
+.character .abilities, .character .story {
+  flex-direction: column;
+}
+.character .name::first-letter {
+  text-transform: capitalize;
+}
+.character .notes {
+  flex-basis: 100%;
+  display: block;
+}
+.character .notes > * {
+  display: block;
+  width: 100%;
+}
+.character .notes textarea {
+  height: 5em;
+}
+.character .plus-max, .character .minus-max {
+  border-color: #dc3545;
+  background-color: #dc3545;
+}
+.character .blessing > *:not(button) {
+  background-color: transparent;
+  color: #28a745;
+  border-top: 1px solid #28a745;
+  border-bottom: 1px solid #28a745;
+}
+.character .blessing button {
+  border-color: #28a745;
+  background-color: #28a745;
+}
+.character .curse > *:not(button) {
+  background-color: transparent;
+  color: #dc3545;
+  border-top: 1px solid #dc3545;
+  border-bottom: 1px solid #dc3545;
+}
+.character .curse button {
+  border-color: #dc3545;
+  background-color: #dc3545;
+}
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
   display: flex;
@@ -117,25 +158,6 @@ body {
   border-bottom-left-radius: 0;
 }
 
-.character .abilities, .character .story {
-  flex-direction: column;
-}
-
-.character .name::first-letter {
-  text-transform: capitalize;
-}
-.character .notes {
-  flex-basis: 100%;
-  display: block;
-}
-.character .notes > * {
-  display: block;
-  width: 100%;
-}
-.character .notes textarea {
-  height: 5em;
-}
-
 .roller {
   display: flex;
   width: 100%;
@@ -155,7 +177,7 @@ body {
   margin-bottom: 1em;
 }
 
-.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit {
+.pc-page2 .minus-max, .pc-page2 .plus-max, .pc-page2 .edit {
   display: none;
 }
 

@@ -1,5 +1,10 @@
 // Root
 
+$blue-ok: #17a2b8;
+$red-danger: #dc3545;
+$green-success: #28a745;
+
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -36,8 +41,8 @@ body {
   border: 1px solid;
   line-height: 1.5;
   color: #fff;
-  background-color: #17a2b8;
-  border-color: #17a2b8;
+  background-color: $blue-ok;
+  border-color: $blue-ok;
   padding: 0.2rem 0.7rem;
   transition: background-color 1000ms linear, border-color 1000ms linear;
 }
@@ -159,6 +164,51 @@ body {
       max-height: 90px;
     }
   }
+  .abilities, .story {
+    flex-direction: column;
+  }
+  .name::first-letter {
+    text-transform: capitalize;
+  }
+  .notes {
+    flex-basis: 100%;
+    display: block;
+    & > * {
+      display: block;
+      width: 100%;
+    }
+    textarea {
+      height: 5em;
+    }
+  }
+  .plus-max, .minus-max {
+    border-color: $red-danger;
+    background-color: $red-danger;
+  }
+  .blessing {
+    & > *:not(button) {
+      background-color: transparent;
+      color: $green-success;
+      border-top: 1px solid $green-success;
+      border-bottom: 1px solid $green-success;
+    }
+    button {
+      border-color: $green-success;
+      background-color: $green-success;
+    }
+  }
+  .curse {
+    & > *:not(button) {
+      background-color: transparent;
+      color:  $red-danger;
+      border-top: 1px solid $red-danger;
+      border-bottom: 1px solid $red-danger;
+    }
+    button {
+      border-color: $red-danger;
+      background-color: $red-danger;
+    }
+  }
 }
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
@@ -191,29 +241,6 @@ body {
   }
 }
 
-.character {
-  .abilities, .story {
-    flex-direction: column;
-  }
-}
-
-.character {
-  .name::first-letter {
-    text-transform: capitalize;
-  }
-  .notes {
-    flex-basis: 100%;
-    display: block;
-    & > * {
-      display: block;
-      width: 100%;
-    }
-    textarea {
-      height: 5em;
-    }
-  }
-}
-
 // Roller
 
 .roller {
@@ -236,7 +263,7 @@ body {
   }
 }
 
-.pc-page {
+.pc-page2 {
   .minus-max, .plus-max, .edit {
     display: none;
   }
