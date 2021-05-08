@@ -51,7 +51,7 @@ urlpatterns = [
     path('afficher/<str:nom>/<str:secret>', applsr_views.afficher),
     path('mj_interdit_aux_joueurs/effacerLancersDes', applsr_views.effacer_lancers_des),
     path('lsr/getcar/<str:nom>', applsr_views.getcar, name='getcar'),
-    path('mj_interdit_aux_joueurs/modifs_valeurs/<str:nom>/<str:stat>/<int:valeur>/<str:add>',
+    path('mj_interdit_aux_joueurs/modifs_valeurs/<str:nom>/<str:stat>/<str:valeur>/<str:add>',
          applsr_views.modifs_valeurs, name='modifs_valeurs'),
     path('lancer/<str:nom>/<str:action>/<str:pf>/<str:pp>/<str:ra>/<int:mal>/<int:ben>/<str:secret>/<str:des_caches>', applsr_views.lancer),
     path('lancer_empirique/<str:nom>/<str:valeur>/<str:secret>/', applsr_views.lancer_empirique),

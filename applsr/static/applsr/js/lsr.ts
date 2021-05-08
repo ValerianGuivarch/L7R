@@ -111,7 +111,7 @@ class LocalCharacterView {
         this.umbra.current = characterFromDatabase.fu;
         this.secunda.current = characterFromDatabase.fs;
         this.flesh.current = characterFromDatabase.chair;
-        this.spirit.current = characterFromDatabase.essence;
+        this.spirit.current = characterFromDatabase.esprit;
         this.essence.current = characterFromDatabase.essence;
         this.hp.current = characterFromDatabase.point_de_vie;
         this.hp.max = characterFromDatabase.point_de_vie_max;
@@ -168,6 +168,18 @@ class LocalCharacterView {
 
     public get essence(): Attribute {
         return new Attribute(this.element.querySelector(".essence")!);
+    }
+
+    public get blessing(): Attribute {
+        return new Attribute(this.element.querySelector(".blessing")!);
+    }
+
+    public get curse(): Attribute {
+        return new Attribute(this.element.querySelector(".curse")!);
+    }
+
+    public get curse2(): Attribute {
+        return new Attribute(this.element.querySelector(".curse2")!);
     }
 
     public get hp(): AttributeWithMax {
@@ -498,6 +510,126 @@ document.addEventListener("DOMContentLoaded", () => {
     cb();
     setInterval(cb, 2000);
 });
+
+type Action = "+" | "-" | "--" | "++" | "Edit";
+type Thing =  "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes";
+
+function thingToName(thing: Thing) {
+    // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
+    if(thing == "name") {
+        return "nom";
+    }
+    else if(thing == "title") {
+        throw new Error("Not implemented");
+    }
+    else if(thing == "level") {
+        return "niveau";
+    }
+    else if(thing == "portrait") {
+        throw new Error("Makes no sense");
+    }
+    else if(thing == "flesh") {
+        return "chair";
+    }
+    else if(thing == "spirit") {
+        return "esprit";
+    }
+    else if(thing == "essence") {
+        return "essence";
+    }
+    else if(thing == "lux") {
+        return "fl";
+    }
+    else if(thing == "umbra") {
+        return "fu";
+    }
+    else if(thing == "secunda") {
+        return "fs";
+    }
+    else if(thing == "hp") {
+        return "pv";
+    }
+    else if(thing == "debt") {
+        return "dettes";
+    }
+    else if(thing == "arcana") {
+        return "arcanes";
+    }
+    else if(thing == "focus") {
+        return "pf";
+    }
+    else if(thing == "power") {
+        return "pp";
+    }
+    else if(thing == "curse") {
+        throw new Error("Makes no sense");
+    }
+    else if(thing == "curse2") {
+        throw new Error("Makes no sense");
+    }
+    else if(thing == "blessing") {
+        throw new Error("Makes no sense");
+    }
+    else if(thing == "proficiency") {
+        return "force";
+    }
+    else if(thing == "secret") {
+        throw new Error("Makes no sense");
+    }
+    else if(thing == "notes") {
+        throw new Error("Not implemented");
+    }
+}
+
+function autoClick(sourceElement: HTMLElement) {
+    const characterElement = sourceElement.closest<HTMLElement>(".character")!;
+    const character = new LocalCharacterView(characterElement);
+    const action = sourceElement.innerHTML as Action;
+    const target = sourceElement.parentElement!.dataset.thing as Thing;
+
+    let value: string = "1";
+    if(action == "Edit") {
+        const currentValue = sourceElement.parentElement!.querySelector<HTMLElement>(".current")!.innerHTML;
+        const read = prompt(target + " ?", currentValue);
+        if(read == null) {
+            return;
+        }
+        value = read;
+    }
+    let add = true;
+    if(action == "-" || action == "--") {
+        add = false;
+    }
+    let maxSuffix = "";
+    if(action == "++" || action == "--") {
+        maxSuffix = "_max";
+    }
+
+    console.log("type of click: ", target, action);
+    if(target == "blessing" || target == "curse" || target == "curse2") {
+        let increment = 1;
+        if(action == "-") {
+            increment = -1;
+        }
+        if(target == "blessing") {
+            character.blessing.current += increment;
+        }
+        else if(target == "curse") {
+            character.curse.current += increment;
+        }
+        else if(target == "curse2") {
+            character.curse2.current += increment;
+        }
+    }
+    else {
+        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add)
+        .then(response => response.text())
+        .then(text => {
+            const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
+            character.updateFromDatabase(characterFromDatabase);
+        });
+    }
+}
 
 function getCar(name: string) {
     fetch('/lsr/getcar/' + name)

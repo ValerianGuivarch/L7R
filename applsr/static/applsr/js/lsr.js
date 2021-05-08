@@ -142,7 +142,7 @@ var LocalCharacterView = /** @class */ (function () {
         this.umbra.current = characterFromDatabase.fu;
         this.secunda.current = characterFromDatabase.fs;
         this.flesh.current = characterFromDatabase.chair;
-        this.spirit.current = characterFromDatabase.essence;
+        this.spirit.current = characterFromDatabase.esprit;
         this.essence.current = characterFromDatabase.essence;
         this.hp.current = characterFromDatabase.point_de_vie;
         this.hp.max = characterFromDatabase.point_de_vie_max;
@@ -226,6 +226,27 @@ var LocalCharacterView = /** @class */ (function () {
     Object.defineProperty(LocalCharacterView.prototype, "essence", {
         get: function () {
             return new Attribute(this.element.querySelector(".essence"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "blessing", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".blessing"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "curse", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".curse"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "curse2", {
+        get: function () {
+            return new Attribute(this.element.querySelector(".curse2"));
         },
         enumerable: false,
         configurable: true
@@ -518,6 +539,119 @@ document.addEventListener("DOMContentLoaded", function () {
     cb();
     setInterval(cb, 2000);
 });
+function thingToName(thing) {
+    // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
+    if (thing == "name") {
+        return "nom";
+    }
+    else if (thing == "title") {
+        throw new Error("Not implemented");
+    }
+    else if (thing == "level") {
+        return "niveau";
+    }
+    else if (thing == "portrait") {
+        throw new Error("Makes no sense");
+    }
+    else if (thing == "flesh") {
+        return "chair";
+    }
+    else if (thing == "spirit") {
+        return "esprit";
+    }
+    else if (thing == "essence") {
+        return "essence";
+    }
+    else if (thing == "lux") {
+        return "fl";
+    }
+    else if (thing == "umbra") {
+        return "fu";
+    }
+    else if (thing == "secunda") {
+        return "fs";
+    }
+    else if (thing == "hp") {
+        return "pv";
+    }
+    else if (thing == "debt") {
+        return "dettes";
+    }
+    else if (thing == "arcana") {
+        return "arcanes";
+    }
+    else if (thing == "focus") {
+        return "pf";
+    }
+    else if (thing == "power") {
+        return "pp";
+    }
+    else if (thing == "curse") {
+        throw new Error("Makes no sense");
+    }
+    else if (thing == "curse2") {
+        throw new Error("Makes no sense");
+    }
+    else if (thing == "blessing") {
+        throw new Error("Makes no sense");
+    }
+    else if (thing == "proficiency") {
+        return "force";
+    }
+    else if (thing == "secret") {
+        throw new Error("Makes no sense");
+    }
+    else if (thing == "notes") {
+        throw new Error("Not implemented");
+    }
+}
+function autoClick(sourceElement) {
+    var characterElement = sourceElement.closest(".character");
+    var character = new LocalCharacterView(characterElement);
+    var action = sourceElement.innerHTML;
+    var target = sourceElement.parentElement.dataset.thing;
+    var value = "1";
+    if (action == "Edit") {
+        var currentValue = sourceElement.parentElement.querySelector(".current").innerHTML;
+        var read = prompt(target + " ?", currentValue);
+        if (read == null) {
+            return;
+        }
+        value = read;
+    }
+    var add = true;
+    if (action == "-" || action == "--") {
+        add = false;
+    }
+    var maxSuffix = "";
+    if (action == "++" || action == "--") {
+        maxSuffix = "_max";
+    }
+    console.log("type of click: ", target, action);
+    if (target == "blessing" || target == "curse" || target == "curse2") {
+        var increment = 1;
+        if (action == "-") {
+            increment = -1;
+        }
+        if (target == "blessing") {
+            character.blessing.current += increment;
+        }
+        else if (target == "curse") {
+            character.curse.current += increment;
+        }
+        else if (target == "curse2") {
+            character.curse2.current += increment;
+        }
+    }
+    else {
+        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add)
+            .then(function (response) { return response.text(); })
+            .then(function (text) {
+            var characterFromDatabase = JSON.parse(text);
+            character.updateFromDatabase(characterFromDatabase);
+        });
+    }
+}
 function getCar(name) {
     fetch('/lsr/getcar/' + name)
         .then(function (response) { return response.text(); })
