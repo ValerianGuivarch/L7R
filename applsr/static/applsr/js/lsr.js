@@ -149,6 +149,7 @@ var AttributeWithMaxActivable = /** @class */ (function (_super) {
 var LocalCharacterView = /** @class */ (function () {
     function LocalCharacterView(element) {
         this.element = element;
+        this.hpTimeoutSet = false; // necessary to avoid infinitly startinf timeouts
     }
     LocalCharacterView.prototype.updateFromDatabase = function (characterFromDatabase) {
         var _a;
@@ -271,13 +272,17 @@ var LocalCharacterView = /** @class */ (function () {
     Object.defineProperty(LocalCharacterView.prototype, "hp", {
         get: function () {
             var _this = this;
-            setTimeout(function () {
-                var curse2 = Math.floor((_this.hp.max - _this.hp.current) / 6);
-                if (curse2 < 0) {
-                    curse2 = 0;
-                }
-                _this.curse2.current = curse2;
-            }, 1);
+            if (this.hpTimeoutSet == false) {
+                setTimeout(function () {
+                    var curse2 = Math.floor((_this.hp.max - _this.hp.current) / 6);
+                    if (curse2 < 0) {
+                        curse2 = 0;
+                    }
+                    _this.curse2.current = curse2;
+                    _this.hpTimeoutSet = false;
+                }, 1);
+                this.hpTimeoutSet = true;
+            }
             return new AttributeWithMax(this.element.querySelector(".hp"));
         },
         enumerable: false,

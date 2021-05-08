@@ -177,7 +177,7 @@ body {
   margin-bottom: 1em;
 }
 
-.pc-page2 .minus-max, .pc-page2 .plus-max, .pc-page2 .edit, .pc-page2 .curse2 button {
+.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled {
   display: none;
 }
 

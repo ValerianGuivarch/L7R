@@ -196,14 +196,19 @@ class LocalCharacterView {
         return new AttributeActivable(this.element.querySelector(".curse2")!);
     }
 
+    private hpTimeoutSet = false;// necessary to avoid infinitly startinf timeouts
     public get hp(): AttributeWithMax {
-        setTimeout(() => {
-            let curse2 = Math.floor((this.hp.max - this.hp.current) / 6)
-            if(curse2 < 0) {
-                curse2 = 0;
-            }
-            this.curse2.current = curse2;
-        }, 1);
+        if(this.hpTimeoutSet == false) {
+            setTimeout(() => {
+                let curse2 = Math.floor((this.hp.max - this.hp.current) / 6)
+                if(curse2 < 0) {
+                    curse2 = 0;
+                }
+                this.curse2.current = curse2;
+                this.hpTimeoutSet = false;
+            }, 1);
+            this.hpTimeoutSet = true;
+        }
         return new AttributeWithMax(this.element.querySelector(".hp")!);
     }
 
