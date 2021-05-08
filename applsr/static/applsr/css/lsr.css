@@ -196,6 +196,15 @@ body {
 #chat .one-success {
   font-weight: bold;
 }
+#chat .high {
+  color: #dc3545;
+}
+#chat .medium {
+  color: #b48c14;
+}
+#chat .low {
+  color: #28a745;
+}
 
 .pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
   display: none;

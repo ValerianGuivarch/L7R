@@ -117,6 +117,24 @@ var AttributeActivable = /** @class */ (function (_super) {
     function AttributeActivable(element) {
         return _super.call(this, element) || this;
     }
+    Object.defineProperty(AttributeActivable.prototype, "current", {
+        get: function () {
+            if (this.enabled) {
+                return parseInt(this.element.querySelector(".current").innerHTML);
+            }
+            else {
+                return 0;
+            }
+        },
+        set: function (value) {
+            var current = this.element.querySelector(".current");
+            if (current.innerHTML != value.toString()) {
+                current.innerHTML = value.toString();
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(AttributeActivable.prototype, "enabled", {
         get: function () {
             return this.element.querySelector(".enabled input").checked;
@@ -406,13 +424,16 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     return successCount + bonus;
 }
 function resist(elem, action) {
-    var char = getCurrentCharacter();
-    if (char === null) {
-        console.error("Cannot roll with no character");
+    var character;
+    if (document.body.classList.contains("pc-page")) {
+        character = new LocalCharacterView(document.querySelector(".main .character"));
+        loadLancer2(character.name.current, action, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, elem.closest('.roll').dataset.rollid);
         return;
     }
-    else if (typeof (char) === "string") {
-        loadLancer(char, action, document.querySelector('#use_pf').checked, document.querySelector('#use_pp').checked, document.querySelector('#use_ra').checked, document.querySelector('#use_sc').checked, elem.closest('.roll').dataset.rollid);
+    var char = getCurrentCharacter();
+    if (char === null || typeof (char) == "string") {
+        console.error("Cannot roll with no character: " + char);
+        return;
     }
     else {
         var new_pnj_name = char.querySelector(".name").innerHTML;
@@ -455,18 +476,27 @@ function jsonRollToHtml(roll, sub) {
         var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
         var diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
-        if (diff < 0) {
-            delta += " (aucun dégâts)";
+        if (diff <= 0) {
+            delta += ' <span class="low">(aucun dégâts)</span>';
         }
         else {
-            delta += " (" + Math.ceil(diff / 2) + " dégâts).";
+            var dmg = Math.ceil(diff / 2);
+            if (dmg >= 4) {
+                delta += ' <span class="high">(' + dmg + ' dégâts)</span>.';
+            }
+            else if (dmg >= 1) {
+                delta += ' <span class="medium">(' + dmg + ' dégâts)</span>.';
+            }
+            else {
+                delta += ' <span class="low">(' + dmg + ' dégâts)</span>.';
+            }
         }
     }
     var resist = "";
     if (sub == false) {
-        resist = ' Résister avec <button class="btn resist" onclick="resist(this, \'JC\')">chair</button>'
-            + '<button class="btn resist" onclick="resist(this, \'JS\')">esprit</button>'
-            + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
+        resist = ' Résister avec <button onclick="resist(this, \'JC\')">chair</button>'
+            + '<button onclick="resist(this, \'JS\')">esprit</button>'
+            + '<button onclick="resist(this, \'JE\')">essence</button> ?';
     }
     var success = 'et obtient <span title="Juge12: '
         + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
@@ -872,5 +902,5 @@ function plusPp(nompj) {
     });
 }
 function loadLancerJdSvM(name) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return getCar(nompj); });
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return afficher(nompj); });
 }

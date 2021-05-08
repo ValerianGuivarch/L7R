@@ -89,6 +89,22 @@ class AttributeActivable extends Attribute {
         super(element);
     }
 
+    public get current(): number {
+        if(this.enabled) {
+            return parseInt(this.element.querySelector(".current")!.innerHTML);
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public set current(value: number) {
+        const current = this.element.querySelector(".current")!;
+        if(current.innerHTML != value.toString()) {
+            current.innerHTML = value.toString();
+        }
+    }
+
     public get enabled(): boolean {
         return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
     }
@@ -358,13 +374,16 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
 }
 
 function resist(elem: HTMLElement, action: RollType) {
-    const char = getCurrentCharacter();
-    if(char === null) {
-        console.error("Cannot roll with no character");
+    let character: LocalCharacterView;
+    if(document.body.classList.contains("pc-page")) {
+        character = new LocalCharacterView(document.querySelector<HTMLElement>(".main .character")!);
+        loadLancer2(character.name.current, action, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
         return;
     }
-    else if(typeof(char) === "string") {
-        loadLancer(char, action, document.querySelector<HTMLInputElement>('#use_pf')!.checked, document.querySelector<HTMLInputElement>('#use_pp')!.checked, document.querySelector<HTMLInputElement>('#use_ra')!.checked, document.querySelector<HTMLInputElement>('#use_sc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
+    const char = getCurrentCharacter();
+    if(char === null || typeof(char) == "string") {
+        console.error("Cannot roll with no character: " + char);
+        return;
     }
     else {
         const new_pnj_name = char.querySelector(".name")!.innerHTML;
@@ -413,19 +432,28 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         let thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
         let diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
-        if(diff < 0) {
-            delta += " (aucun dégâts)"
+        if(diff <= 0) {
+            delta += ' <span class="low">(aucun dégâts)</span>'
         }
         else {
-            delta += " (" + Math.ceil(diff / 2) + " dégâts)."
+            const dmg = Math.ceil(diff / 2);
+            if(dmg >= 4) {
+                delta += ' <span class="high">(' + dmg + ' dégâts)</span>.'
+            }
+            else if(dmg >= 1) {
+                delta += ' <span class="medium">(' + dmg + ' dégâts)</span>.'
+            }
+            else {
+                delta += ' <span class="low">(' + dmg + ' dégâts)</span>.'
+            }
         }
     }
 
     let resist = "";
     if(sub == false) {
-        resist = ' Résister avec <button class="btn resist" onclick="resist(this, \'JC\')">chair</button>'
-            + '<button class="btn resist" onclick="resist(this, \'JS\')">esprit</button>'
-            + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
+        resist = ' Résister avec <button onclick="resist(this, \'JC\')">chair</button>'
+            + '<button onclick="resist(this, \'JS\')">esprit</button>'
+            + '<button onclick="resist(this, \'JE\')">essence</button> ?';
     }
 
     let success = 'et obtient <span title="Juge12: '
@@ -871,5 +899,5 @@ function plusPp(nompj: string) {
 }
 
 function loadLancerJdSvM(name: string) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(() => getCar(nompj));
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(() => afficher(nompj));
 }

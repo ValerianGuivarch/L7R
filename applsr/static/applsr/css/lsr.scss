@@ -1,8 +1,9 @@
 // Root
 
-$blue-ok: #17a2b8;
+$blue-info: #17a2b8;
 $red-danger: #dc3545;
 $green-success: #28a745;
+$orange-warning: #b48c14;
 
 
 * {
@@ -41,8 +42,8 @@ body {
   border: 1px solid;
   line-height: 1.5;
   color: #fff;
-  background-color: $blue-ok;
-  border-color: $blue-ok;
+  background-color: $blue-info;
+  border-color: $blue-info;
   padding: 0.2rem 0.7rem;
   transition: background-color 1000ms linear, border-color 1000ms linear;
 }
@@ -287,6 +288,15 @@ body {
   }
   .one-success {
     font-weight: bold;
+  }
+  .high {
+    color: $red-danger;
+  }
+  .medium {
+    color: $orange-warning;
+  }
+  .low {
+    color: $green-success;
   }
 }
 
