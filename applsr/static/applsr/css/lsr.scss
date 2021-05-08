@@ -155,9 +155,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 90px;
     img {
-      max-height: 99%;
+      max-height: 90px;
     }
   }
 }
@@ -234,6 +233,12 @@ body {
       flex: content;
       margin-bottom: 1em;
     }
+  }
+}
+
+.pc-page {
+  .minus-max, .plus-max, .edit {
+    display: none;
   }
 }
 

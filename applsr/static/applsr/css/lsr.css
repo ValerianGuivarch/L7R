@@ -83,10 +83,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 90px;
 }
 .character .portrait img {
-  max-height: 99%;
+  max-height: 90px;
 }
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
@@ -154,6 +153,10 @@ body {
 .roller .group > * {
   flex: content;
   margin-bottom: 1em;
+}
+
+.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit {
+  display: none;
 }
 
 .pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
