@@ -486,7 +486,6 @@ function createCharacter(name) {
     return characterElement;
 }
 function updateCharacter(characterElement) {
-    console.log("Update", characterElement);
     var name = characterElement.querySelector(".name").innerHTML;
     fetch('/lsr/getcar/' + name + "?json")
         .then(function (response) { return response.text(); })

@@ -66,7 +66,7 @@
   background-color: aqua;
 }
 
-.curse, .blessing {
+.curse, .curse2, .blessing {
   @extend %bonus;
 }
 
@@ -92,13 +92,13 @@
   }
 }
 
-.flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .blessing {
+.flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
   input[type="text"] {
     @extend %input-as-text;
   }
 }
 
-.flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .blessing {
+.flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
   input[type="text"].current {
     text-align: right;
     width: 1em;

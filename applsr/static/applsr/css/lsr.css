@@ -1,4 +1,4 @@
-.flesh input[type=text], .spirit input[type=text], .essence input[type=text], .hp input[type=text], .debt input[type=text], .arcana input[type=text], .focus input[type=text], .power input[type=text], .curse input[type=text], .blessing input[type=text], .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
+.flesh input[type=text], .spirit input[type=text], .essence input[type=text], .hp input[type=text], .debt input[type=text], .arcana input[type=text], .focus input[type=text], .power input[type=text], .curse input[type=text], .curse2 input[type=text], .blessing input[type=text], .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
@@ -30,7 +30,7 @@
   background-color: yellow;
 }
 
-.curse, .blessing {
+.curse, .curse2, .blessing {
   background-color: blueviolet;
 }
 
@@ -38,7 +38,7 @@
   background-color: pink;
 }
 
-.flesh input[type=text], .spirit input[type=text], .essence input[type=text], .hp input[type=text], .debt input[type=text], .arcana input[type=text], .focus input[type=text], .power input[type=text], .curse input[type=text], .blessing input[type=text], .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
+.flesh input[type=text], .spirit input[type=text], .essence input[type=text], .hp input[type=text], .debt input[type=text], .arcana input[type=text], .focus input[type=text], .power input[type=text], .curse input[type=text], .curse2 input[type=text], .blessing input[type=text], .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
   border: none;
   width: 100%;
   background-color: transparent;
@@ -60,7 +60,7 @@
   display: inline-block;
 }
 
-.flesh input[type=text].current, .spirit input[type=text].current, .essence input[type=text].current, .hp input[type=text].current, .debt input[type=text].current, .arcana input[type=text].current, .focus input[type=text].current, .power input[type=text].current, .curse input[type=text].current, .blessing input[type=text].current {
+.flesh input[type=text].current, .spirit input[type=text].current, .essence input[type=text].current, .hp input[type=text].current, .debt input[type=text].current, .arcana input[type=text].current, .focus input[type=text].current, .power input[type=text].current, .curse input[type=text].current, .curse2 input[type=text].current, .blessing input[type=text].current {
   text-align: right;
   width: 1em;
 }
