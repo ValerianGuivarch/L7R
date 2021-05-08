@@ -19,7 +19,7 @@ body {
   color: #212529;
 }
 
-.container {
+.nocontainer {
   display: flex;
   justify-content: center;
   text-align: center;
