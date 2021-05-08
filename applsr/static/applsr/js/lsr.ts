@@ -71,7 +71,21 @@ class SmartStringAttribute {
     }
 }
 
-class AttributeActivable extends WithLabel {
+class AttributeWithoutValueActivable extends WithLabel {
+    constructor(element: HTMLElement) {
+        super(element);
+    }
+
+    public get enabled(): boolean {
+        return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
+    }
+    
+    public set enabled(value: boolean) {
+        this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
+    }
+}
+
+class AttributeActivable extends Attribute {
     constructor(element: HTMLElement) {
         super(element);
     }
@@ -178,8 +192,8 @@ class LocalCharacterView {
         return new Attribute(this.element.querySelector(".curse")!);
     }
 
-    public get curse2(): Attribute {
-        return new Attribute(this.element.querySelector(".curse2")!);
+    public get curse2(): AttributeActivable {
+        return new AttributeActivable(this.element.querySelector(".curse2")!);
     }
 
     public get hp(): AttributeWithMax {
@@ -209,12 +223,12 @@ class LocalCharacterView {
         return new AttributeWithMaxActivable(this.element.querySelector(".power")!);
     }
 
-    public get proficiency(): AttributeActivable {
-        return new AttributeActivable(this.element.querySelector(".proficiency")!);
+    public get proficiency(): AttributeWithoutValueActivable {
+        return new AttributeWithoutValueActivable(this.element.querySelector(".proficiency")!);
     }
 
-    public get secret(): AttributeActivable {
-        return new AttributeActivable(this.element.querySelector(".secret")!);
+    public get secret(): AttributeWithoutValueActivable {
+        return new AttributeWithoutValueActivable(this.element.querySelector(".secret")!);
     }
 
     public set portrait(basename: string) {

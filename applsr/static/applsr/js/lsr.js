@@ -95,6 +95,23 @@ var SmartStringAttribute = /** @class */ (function () {
     });
     return SmartStringAttribute;
 }());
+var AttributeWithoutValueActivable = /** @class */ (function (_super) {
+    __extends(AttributeWithoutValueActivable, _super);
+    function AttributeWithoutValueActivable(element) {
+        return _super.call(this, element) || this;
+    }
+    Object.defineProperty(AttributeWithoutValueActivable.prototype, "enabled", {
+        get: function () {
+            return this.element.querySelector(".enabled input").checked;
+        },
+        set: function (value) {
+            this.element.querySelector(".enabled input").checked = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    return AttributeWithoutValueActivable;
+}(WithLabel));
 var AttributeActivable = /** @class */ (function (_super) {
     __extends(AttributeActivable, _super);
     function AttributeActivable(element) {
@@ -111,7 +128,7 @@ var AttributeActivable = /** @class */ (function (_super) {
         configurable: true
     });
     return AttributeActivable;
-}(WithLabel));
+}(Attribute));
 var AttributeWithMaxActivable = /** @class */ (function (_super) {
     __extends(AttributeWithMaxActivable, _super);
     function AttributeWithMaxActivable(element) {
@@ -246,7 +263,7 @@ var LocalCharacterView = /** @class */ (function () {
     });
     Object.defineProperty(LocalCharacterView.prototype, "curse2", {
         get: function () {
-            return new Attribute(this.element.querySelector(".curse2"));
+            return new AttributeActivable(this.element.querySelector(".curse2"));
         },
         enumerable: false,
         configurable: true
@@ -296,14 +313,14 @@ var LocalCharacterView = /** @class */ (function () {
     });
     Object.defineProperty(LocalCharacterView.prototype, "proficiency", {
         get: function () {
-            return new AttributeActivable(this.element.querySelector(".proficiency"));
+            return new AttributeWithoutValueActivable(this.element.querySelector(".proficiency"));
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(LocalCharacterView.prototype, "secret", {
         get: function () {
-            return new AttributeActivable(this.element.querySelector(".secret"));
+            return new AttributeWithoutValueActivable(this.element.querySelector(".secret"));
         },
         enumerable: false,
         configurable: true
