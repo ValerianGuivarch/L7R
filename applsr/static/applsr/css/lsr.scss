@@ -7,10 +7,9 @@
   color: #212529;
 }
 
-%button {
+.button {
   display: inline-block;
   font-size: 1rem;
-  border-radius: 5px;
   border: 1px solid;
   line-height: 1.5;
   color: #fff;
@@ -20,25 +19,30 @@
   transition: background-color 1000ms linear, border-color 1000ms linear;
 }
 
+.round-button {
+  @extend .button;
+  border-radius: 5px;
+}
+
 // Generic styles
 %ability {
-  background-color: red;
+  //background-color: red;
 }
 
 %stat {
-  background-color: green;
+  //background-color: green;
 }
 
 %flavor {
-  background-color: yellow;
+  //background-color: yellow;
 }
 
 %bonus {
-  background-color: blueviolet;
+  //background-color: blueviolet;
 }
 
 %option {
-  background-color: pink;
+  //background-color: pink;
 }
 
 %input-as-text {
@@ -71,7 +75,7 @@
 }
 
 .debt {
-  background-color: darkorange;
+  //background-color: darkorange;
 }
 
 .proficiency, .secret {
@@ -79,7 +83,7 @@
 }
 
 .arcana {
-  background-color: chartreuse;
+  //background-color: chartreuse;
 }
 
 .text-container {
@@ -92,17 +96,8 @@
   }
 }
 
-.flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
-  input[type="text"] {
-    @extend %input-as-text;
-  }
-}
-
-.flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
-  input[type="text"].current {
-    text-align: right;
-    width: 1em;
-  }
+.name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
+  
 }
 
 .lux, .secunda, .umbra {
@@ -129,6 +124,24 @@
   }
   .main {
     flex: content;
+  }
+}
+
+.name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
+  display: flex;
+  justify-content: space-between;
+  & > button {
+    @extend .button;
+  }
+  & > button:first-child {
+    border-radius: .25rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  & > button:last-child {
+    border-radius: .25rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 
@@ -163,7 +176,7 @@
   flex-direction: column;
   flex-wrap: wrap;
   button {
-    @extend %button;
+    @extend .round-button;
     margin: 0 0.5rem;
   }
   .group {

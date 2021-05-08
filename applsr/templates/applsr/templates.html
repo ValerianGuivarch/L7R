@@ -8,11 +8,12 @@
             <span class="title">
                 <button onclick="getCharacter(this).autoClick(this);">Edit</button>
                 <span class="current">Champion</span>
+            </span>
             <span class="level">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
                 <span class="label">niv.</span>
                 <span class="current">3</span>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </span>
         </div>
 
@@ -21,35 +22,38 @@
 
             <div class="abilities">
                 <div class="flesh" title="Chair">
-                    <button onclick="getCharacter(this).autoClick(this);">-</button>
+                    <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
                     <span class="label">Chair :</span>
                     <span class="current">1</span>
-                    <button onclick="getCharacter(this).autoClick(this);">+</button>
+                    <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
                 </div>
                 <div class="spirit" title="Esprit">
-                    <button onclick="getCharacter(this).autoClick(this);">-</button>
+                    <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
                     <span class="label">Esprit :</span>
                     <span class="current">1</span>
-                    <button onclick="getCharacter(this).autoClick(this);">+</button>
+                    <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
                 </div>
                 <div class="essence" title="Essence">
-                    <button onclick="getCharacter(this).autoClick(this);">-</button>
+                    <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
                     <span class="label">Essence :</span>
                     <span class="current">1</span>
-                    <button onclick="getCharacter(this).autoClick(this);">+</button>
+                    <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
                 </div>
             </div>
 
             <div class="story">
                 <div class="lux" title="Lux">
+                    <button onclick="getCharacter(this).autoClick(this);">Edit</button>
                     <span class="label">Lux :</span>
                     <span class="current">lux</span>
                 </div>
                 <div class="umbra" title="Umbra">
+                    <button onclick="getCharacter(this).autoClick(this);">Edit</button>
                     <span class="label">Umbra :</span>
                     <span class="current">umbra</span>
                 </div>
                 <div class="secunda" title="Secunda">
+                    <button onclick="getCharacter(this).autoClick(this);">Edit</button>
                     <span class="label">Secunda :</span>
                     <span class="current">secunda</span>
                 </div>
@@ -59,37 +63,37 @@
 
         <div class="hp-debt-arcana">
             <div class="hp" title="Points de vie">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
-                <button onclick="getCharacter(this).autoClick(this);">--</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus-max" onclick="getCharacter(this).autoClick(this);">--</button>
                 <span class="label">PV :</span>
                 <span class="current">1</span>
                 <span class="sep">/</span>
                 <span class="max">?</span>
-                <button onclick="getCharacter(this).autoClick(this);">++</button>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus-max" onclick="getCharacter(this).autoClick(this);">++</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
             <div class="debt" title="Dettes">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
                 <span class="label">Dettes :</span>
                 <span class="current">1</span>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
             <div class="arcana">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
-                <button onclick="getCharacter(this).autoClick(this);">--</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus-max" onclick="getCharacter(this).autoClick(this);">--</button>
                 <span class="label">Arcanes :</span>
                 <span class="current">1</span>
                 <span class="sep">/</span>
                 <span class="max">?</span>
-                <button onclick="getCharacter(this).autoClick(this);">++</button>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus-max" onclick="getCharacter(this).autoClick(this);">++</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
         </div>
 
         <div class="boosts">
             <div class="focus" title="Points de focus">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
-                <button onclick="getCharacter(this).autoClick(this);">--</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus-max" onclick="getCharacter(this).autoClick(this);">--</button>
                 <span class="enabled">
                     <input type="checkbox" />
                 </span>
@@ -97,12 +101,12 @@
                 <span class="current">1</span>
                 <span class="sep">/</span>
                 <span class="max">?</span>
-                <button onclick="getCharacter(this).autoClick(this);">++</button>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus-max" onclick="getCharacter(this).autoClick(this);">++</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
             <div class="power" title="Points de pouvoir">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
-                <button onclick="getCharacter(this).autoClick(this);">--</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus-max" onclick="getCharacter(this).autoClick(this);">--</button>
                 <span class="enabled">
                     <input type="checkbox" />
                 </span>
@@ -110,33 +114,33 @@
                 <span class="current">1</span>
                 <span class="sep">/</span>
                 <span class="max">?</span>
-                <button onclick="getCharacter(this).autoClick(this);">++</button>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus-max" onclick="getCharacter(this).autoClick(this);">++</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
         </div>
 
         <div class="graces">
             <div class="curse" title="Malédiction">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
-                <button onclick="getCharacter(this).autoClick(this);">--</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus-max" onclick="getCharacter(this).autoClick(this);">--</button>
                 <span class="label">Malédictions :</span>
                 <span class="current">1</span>
-                <button onclick="getCharacter(this).autoClick(this);">++</button>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus-max" onclick="getCharacter(this).autoClick(this);">++</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
             <div class="curse2" title="Malédiction du à la perte de PV">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
                 <span class="label"></span>
                 <span class="current">1</span>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
             <div class="blessing" title="Bénédiction">
-                <button onclick="getCharacter(this).autoClick(this);">-</button>
-                <button onclick="getCharacter(this).autoClick(this);">--</button>
+                <button class="minus" onclick="getCharacter(this).autoClick(this);">-</button>
+                <button class="minus-max" onclick="getCharacter(this).autoClick(this);">--</button>
                 <span class="label">Bénédiction :</span>
                 <span class="current">1</span>
-                <button onclick="getCharacter(this).autoClick(this);">++</button>
-                <button onclick="getCharacter(this).autoClick(this);">+</button>
+                <button class="plus-max" onclick="getCharacter(this).autoClick(this);">++</button>
+                <button class="plus" onclick="getCharacter(this).autoClick(this);">+</button>
             </div>
         </div>
 
