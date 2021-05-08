@@ -158,6 +158,7 @@ var LocalCharacterView = /** @class */ (function () {
             this.proficiency.label += " / " + characterFromDatabase.force2;
         }
         this.notes.current = (_a = characterFromDatabase.notes) !== null && _a !== void 0 ? _a : "";
+        this.portrait = characterFromDatabase.name + ".png";
     };
     Object.defineProperty(LocalCharacterView.prototype, "name", {
         get: function () {
@@ -274,6 +275,17 @@ var LocalCharacterView = /** @class */ (function () {
     Object.defineProperty(LocalCharacterView.prototype, "secret", {
         get: function () {
             return new AttributeActivable(this.element.querySelector(".secret"));
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(LocalCharacterView.prototype, "portrait", {
+        set: function (basename) {
+            var portrait = this.element.querySelector(".portrait img");
+            var src = "/static/applsr/" + basename;
+            if (portrait.src != src) {
+                portrait.src = src;
+            }
         },
         enumerable: false,
         configurable: true

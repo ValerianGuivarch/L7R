@@ -79,6 +79,15 @@ body {
 .character .label:empty {
   display: none;
 }
+.character .portrait {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 90px;
+}
+.character .portrait img {
+  max-height: 99%;
+}
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
   display: flex;

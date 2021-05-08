@@ -127,6 +127,7 @@ class LocalCharacterView {
             this.proficiency.label += " / " + characterFromDatabase.force2;
         }
         this.notes.current = characterFromDatabase.notes ?? "";
+        this.portrait = characterFromDatabase.name + ".png";
     }
 
     public get name(): SmartStringAttribute {
@@ -195,6 +196,14 @@ class LocalCharacterView {
 
     public get secret(): AttributeActivable {
         return new AttributeActivable(this.element.querySelector(".secret")!);
+    }
+
+    public set portrait(basename: string) {
+        const portrait = this.element.querySelector<HTMLImageElement>(".portrait img")!;
+        const src = "/static/applsr/" + basename;
+        if(portrait.src != src) {
+            portrait.src = src;
+        }
     }
 }
 

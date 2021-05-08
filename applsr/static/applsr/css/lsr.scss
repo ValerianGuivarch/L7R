@@ -151,6 +151,15 @@ body {
   .label:empty {
     display: none;
   }
+  .portrait {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 90px;
+    img {
+      max-height: 99%;
+    }
+  }
 }
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing {
