@@ -359,7 +359,7 @@ def element_to_flavor(element):
     elif element == "gorgonne":
         return "Rejeté de la Gorgonne"
     else:
-        return "Heros de " + element
+        return element
 
 def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0, parent_roll_id=None):
     dices = []
@@ -872,8 +872,12 @@ def modifs_valeurs(request, nom, stat, valeur, add):
         char.update(fs=valeur)
     elif stat == "fu":
         char.update(fu=valeur)
+    elif stat == "titre":
+        char.update(element=valeur)
+    elif stat == "name":
+        char.update(name=valeur)
     elif stat == "force":
-        force1, force2 = valeur.split(" / ")
+        force1, force2 = valeur.split(" | ")
         char.update(force1=force1, force2=force2)
     car = Character.objects.all().filter(name=nom)[0]
     return JsonResponse(filter_character_for_response(car), encoder=ExtendedEncoder, safe=False)

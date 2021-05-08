@@ -542,10 +542,10 @@ document.addEventListener("DOMContentLoaded", function () {
 function thingToName(thing) {
     // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
     if (thing == "name") {
-        return "nom";
+        return "name";
     }
     else if (thing == "title") {
-        throw new Error("Not implemented");
+        return "titre";
     }
     else if (thing == "level") {
         return "niveau";
@@ -612,12 +612,16 @@ function autoClick(sourceElement) {
     var target = sourceElement.parentElement.dataset.thing;
     var value = "1";
     if (action == "Edit") {
-        var currentValue = sourceElement.parentElement.querySelector(".current").innerHTML;
+        var currentElement = sourceElement.parentElement.querySelector(".current");
+        if (currentElement == null) {
+            currentElement = sourceElement.parentElement.querySelector(".label");
+        }
+        var currentValue = currentElement.innerHTML;
         var read = prompt(target + " ?", currentValue);
         if (read == null) {
             return;
         }
-        value = read;
+        value = read.replace(" / ", " | ");
     }
     var add = true;
     if (action == "-" || action == "--") {
@@ -644,7 +648,9 @@ function autoClick(sourceElement) {
         }
     }
     else {
-        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add)
+        var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
+        console.log("url:", url);
+        fetch(url)
             .then(function (response) { return response.text(); })
             .then(function (text) {
             var characterFromDatabase = JSON.parse(text);

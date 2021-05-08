@@ -517,10 +517,10 @@ type Thing =  "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "es
 function thingToName(thing: Thing) {
     // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
     if(thing == "name") {
-        return "nom";
+        return "name";
     }
     else if(thing == "title") {
-        throw new Error("Not implemented");
+        return "titre";
     }
     else if(thing == "level") {
         return "niveau";
@@ -589,12 +589,16 @@ function autoClick(sourceElement: HTMLElement) {
 
     let value: string = "1";
     if(action == "Edit") {
-        const currentValue = sourceElement.parentElement!.querySelector<HTMLElement>(".current")!.innerHTML;
+        let currentElement = sourceElement.parentElement!.querySelector<HTMLElement>(".current");
+        if(currentElement == null) {
+            currentElement = sourceElement.parentElement!.querySelector<HTMLElement>(".label")!;
+        }
+        const currentValue = currentElement.innerHTML;
         const read = prompt(target + " ?", currentValue);
         if(read == null) {
             return;
         }
-        value = read;
+        value = read.replace(" / ", " | ");
     }
     let add = true;
     if(action == "-" || action == "--") {
@@ -622,7 +626,9 @@ function autoClick(sourceElement: HTMLElement) {
         }
     }
     else {
-        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add)
+        const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
+        console.log("url:", url);
+        fetch(url)
         .then(response => response.text())
         .then(text => {
             const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
