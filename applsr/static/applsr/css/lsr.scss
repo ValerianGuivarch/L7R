@@ -167,8 +167,11 @@ body {
   .abilities, .story {
     flex-direction: column;
   }
-  .name::first-letter {
-    text-transform: capitalize;
+  .name .current {
+    display: block; // or else ::first-letter does not work
+    &::first-letter {
+      text-transform: capitalize;
+    }
   }
   .notes {
     flex-basis: 100%;

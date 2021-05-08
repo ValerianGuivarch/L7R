@@ -90,7 +90,10 @@ body {
 .character .abilities, .character .story {
   flex-direction: column;
 }
-.character .name::first-letter {
+.character .name .current {
+  display: block;
+}
+.character .name .current::first-letter {
   text-transform: capitalize;
 }
 .character .notes {
