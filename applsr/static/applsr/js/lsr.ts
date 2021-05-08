@@ -1,8 +1,7 @@
 declare var nompj: string; // set in html
 
 type JEMP = `Jemp-${string}`;
-type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT'
-    | JEMP;
+type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
 
 class WithLabel {
     constructor(protected element: HTMLElement) { }
@@ -320,27 +319,6 @@ function rollTypeToString(rollType: RollType) {
     else if(rollType == 'JE') {
         return "fait un <i>jet d'Essence</i>";
     }
-    else if(rollType == 'JCH') {
-        return "fait un <i>jet de Charisme</i>";
-    }
-    else if(rollType == 'JAG') {
-        return "fait un <i>jet d'Agriculture</i>";
-    }
-    else if(rollType == 'JCB') {
-        return "fait un <i>jet de Combat</i>";
-    }
-    else if(rollType == 'JMG') {
-        return "fait un <i>jet de Magie</i>";
-    }
-    else if(rollType == 'JSV') {
-        return "fait un <i>jet de Savoir</i>";
-    }
-    else if(rollType == 'JNV') {
-        return "fait un <i>jet de Navigation</i>";
-    }
-    else if(rollType == 'JNT') {
-        return "fait un <i>jet de Nature</i>";
-    }
     //@ts-expect-error
     else if(rollType.startsWith('Jemp-')) {
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
@@ -353,7 +331,15 @@ function rollTypeToString(rollType: RollType) {
 function formatRollResults(dice_results: number[]) {
     var str = "";
     for(var result of dice_results) {
-        str += " [&nbsp;" + result + "&nbsp;] "
+        if(result == 6) {
+            str += ' <span class="two-success">[&nbsp;' + result + '&nbsp;]</span> '
+        }
+        else if(result == 5) {
+            str += ' <span class="one-success">[&nbsp;' + result + '&nbsp;]</span> '
+        }
+        else {
+            str += ' [&nbsp;' + result + '&nbsp;] '
+        }
     }
     return str;
 }
@@ -388,14 +374,14 @@ function resist(elem: HTMLElement, action: RollType) {
 }
 
 function jsonRollToHtml(roll: Roll, sub: boolean = false) {
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
 
-    var secret = ""
+    let secret = ""
     if(roll.secret == true) {
         secret = "(secret) ";
     }
 
-    var benemal = "";
+    let benemal = "";
     if(roll.malediction_count > 0 && roll.benediction_count > 0) {
         benemal = "Avec " + roll.benediction_count + " bénédictions et " + roll.malediction_count + " malédictions, "
     }
@@ -406,26 +392,26 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         benemal = "Avec " + roll.benediction_count + " bénédictions, "
     }
 
-    var pp = "";
+    let pp = "";
     if(roll.pp == true) {
         pp = " en y mettant toute sa <i>puissance</i> ";
     }
 
-    var pf = "";
+    let pf = "";
     if(roll.pf == true) {
         pf = " se <i>concentre</i> et "
     }
 
-    var ra = "";
+    let ra = "";
     if(roll.ra == true) {
         ra = ", grâce à son <i>héritage latent</i>"
     }
 
-    var delta = "";
+    let delta = "";
     if(roll.parent_roll != null) {
-        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
-        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
-        var diff = parentSuccessCount - thisSuccessCount;
+        let parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
+        let thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
+        let diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
         if(diff < 0) {
             delta += " (aucun dégâts)"
@@ -435,21 +421,21 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         }
     }
 
-    var resist = "";
+    let resist = "";
     if(sub == false) {
         resist = ' Résister avec <button class="btn resist" onclick="resist(this, \'JC\')">chair</button>'
             + '<button class="btn resist" onclick="resist(this, \'JS\')">esprit</button>'
             + '<button class="btn resist" onclick="resist(this, \'JE\')">essence</button> ?';
     }
 
-    var success = 'et obtient <span title="Juge12: '
+    let success = 'et obtient <span title="Juge12: '
         + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
         + ', Juge34: '
         + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
         + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
         + " succès</span>"
 
-    var roll_string = " ";
+    let roll_string = " ";
     if(roll.roll_type == "JAF") {
         roll_string = "";
         success = "";
@@ -470,7 +456,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         + rollTypeToString(roll.roll_type)
         + pp
         + roll_string
-        
+        + success
         + ra
         + "."
         + resist
@@ -479,7 +465,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     return tr;
 }
 
-var display_secret = false; // override value from lsr.js
+let display_secret = false; // override value from lsr.js
 
 function afficher(nompj: string) {
     fetch('/afficher/' + nompj + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
@@ -507,10 +493,16 @@ function updateCharactersOnPage() {
     document.querySelectorAll<HTMLElement>("body > .main .character").forEach(e => updateCharacter(e));
 }
 
-function createCharacter(name: string) {
+function createCharacter(name: string, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
     const character = new LocalCharacterView(characterElement);
     character.name.current = name;
+
+    if(withRoller == true) {
+        const rollerElement = document.querySelector(".templates > .roller")!.cloneNode(true) as HTMLElement;
+        characterElement.appendChild(rollerElement);
+    }
+
     return characterElement;
 }
 
@@ -659,6 +651,63 @@ function autoClick(sourceElement: HTMLElement) {
             character.updateFromDatabase(characterFromDatabase);
         });
     }
+}
+
+type RollType2 = "flesh" | "spirit" | "essence" | "death" | "magic" | "heal" | "empirical" | "arcana" | "arcana-spirit" | "arcana-essence";
+
+function convertRollType2(rollType2: RollType2): RollType {
+    //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
+    if(rollType2 == "flesh") {
+        return "JC";
+    }
+    else if(rollType2 == "spirit") {
+        return "JS";
+    }
+    else if(rollType2 == "essence") {
+        return "JE";
+    }
+    else if(rollType2 == "death") {
+        return "Jmort";
+    }
+    else if(rollType2 == "magic") {
+        return "JM";
+    }
+    else if(rollType2 == "heal") {
+        return 'Jsoin';
+    }
+    else if(rollType2 == "empirical") {
+        return "Jemp-";
+    }
+    else if(rollType2 == "arcana") {
+        return "JAF";
+    }
+    else if(rollType2 == "arcana-spirit") {
+        return "JAS"
+    }
+    else if(rollType2 == "arcana-essence") {
+        return "JAE";
+    }
+    throw new Error("unknown roll type: " + rollType2);
+}
+
+function autoRoll(sourceElement: HTMLElement) {
+    const characterElement = sourceElement.closest<HTMLElement>(".character")!;
+    const character = new LocalCharacterView(characterElement);
+    const rollType = sourceElement.dataset.roll as RollType2;
+    if(rollType == "empirical") {
+        loadLancerEmpirique(character.name.current, character.secret.enabled);
+    }
+    else if(rollType == "death") {
+        loadLancerJdSvM(character.name.current);
+    }
+    else {
+        const rollType2 = convertRollType2(rollType);
+        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current);
+    }
+}
+
+function loadLancer2(name: string, action: RollType, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, parentRollId: string | null = null) {
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
 }
 
 function getCar(name: string) {
