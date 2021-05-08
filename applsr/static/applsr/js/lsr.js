@@ -253,6 +253,14 @@ var LocalCharacterView = /** @class */ (function () {
     });
     Object.defineProperty(LocalCharacterView.prototype, "hp", {
         get: function () {
+            var _this = this;
+            setTimeout(function () {
+                var curse2 = Math.floor((_this.hp.max - _this.hp.current) / 6);
+                if (curse2 < 0) {
+                    curse2 = 0;
+                }
+                _this.curse2.current = curse2;
+            }, 1);
             return new AttributeWithMax(this.element.querySelector(".hp"));
         },
         enumerable: false,
@@ -631,7 +639,6 @@ function autoClick(sourceElement) {
     if (action == "++" || action == "--") {
         maxSuffix = "_max";
     }
-    console.log("type of click: ", target, action);
     if (target == "blessing" || target == "curse" || target == "curse2") {
         var increment = 1;
         if (action == "-") {
@@ -649,7 +656,6 @@ function autoClick(sourceElement) {
     }
     else {
         var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
-        console.log("url:", url);
         fetch(url)
             .then(function (response) { return response.text(); })
             .then(function (text) {

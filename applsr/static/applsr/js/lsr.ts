@@ -183,6 +183,13 @@ class LocalCharacterView {
     }
 
     public get hp(): AttributeWithMax {
+        setTimeout(() => {
+            let curse2 = Math.floor((this.hp.max - this.hp.current) / 6)
+            if(curse2 < 0) {
+                curse2 = 0;
+            }
+            this.curse2.current = curse2;
+        }, 1);
         return new AttributeWithMax(this.element.querySelector(".hp")!);
     }
 
@@ -609,7 +616,6 @@ function autoClick(sourceElement: HTMLElement) {
         maxSuffix = "_max";
     }
 
-    console.log("type of click: ", target, action);
     if(target == "blessing" || target == "curse" || target == "curse2") {
         let increment = 1;
         if(action == "-") {
@@ -627,7 +633,6 @@ function autoClick(sourceElement: HTMLElement) {
     }
     else {
         const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
-        console.log("url:", url);
         fetch(url)
         .then(response => response.text())
         .then(text => {

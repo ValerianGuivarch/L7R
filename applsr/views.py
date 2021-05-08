@@ -904,6 +904,7 @@ def filter_character_for_response(character):
         "force1": character.force1,
         "force2": character.force2 if character.niveau >= 13 else None,
         "element": character.element,
+        "notes": character.notes,
         "titre": element_to_flavor(character.element)
     }
     return data

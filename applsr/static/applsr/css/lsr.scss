@@ -176,12 +176,10 @@ body {
   .notes {
     flex-basis: 100%;
     display: block;
-    & > * {
-      display: block;
-      width: 100%;
-    }
     textarea {
       height: 5em;
+      display: block;
+      width: 100%;
     }
   }
   .plus-max, .minus-max {

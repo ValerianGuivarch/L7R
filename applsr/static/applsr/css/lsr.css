@@ -100,12 +100,10 @@ body {
   flex-basis: 100%;
   display: block;
 }
-.character .notes > * {
-  display: block;
-  width: 100%;
-}
 .character .notes textarea {
   height: 5em;
+  display: block;
+  width: 100%;
 }
 .character .plus-max, .character .minus-max {
   border-color: #dc3545;
