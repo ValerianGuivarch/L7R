@@ -842,7 +842,6 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
         loadLancerEmpirique(character.name.current, character.secret.enabled);
     }
     else if(rollType == "death") {
-        console.log("DEATH!!!!");
         const rollType2 = convertRollTypeToBackend(rollType);
         loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, parentRollId);
     }
