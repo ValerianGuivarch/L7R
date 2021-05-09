@@ -437,7 +437,6 @@ function rollTypeToString(rollType) {
     else if (rollType == 'JE') {
         return "fait un <i>jet d'Essence</i>";
     }
-    //@ts-expect-error
     else if (rollType.startsWith('Jemp-')) {
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
     }

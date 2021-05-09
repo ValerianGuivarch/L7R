@@ -31,7 +31,7 @@ body {
 // Base styles
 
 body.pc-page {
-  max-width: 500px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -130,6 +130,10 @@ body.pc-page {
   //background-color: chartreuse;
 }
 
+.name {
+  font-weight: bold;
+}
+
 .text-container {
   display: inline-block;
 }
@@ -182,6 +186,9 @@ body.pc-page {
   }
   .abilities, .story {
     flex-direction: column;
+  }
+  .story {
+    max-width: 25em;
   }
   .name .current {
     display: block; // or else ::first-letter does not work
@@ -236,7 +243,7 @@ body.pc-page {
   display: flex;
   justify-content: space-between;
   .logo img {
-    height: 1.5rem;
+    width: 1.5rem;
   }
   .current {
     flex-grow: 1;
@@ -296,8 +303,17 @@ body.pc-page {
 }
 
 .pc-page {
-  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button, .hidden-number {
+  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button, .hidden-number, .abilities button {
     display: none;
+  }
+
+  .name, .title, .level, .lux, .umbra, .secunda, .proficiency, .secret, .abilities {
+    border: none;
+    .current, .label, .enabled, .logo {
+      border: none;
+      background-color: transparent;
+      color: #212529;
+    }
   }
 }
 
@@ -338,6 +354,8 @@ body.pc-page {
     border-left: 2px solid #aaa;
   }
 }
+
+// Controls
 
 .pc-page {
   .character .controls {

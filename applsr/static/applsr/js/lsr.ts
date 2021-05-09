@@ -385,7 +385,6 @@ function rollTypeToString(rollType: RollTypeBackend) {
     else if(rollType == 'JE') {
         return "fait un <i>jet d'Essence</i>";
     }
-    //@ts-expect-error
     else if(rollType.startsWith('Jemp-')) {
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
     }
@@ -549,7 +548,7 @@ let display_secret = false; // override value from lsr.js
 
 function afficher(nompj: string) {
     fetch('/afficher/' + nompj + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
-        const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild;
+        const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
         var chatHistory = JSON.parse(text);
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";

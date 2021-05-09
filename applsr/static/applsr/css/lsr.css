@@ -20,7 +20,7 @@ body {
 }
 
 body.pc-page {
-  max-width: 500px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -59,6 +59,10 @@ body.compact .button, body.compact .name > button, body.compact .title > button,
 
 .name, .proficiency, .secret, .hidden-number {
   border: 1px solid #67c2d0;
+}
+
+.name {
+  font-weight: bold;
 }
 
 .text-container {
@@ -102,6 +106,9 @@ body.compact .button, body.compact .name > button, body.compact .title > button,
 }
 .character .abilities, .character .story {
   flex-direction: column;
+}
+.character .story {
+  max-width: 25em;
 }
 .character .name .current {
   display: block;
@@ -152,7 +159,7 @@ body.compact .button, body.compact .name > button, body.compact .title > button,
   justify-content: space-between;
 }
 .name .logo img, .title .logo img, .level .logo img, .lux .logo img, .umbra .logo img, .secunda .logo img, .flesh .logo img, .spirit .logo img, .essence .logo img, .hp .logo img, .debt .logo img, .arcana .logo img, .focus .logo img, .power .logo img, .curse .logo img, .curse2 .logo img, .blessing .logo img, .proficiency .logo img, .secret .logo img, .hidden-number .logo img {
-  height: 1.5rem;
+  width: 1.5rem;
 }
 .name .current, .title .current, .level .current, .lux .current, .umbra .current, .secunda .current, .flesh .current, .spirit .current, .essence .current, .hp .current, .debt .current, .arcana .current, .focus .current, .power .current, .curse .current, .curse2 .current, .blessing .current, .proficiency .current, .secret .current, .hidden-number .current {
   flex-grow: 1;
@@ -204,8 +211,16 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   display: none;
 }
 
-.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled, .pc-page .notes, .pc-page .level button, .pc-page .hidden-number {
+.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled, .pc-page .notes, .pc-page .level button, .pc-page .hidden-number, .pc-page .abilities button {
   display: none;
+}
+.pc-page .name, .pc-page .title, .pc-page .level, .pc-page .lux, .pc-page .umbra, .pc-page .secunda, .pc-page .proficiency, .pc-page .secret, .pc-page .abilities {
+  border: none;
+}
+.pc-page .name .current, .pc-page .name .label, .pc-page .name .enabled, .pc-page .name .logo, .pc-page .title .current, .pc-page .title .label, .pc-page .title .enabled, .pc-page .title .logo, .pc-page .level .current, .pc-page .level .label, .pc-page .level .enabled, .pc-page .level .logo, .pc-page .lux .current, .pc-page .lux .label, .pc-page .lux .enabled, .pc-page .lux .logo, .pc-page .umbra .current, .pc-page .umbra .label, .pc-page .umbra .enabled, .pc-page .umbra .logo, .pc-page .secunda .current, .pc-page .secunda .label, .pc-page .secunda .enabled, .pc-page .secunda .logo, .pc-page .proficiency .current, .pc-page .proficiency .label, .pc-page .proficiency .enabled, .pc-page .proficiency .logo, .pc-page .secret .current, .pc-page .secret .label, .pc-page .secret .enabled, .pc-page .secret .logo, .pc-page .abilities .current, .pc-page .abilities .label, .pc-page .abilities .enabled, .pc-page .abilities .logo {
+  border: none;
+  background-color: transparent;
+  color: #212529;
 }
 
 #chat {
