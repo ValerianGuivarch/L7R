@@ -99,13 +99,13 @@ function effacer_pnj(pnjElement) {
     var _a;
     if (remove_pnj_ok == false) {
         remove_pnj_ok = true;
-        document.querySelectorAll(".delete-npc").forEach(function (btn) {
-            btn.classList.replace("btn-danger", "btn-success");
+        document.querySelectorAll(".character-container .delete").forEach(function (btn) {
+            btn.classList.replace("disabled", "enabled");
         });
         remove_pnj_timeout = setTimeout(function () {
             remove_pnj_ok = false;
-            document.querySelectorAll(".delete-npc").forEach(function (btn) {
-                btn.classList.replace("btn-success", "btn-danger");
+            document.querySelectorAll(".character-container .delete").forEach(function (btn) {
+                btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
     }
@@ -226,7 +226,14 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     c.power.current = parseInt(new_pnj_pp_max);
     c.power.max = parseInt(new_pnj_pp_max);
     c.debt.current = new_pnj_dettes;
-    liste_pnj.appendChild(pnjElement);
+    var container = document.createElement("div");
+    container.classList.add("character-container");
+    container.innerHTML = '<div class="controls">'
+        + '<input type="radio" name="resist" />'
+        + '<button class="delete disabled" onclick="effacer_pnj(this.closest(\'.character-container\'));"> X </button>'
+        + '</div>';
+    container.appendChild(pnjElement);
+    liste_pnj.appendChild(container);
 }
 // to del
 function ajouter_pnj2(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {

@@ -326,10 +326,24 @@ body {
   }
 }
 
-.gm-page {
-  .character {
-    padding: 5px;
-    border-bottom: 1px solid black;
+.character-container {
+  padding: 5px;
+  border-bottom: 1px solid black;
+  .controls {
+    & > * {
+      margin-right: 0.5rem;
+    }
+    .delete {
+      @extend .round-button;
+      &.disabled {
+        border-color: $red-danger;
+        background-color: $red-danger;
+      }
+      &.enabled {
+        border-color: $green-success;
+        background-color: $green-success;
+      }
+    }
   }
 }
 
