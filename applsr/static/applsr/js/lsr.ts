@@ -524,10 +524,10 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results) + "<br />";
     }
 
-    tr.innerHTML = '<td class="date">'
-        + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
-        + '</td>'
+    tr.innerHTML = ''
         + '<td class="roll" data-rollid="' + roll.id + '">'
+        + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
+        + " - "
         + secret // "(secret) "
         + benemal
         + "<b>" + roll.character + "</b>"
@@ -549,7 +549,7 @@ let display_secret = false; // override value from lsr.js
 
 function afficher(nompj: string) {
     fetch('/afficher/' + nompj + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
-        const chat = document.querySelector<HTMLElement>('#chat')!;
+        const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild;
         var chatHistory = JSON.parse(text);
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";

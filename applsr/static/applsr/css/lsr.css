@@ -238,6 +238,10 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
 #chat .low {
   color: #28a745;
 }
+#chat table table {
+  margin-left: 2rem;
+  border-left: 2px solid #aaa;
+}
 
 .pc-page .character .controls {
   display: none;

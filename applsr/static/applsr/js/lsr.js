@@ -566,10 +566,10 @@ function jsonRollToHtml(roll, sub) {
     else if (roll.hidden_dice == false || nompj == "mj") {
         roll_string = " :<br />" + formatRollResults(roll.dice_results) + "<br />";
     }
-    tr.innerHTML = '<td class="date">'
-        + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
-        + '</td>'
+    tr.innerHTML = ''
         + '<td class="roll" data-rollid="' + roll.id + '">'
+        + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
+        + " - "
         + secret // "(secret) "
         + benemal
         + "<b>" + roll.character + "</b>"
@@ -590,7 +590,7 @@ var display_secret = false; // override value from lsr.js
 function afficher(nompj) {
     fetch('/afficher/' + nompj + '/' + display_secret + '?json').then(function (response) { return response.text(); }).then(function (text) {
         var _a;
-        var chat = document.querySelector('#chat');
+        var chat = document.querySelector('#chat').firstElementChild;
         var chatHistory = JSON.parse(text);
         if (chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
