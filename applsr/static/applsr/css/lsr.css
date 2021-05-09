@@ -311,6 +311,9 @@ body.compact .character {
 body.compact .character.npc {
   border-color: #17a2b8;
 }
+body.compact .character.npc .story {
+  display: none;
+}
 body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit {
   display: none;
 }
@@ -321,7 +324,7 @@ body.compact .character {
 body.compact .character * {
   font-size: 14px !important;
 }
-body.compact .character .portrait, body.compact .character .title, body.compact .character .level, body.compact .character .story, body.compact .character .logo, body.compact .character .notes {
+body.compact .character .portrait, body.compact .character .title, body.compact .character .level, body.compact .character .logo, body.compact .character .notes {
   display: none;
 }
 body.compact .character > *, body.compact .character .abilities, body.compact .character .roller .group {

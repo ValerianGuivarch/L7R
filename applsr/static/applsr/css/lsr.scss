@@ -426,6 +426,9 @@ body.compact {
     border-right: 2px solid black;
     &.npc {
       border-color: $blue-info;
+      .story {
+        display: none; // only display lux, umbra and secunda for PC
+      }
     }
     button.plus-max, button.minus-max, button.edit {
       display: none;
@@ -437,7 +440,7 @@ body.compact {
     }
     align-items: start;
     flex-direction: row;
-    .portrait, .title, .level, .story, .logo, .notes {
+    .portrait, .title, .level, .logo, .notes {
       display: none;
     }
     & > *, .abilities, .roller .group {
