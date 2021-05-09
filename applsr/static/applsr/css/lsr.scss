@@ -28,6 +28,15 @@ body {
   color: #212529;
 }
 
+// Base styles
+
+body.pc-page {
+  width: 50%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 // Super generic styles
 
 %reset-text {
