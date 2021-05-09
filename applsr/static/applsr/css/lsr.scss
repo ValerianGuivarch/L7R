@@ -358,6 +358,9 @@ body.compact {
       flex-direction: row;
       justify-content: flex-start;
     }
+    .roller button:not(.base) {
+      display: none; // show only flesh, spriti and essence
+    }
     .roller .group button {
       margin: 0;
       margin-right: 2px;

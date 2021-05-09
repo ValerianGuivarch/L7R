@@ -258,6 +258,9 @@ body.compact .character .roller {
   flex-direction: row;
   justify-content: flex-start;
 }
+body.compact .character .roller button:not(.base) {
+  display: none;
+}
 body.compact .character .roller .group button {
   margin: 0;
   margin-right: 2px;
