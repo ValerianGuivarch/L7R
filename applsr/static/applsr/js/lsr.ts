@@ -373,17 +373,26 @@ function rollTypeToString(rollType: RollType) {
     }
 }
 
-function formatRollResults(dice_results: number[]) {
+const diceTable = ["?", "&#9856;", "&#9857;", "&#9858;", "&#9859;", "&#9860;", "&#9861;"];
+
+function formatRollResults(dice_results: number[], symbol = true) {
     var str = "";
     for(var result of dice_results) {
-        if(result == 6) {
-            str += ' <span class="two-success">[&nbsp;' + result + '&nbsp;]</span> '
-        }
-        else if(result == 5) {
-            str += ' <span class="one-success">[&nbsp;' + result + '&nbsp;]</span> '
+        let diceText: string;
+        if(symbol && result <= 6) {
+            diceText = '<span class="dice">' + diceTable[result] + '</span>';
         }
         else {
-            str += ' [&nbsp;' + result + '&nbsp;] '
+            diceText = '[&nbsp;' + result + '&nbsp;]';
+        }
+        if(result == 6) {
+            str += ' <span class="two-success">' + diceText + '</span> ';
+        }
+        else if(result == 5) {
+            str += ' <span class="one-success">' + diceText + '</span> ';
+        }
+        else {
+            str += ' ' + diceText + ' ';
         }
     }
     return str;

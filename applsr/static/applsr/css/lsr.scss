@@ -4,7 +4,7 @@ $blue-info: #17a2b8;
 $blue-info-light: #67c2d0;
 $red-danger: #dc3545;
 $green-success: #28a745;
-$orange-warning: #b48c14;
+$orange-warning: #d3930b;
 
 
 * {
@@ -295,11 +295,16 @@ body {
     @extend .round-button;
     margin-left: 0.2rem;
   }
+  .dice {
+    font-size: 30px;
+  }
   .two-success {
     font-weight: bold;
+    color: $red-danger;
   }
   .one-success {
     font-weight: bold;
+    color: $orange-warning;
   }
   .high {
     color: $red-danger;

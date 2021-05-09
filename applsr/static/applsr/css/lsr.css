@@ -202,17 +202,22 @@ body {
 #chat button {
   margin-left: 0.2rem;
 }
+#chat .dice {
+  font-size: 30px;
+}
 #chat .two-success {
   font-weight: bold;
+  color: #dc3545;
 }
 #chat .one-success {
   font-weight: bold;
+  color: #d3930b;
 }
 #chat .high {
   color: #dc3545;
 }
 #chat .medium {
-  color: #b48c14;
+  color: #d3930b;
 }
 #chat .low {
   color: #28a745;
