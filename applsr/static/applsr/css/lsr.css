@@ -274,9 +274,42 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   background-color: #28a745;
 }
 
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -1rem;
+}
+
+.menu > * {
+  border-right: 1px solid black;
+  padding: 0 1rem;
+}
+
+.menu > *:last-child {
+  border-right: none;
+}
+
+#liste_pj, #liste_pnj {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+body.gm-page .character {
+  max-width: 500px;
+}
+
+body.compact.gm-page .character {
+  max-width: 270px;
+}
+
 body.compact .character {
   padding: 5px;
-  border-bottom: 1px solid black;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+}
+body.compact .character.npc {
+  border-color: #17a2b8;
 }
 body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit {
   display: none;

@@ -382,12 +382,51 @@ body.pc-page {
   }
 }
 
+// GM Menu
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -1rem;
+}
+
+.menu > * {
+  border-right: 1px solid black;
+  padding: 0 1rem;
+}
+
+.menu > *:last-child {
+  border-right: none;
+}
+
 // compact
+
+#liste_pj, #liste_pnj {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+body.gm-page {
+  .character {
+    max-width: 500px;
+  }
+}
+
+body.compact.gm-page {
+  .character {
+    max-width: 270px;
+  }
+}
 
 body.compact {
   .character {
     padding: 5px;
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    &.npc {
+      border-color: $blue-info;
+    }
     button.plus-max, button.minus-max, button.edit {
       display: none;
     }
