@@ -437,7 +437,10 @@ function rollTypeToString(rollType) {
     else if (rollType == 'JE') {
         return "fait un <i>jet d'Essence</i>";
     }
-    else if (rollType.startsWith('Jemp-')) {
+    else if (rollType == 'Jmort') {
+        return "fait un <i>jet de Sauvegarde contre la Mort</i>";
+    }
+    else if (rollType.indexOf('Jemp-') === 0) {
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
     }
     else {
@@ -445,13 +448,19 @@ function rollTypeToString(rollType) {
     }
 }
 var diceTable = ["?", "&#9856;", "&#9857;", "&#9858;", "&#9859;", "&#9860;", "&#9861;"];
-function formatRollResults(dice_results, symbol) {
+function formatRollResults(dice_results, rollType, symbol) {
     if (symbol === void 0) { symbol = true; }
     var str = "";
     for (var _i = 0, dice_results_1 = dice_results; _i < dice_results_1.length; _i++) {
         var result = dice_results_1[_i];
         var diceText = void 0;
-        if (symbol && result <= 6) {
+        if (symbol && (rollType == "flesh" ||
+            rollType == "spirit" ||
+            rollType == "essence" ||
+            rollType == "arcana-essence" ||
+            rollType == "arcana-spirit" ||
+            rollType == "heal" ||
+            rollType == "magic")) {
             diceText = '<span class="dice">' + diceTable[result] + '</span>';
         }
         else {
@@ -563,7 +572,7 @@ function jsonRollToHtml(roll, sub) {
         success = "";
     }
     else if (roll.hidden_dice == false || nompj == "mj") {
-        roll_string = " :<br />" + formatRollResults(roll.dice_results) + "<br />";
+        roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
     tr.innerHTML = ''
         + '<td class="roll" data-rollid="' + roll.id + '">'
@@ -775,39 +784,73 @@ function autoClick(sourceElement) {
         }
     }
 }
-function convertRollTypeToBackend(rollType2) {
+function convertRollTypeToBackend(rollType) {
     //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
-    if (rollType2 == "flesh") {
+    if (rollType == "flesh") {
         return "JC";
     }
-    else if (rollType2 == "spirit") {
+    else if (rollType == "spirit") {
         return "JS";
     }
-    else if (rollType2 == "essence") {
+    else if (rollType == "essence") {
         return "JE";
     }
-    else if (rollType2 == "death") {
+    else if (rollType == "death") {
         return "Jmort";
     }
-    else if (rollType2 == "magic") {
+    else if (rollType == "magic") {
         return "JM";
     }
-    else if (rollType2 == "heal") {
+    else if (rollType == "heal") {
         return 'Jsoin';
     }
-    else if (rollType2 == "empirical") {
+    else if (rollType == "empirical") {
         return "Jemp-";
     }
-    else if (rollType2 == "arcana") {
+    else if (rollType == "arcana") {
         return "JAF";
     }
-    else if (rollType2 == "arcana-spirit") {
+    else if (rollType == "arcana-spirit") {
         return "JAS";
     }
-    else if (rollType2 == "arcana-essence") {
+    else if (rollType == "arcana-essence") {
         return "JAE";
     }
-    throw new Error("unknown roll type: " + rollType2);
+    throw new Error("unknown roll type: " + rollType);
+}
+function convertRollTypeBackendToFrontend(rollTypeBackend) {
+    //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
+    if (rollTypeBackend == "JC") {
+        return "flesh";
+    }
+    else if (rollTypeBackend == "JS") {
+        return "spirit";
+    }
+    else if (rollTypeBackend == "JE") {
+        return "essence";
+    }
+    else if (rollTypeBackend == "Jmort") {
+        return "death";
+    }
+    else if (rollTypeBackend == "JM") {
+        return "magic";
+    }
+    else if (rollTypeBackend == 'Jsoin') {
+        return "heal";
+    }
+    else if (rollTypeBackend.indexOf("Jemp-") === 0) {
+        return "empirical";
+    }
+    else if (rollTypeBackend == "JAF") {
+        return "arcana";
+    }
+    else if (rollTypeBackend == "JAS") {
+        return "arcana-spirit";
+    }
+    else if (rollTypeBackend == "JAE") {
+        return "arcana-essence";
+    }
+    throw new Error("unknown roll type: " + rollTypeBackend);
 }
 function autoRoll(sourceElement) {
     var characterElement = sourceElement.closest(".character");
@@ -821,7 +864,9 @@ function autoRoll2(character, rollType, parentRollId) {
         loadLancerEmpirique(character.name.current, character.secret.enabled);
     }
     else if (rollType == "death") {
-        loadLancerJdSvM(character.name.current);
+        console.log("DEATH!!!!");
+        var rollType2 = convertRollTypeToBackend(rollType);
+        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, parentRollId);
     }
     else {
         if (!character.isOnline()) {

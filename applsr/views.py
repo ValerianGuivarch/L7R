@@ -694,6 +694,11 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
         dice = dice_roll(char[0].name.capitalize(), 'JS', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JE' == action:
         dice = dice_roll(char[0].name.capitalize(), 'JE', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
+    if 'Jmort' == action:
+        dices = [random.randint(1, 20)]
+        dices_string = " [ " + str(dices[0]) + " ] "
+        dice = DiceRoll(dices=dices_string, secret=True, lancer=char[0].name.capitalize(), malediction_count=0, benediction_count=0, dice_results=",".join([str(r) for r in dices]), pp=False, pf=False, roll_type="Jmort")
+        dice.save()
     if 'JM' == action:
         Character.objects.filter(id=char[0].id).update(dettes=char[0].dettes + 1)
         dice = dice_roll(char[0].name.capitalize(), 'JM', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
