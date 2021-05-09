@@ -132,30 +132,45 @@ function modifPNJ(pnjElement: HTMLElement, stat: Stat, valeur: number) {
     mod.innerHTML = (parseInt(mod.innerHTML) + valeur).toString();
 }
 
-function jetPNJ(pnjElement: HTMLElement, action: RollType, stat: number, pf: boolean, pp: boolean, ra: boolean, sec: boolean, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
-    const name = pnjElement.querySelector(".name")!.innerHTML;
-    const mal = parseInt(pnjElement.querySelector('.mal')!.innerHTML);
-    const ben = parseInt(pnjElement.querySelector('.ben')!.innerHTML);
+function jetPNJ(c: LocalCharacterView, action: RollType2, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
+    let stat: number = 0;
+    if(action == "flesh") { stat = c.flesh.current; }
+    else if(action == "spirit") { stat = c.spirit.current; }
+    else if(action == "essence") { stat = c.essence.current; }
+    else if(action == "magic") { stat = c.essence.current; }
+    else if(action == "heal") { stat = c.essence.current; }
+    else if(action == "arcana") { stat = 0; }
+    else if(action == "arcana-essence") { stat = c.essence.current; }
+    else if(action == "arcana-spirit") { stat = c.spirit.current; }
+    else if(action == "death") { stat = 0; }
+    else if(action == "empirical") { stat = 0; }
+
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
             response.text().then(function(text) {
                 const degats = parseInt(text);
-                modifPNJ(pnjElement, "pv", degats * -1);
+                c.hp.current -= degats;
                 afficher("mj");
             });
         });
-    } else {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => afficher("mj"));
     }
-    if(action == 'JM')
-        modifPNJ(pnjElement, 'dettes', 1);
-    if(pf)
-        modifPNJ(pnjElement, 'pf', -1);
-    if(pp) {
-        modifPNJ(pnjElement, 'pp', -1);
-        modifPNJ(pnjElement, 'dettes', 1);
+    else {
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => afficher("mj"));
+    }
+    if(action == 'magic') {
+        c.debt.current += 1;
+    }
+    if(action == 'arcana' || action == "arcana-essence" || action == "arcana-spirit") {
+        c.arcana.current -= 1;
+    }
+    if(c.focus.enabled) {
+        c.focus.current -= 1;
+    }
+    if(c.power.enabled) {
+        c.power.current -= 1;
+        c.debt.current += 1;
     }
 }
 
@@ -164,6 +179,54 @@ function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, 
 }
 
 function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: string | "PVmax", new_pnj_pf_max: string | "PFmax", new_pnj_pp_max: string | "PPmax") {
+    const new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
+    const liste_pnj = document.querySelector('#liste_pnj')!;
+    
+    if(new_pnj_name == "") {
+        new_pnj_name = "Name";
+    }
+
+    if(new_pnj_chair == "") {
+        new_pnj_chair = "2";
+    }
+
+    if(new_pnj_esprit == "") {
+        new_pnj_esprit = new_pnj_chair;
+    }
+
+    if(new_pnj_essence == "") {
+        new_pnj_essence = new_pnj_chair;
+    }
+
+    if(new_pnj_pv_max == "") {
+        new_pnj_pv_max = "" + parseInt(new_pnj_chair) * 2;
+    }
+    if(new_pnj_pf_max == "") {
+        new_pnj_pf_max = new_pnj_esprit;
+    }
+    if(new_pnj_pp_max == "") {
+        new_pnj_pp_max = new_pnj_essence;
+    }
+    
+    const pnjElement = createCharacter(new_pnj_name);
+    pnjElement.classList.add("npc");
+    const c = new LocalCharacterView(pnjElement);
+    c.flesh.current = parseInt(new_pnj_chair);
+    c.spirit.current = parseInt(new_pnj_esprit);
+    c.essence.current = parseInt(new_pnj_essence);
+    c.hp.current = parseInt(new_pnj_pv_max);
+    c.hp.max = parseInt(new_pnj_pv_max);
+    c.focus.current = parseInt(new_pnj_pf_max);
+    c.focus.max = parseInt(new_pnj_pf_max);
+    c.power.current = parseInt(new_pnj_pp_max);
+    c.power.max = parseInt(new_pnj_pp_max);
+    c.debt.current = new_pnj_dettes;
+
+    liste_pnj.appendChild(pnjElement);
+}
+
+// to del
+function ajouter_pnj2(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: string | "PVmax", new_pnj_pf_max: string | "PFmax", new_pnj_pp_max: string | "PPmax") {
     const new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     const liste_pnj = document.querySelector('#liste_pnj')!;
     
@@ -271,5 +334,5 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
 }
 
 function effacerLancersDes() {
-    fetch('/mj_interdit_aux_joueurs/effacerLancersDes');
+    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => afficher(nompj));
 }

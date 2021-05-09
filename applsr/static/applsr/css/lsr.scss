@@ -211,6 +211,10 @@ body {
       background-color: $red-danger;
     }
   }
+  .curse2 {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing, .proficiency, .secret {
@@ -266,6 +270,10 @@ body {
   }
 }
 
+.curse2 button {
+  display: none;
+}
+
 .pc-page {
   .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button {
     display: none;
@@ -300,8 +308,40 @@ body {
   }
 }
 
+// gm
+
+.gm-page {
+  .character.npc {
+    align-items: start;
+    flex-direction: row;
+    .portrait, .title, .level, .story, .logo, .notes, button.plus-max, button.minus-max {
+      display: none;
+    }
+    * {
+      flex-grow: 0;
+    }
+    & > *, .abilities, .roller .group {
+      display: contents;
+    }
+    .roller .group button {
+      margin: 0;
+    }
+    & > * > * {
+      margin-right: 0;
+    }
+    
+  }
+}
+
+body.show-minmax.gm-page {
+  button.plus-max, button.minus-max {
+    display: initial !important;
+  }
+}
+
 // hide old elements
 
 .pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
   display: none;
 }
+

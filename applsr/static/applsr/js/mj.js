@@ -123,37 +123,110 @@ function modifPNJ(pnjElement, stat, valeur) {
     var mod = pnjElement.querySelector("." + stat);
     mod.innerHTML = (parseInt(mod.innerHTML) + valeur).toString();
 }
-function jetPNJ(pnjElement, action, stat, pf, pp, ra, sec, dc /** dés cachés */, parentRollId) {
+function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
-    var name = pnjElement.querySelector(".name").innerHTML;
-    var mal = parseInt(pnjElement.querySelector('.mal').innerHTML);
-    var ben = parseInt(pnjElement.querySelector('.ben').innerHTML);
     var opposition = parseInt(document.querySelector('#opposition').value);
+    var stat = 0;
+    if (action == "flesh") {
+        stat = c.flesh.current;
+    }
+    else if (action == "spirit") {
+        stat = c.spirit.current;
+    }
+    else if (action == "essence") {
+        stat = c.essence.current;
+    }
+    else if (action == "magic") {
+        stat = c.essence.current;
+    }
+    else if (action == "heal") {
+        stat = c.essence.current;
+    }
+    else if (action == "arcana") {
+        stat = 0;
+    }
+    else if (action == "arcana-essence") {
+        stat = c.essence.current;
+    }
+    else if (action == "arcana-spirit") {
+        stat = c.spirit.current;
+    }
+    else if (action == "death") {
+        stat = 0;
+    }
+    else if (action == "empirical") {
+        stat = 0;
+    }
     if (document.querySelector('#opposition_checked').checked) {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function (response) {
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function (response) {
             response.text().then(function (text) {
                 var degats = parseInt(text);
-                modifPNJ(pnjElement, "pv", degats * -1);
+                c.hp.current -= degats;
                 afficher("mj");
             });
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + name + '/' + action + '/' + stat + '/' + pf + '/' + pp + '/' + ra + '/' + mal + '/' + ben + '/' + sec + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(function () { return afficher("mj"); });
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(function () { return afficher("mj"); });
     }
-    if (action == 'JM')
-        modifPNJ(pnjElement, 'dettes', 1);
-    if (pf)
-        modifPNJ(pnjElement, 'pf', -1);
-    if (pp) {
-        modifPNJ(pnjElement, 'pp', -1);
-        modifPNJ(pnjElement, 'dettes', 1);
+    if (action == 'magic') {
+        c.debt.current += 1;
+    }
+    if (action == 'arcana' || action == "arcana-essence" || action == "arcana-spirit") {
+        c.arcana.current -= 1;
+    }
+    if (c.focus.enabled) {
+        c.focus.current -= 1;
+    }
+    if (c.power.enabled) {
+        c.power.current -= 1;
+        c.debt.current += 1;
     }
 }
 function createJetPnjTemplate(new_pnj_name, new_pnj_stat_value, new_pnj_stat_name, action) {
     return '<button class="btn" onclick="jetPNJ(this.closest(\'.pnj\'),\'' + action + '\',' + new_pnj_stat_value + ',this.closest(\'.pnj\').querySelector(\'.use_pf\').checked,this.closest(\'.pnj\').querySelector(\'.use_pp\').checked,this.closest(\'.pnj\').querySelector(\'.use_ra\').checked, this.closest(\'.pnj\').querySelector(\'.use_sc\').checked, this.closest(\'.pnj\').querySelector(\'.use_dc\').checked);">' + new_pnj_stat_name + '</button>';
 }
 function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {
+    var new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
+    var liste_pnj = document.querySelector('#liste_pnj');
+    if (new_pnj_name == "") {
+        new_pnj_name = "Name";
+    }
+    if (new_pnj_chair == "") {
+        new_pnj_chair = "2";
+    }
+    if (new_pnj_esprit == "") {
+        new_pnj_esprit = new_pnj_chair;
+    }
+    if (new_pnj_essence == "") {
+        new_pnj_essence = new_pnj_chair;
+    }
+    if (new_pnj_pv_max == "") {
+        new_pnj_pv_max = "" + parseInt(new_pnj_chair) * 2;
+    }
+    if (new_pnj_pf_max == "") {
+        new_pnj_pf_max = new_pnj_esprit;
+    }
+    if (new_pnj_pp_max == "") {
+        new_pnj_pp_max = new_pnj_essence;
+    }
+    var pnjElement = createCharacter(new_pnj_name);
+    pnjElement.classList.add("npc");
+    var c = new LocalCharacterView(pnjElement);
+    c.flesh.current = parseInt(new_pnj_chair);
+    c.spirit.current = parseInt(new_pnj_esprit);
+    c.essence.current = parseInt(new_pnj_essence);
+    c.hp.current = parseInt(new_pnj_pv_max);
+    c.hp.max = parseInt(new_pnj_pv_max);
+    c.focus.current = parseInt(new_pnj_pf_max);
+    c.focus.max = parseInt(new_pnj_pf_max);
+    c.power.current = parseInt(new_pnj_pp_max);
+    c.power.max = parseInt(new_pnj_pp_max);
+    c.debt.current = new_pnj_dettes;
+    liste_pnj.appendChild(pnjElement);
+}
+// to del
+function ajouter_pnj2(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {
     var new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     var liste_pnj = document.querySelector('#liste_pnj');
     if (new_pnj_name == "") {
@@ -239,5 +312,5 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     liste_pnj.appendChild(pnjElement.firstChild);
 }
 function effacerLancersDes() {
-    fetch('/mj_interdit_aux_joueurs/effacerLancersDes');
+    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(function () { return afficher(nompj); });
 }

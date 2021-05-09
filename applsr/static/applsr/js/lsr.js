@@ -196,6 +196,34 @@ var LocalCharacterView = /** @class */ (function () {
         this.notes.current = (_a = characterFromDatabase.notes) !== null && _a !== void 0 ? _a : "";
         this.portrait = characterFromDatabase.name + ".png";
     };
+    LocalCharacterView.prototype.localUpdate = function (prop, max, value) {
+        if (prop == "portrait" || prop == "proficiency" || prop == "secret") {
+            console.log("Should probably do nothing when localUpdate called on", prop);
+        }
+        else {
+            var attr = this[prop];
+            if (attr instanceof SmartStringAttribute) {
+                if (typeof (value) != "string") {
+                    throw new Error("wrong type for value: " + value);
+                }
+                attr.current = value;
+            }
+            else {
+                if (typeof (value) != "number") {
+                    throw new Error("wrong type for value: " + value);
+                }
+                if (max) {
+                    if (!(attr instanceof AttributeWithMax || attr instanceof AttributeWithMaxActivable)) {
+                        throw new Error("wrong type for value: " + value);
+                    }
+                    attr.max += value;
+                }
+                else {
+                    attr.current += value;
+                }
+            }
+        }
+    };
     Object.defineProperty(LocalCharacterView.prototype, "name", {
         get: function () {
             return new SmartStringAttribute(this.element.querySelector(".name"));
@@ -437,8 +465,7 @@ function resist(elem, action) {
     }
     else {
         var new_pnj_name = char.querySelector(".name").innerHTML;
-        var new_pnj_stat_value = parseInt(char.dataset[action.toLowerCase()]);
-        jetPNJ(char, action, new_pnj_stat_value, char.querySelector('.use_pf').checked, char.querySelector('.use_pp').checked, char.querySelector('.use_ra').checked, char.querySelector('.use_sc').checked, char.querySelector('.use_dc').checked, elem.closest('.roll').dataset.rollid);
+        jetPNJ(char, action, char.querySelector('.use_dc').checked, elem.closest('.roll').dataset.rollid);
     }
 }
 function jsonRollToHtml(roll, sub) {
@@ -663,7 +690,7 @@ function autoClick(sourceElement) {
     var character = new LocalCharacterView(characterElement);
     var action = sourceElement.innerHTML;
     var target = sourceElement.parentElement.dataset.thing;
-    var value = "1";
+    var value = null;
     if (action == "Edit") {
         var currentElement = sourceElement.parentElement.querySelector(".current");
         if (currentElement == null) {
@@ -676,6 +703,9 @@ function autoClick(sourceElement) {
         }
         value = read.replace(" / ", " | ");
     }
+    else {
+        value = "1";
+    }
     var add = true;
     if (action == "-" || action == "--") {
         add = false;
@@ -684,11 +714,11 @@ function autoClick(sourceElement) {
     if (action == "++" || action == "--") {
         maxSuffix = "_max";
     }
+    var increment = 1;
+    if (action == "-" || action == "--") {
+        increment = -1;
+    }
     if (target == "blessing" || target == "curse" || target == "curse2") {
-        var increment = 1;
-        if (action == "-") {
-            increment = -1;
-        }
         if (target == "blessing") {
             character.blessing.current += increment;
         }
@@ -700,13 +730,23 @@ function autoClick(sourceElement) {
         }
     }
     else {
-        var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
-        fetch(url)
-            .then(function (response) { return response.text(); })
-            .then(function (text) {
-            var characterFromDatabase = JSON.parse(text);
-            character.updateFromDatabase(characterFromDatabase);
-        });
+        if (character["element"].classList.contains("npc")) {
+            if (action == "Edit") {
+                character.localUpdate(target, maxSuffix == "_max", value);
+            }
+            else {
+                character.localUpdate(target, maxSuffix == "_max", increment);
+            }
+        }
+        else {
+            var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
+            fetch(url)
+                .then(function (response) { return response.text(); })
+                .then(function (text) {
+                var characterFromDatabase = JSON.parse(text);
+                character.updateFromDatabase(characterFromDatabase);
+            });
+        }
     }
 }
 function convertRollType2(rollType2) {
@@ -755,7 +795,12 @@ function autoRoll(sourceElement) {
     }
     else {
         var rollType2 = convertRollType2(rollType);
-        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current);
+        if (characterElement.classList.contains("npc")) {
+            jetPNJ(character, rollType, true);
+        }
+        else {
+            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current);
+        }
     }
 }
 function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, parentRollId) {
@@ -771,14 +816,6 @@ function getCar(name) {
         var pvMax = obj.point_de_vie_max;
         var prevPv = pv.innerHTML;
         pv.innerHTML = obj.point_de_vie;
-        if (prevPv != obj.point_de_vie) {
-            if ((pvMax - obj.point_de_vie) % 6 == 0 && prevPv > obj.point_de_vie && obj.point_de_vie != pvMax) {
-                plusMalus();
-            }
-            if ((pvMax - obj.point_de_vie) % 6 == 5 && prevPv < obj.point_de_vie && obj.point_de_vie != 0) {
-                moinsMalus();
-            }
-        }
         var dettes = document.querySelector('#dettes');
         if (dettes.innerHTML != obj.dettes) {
             dettes.innerHTML = obj.dettes;
@@ -799,107 +836,11 @@ function getCar(name) {
         console.error("error", e);
     });
 }
-function loadLancer(name, action, pf, pp, ra, secret, parentRollId) {
-    if (parentRollId === void 0) { parentRollId = null; }
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(function () { return afficher(nompj); });
-}
 function loadLancerEmpirique(nompj, secret) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
     fetch('/lancer_empirique/' + nompj + '/' + valeur + '/' + secret).catch(function (e) {
         console.error("error", e);
     }).then(function () { return afficher(nompj); });
-}
-var malus = 0;
-var bonus = 0;
-function moinsMalus() {
-    if (malus > 0) {
-        malus = malus - 1;
-        document.querySelector('#malus').innerHTML = malus.toString();
-    }
-}
-function plusMalus() {
-    malus = malus + 1;
-    document.querySelector('#malus').innerHTML = malus.toString();
-}
-function moinsBonus() {
-    if (bonus > 0) {
-        bonus = bonus - 1;
-        document.querySelector('#bonus').innerHTML = bonus.toString();
-    }
-}
-function plusBonus() {
-    bonus = bonus + 1;
-    document.querySelector('#bonus').innerHTML = bonus.toString();
-}
-function moinsPv(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/false')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function plusPv(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pv/1/true')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function moinsAk(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/false')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function plusAk(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/arcanes/1/true')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function moinsDt(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/false')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function plusDt(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/dettes/1/true')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function moinsPf(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/false')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function plusPf(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pf/1/true')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function moinsPp(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/false')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
-}
-function plusPp(nompj) {
-    fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nompj + '/pp/1/true')
-        .then(function () { return getCar(nompj); })
-        .catch(function (e) {
-        console.error("error", e);
-    });
 }
 function loadLancerJdSvM(name) {
     fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return afficher(nompj); });

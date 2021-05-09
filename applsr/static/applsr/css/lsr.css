@@ -129,6 +129,10 @@ body {
   border-color: #dc3545;
   background-color: #dc3545;
 }
+.character .curse2 {
+  margin: 0;
+  padding: 0;
+}
 
 .name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing, .proficiency, .secret {
   display: flex;
@@ -177,6 +181,10 @@ body {
   margin-bottom: 0.5em;
 }
 
+.curse2 button {
+  display: none;
+}
+
 .pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled, .pc-page .notes, .pc-page .level button {
   display: none;
 }
@@ -204,6 +212,30 @@ body {
 }
 #chat .low {
   color: #28a745;
+}
+
+.gm-page .character.npc {
+  align-items: start;
+  flex-direction: row;
+}
+.gm-page .character.npc .portrait, .gm-page .character.npc .title, .gm-page .character.npc .level, .gm-page .character.npc .story, .gm-page .character.npc .logo, .gm-page .character.npc .notes, .gm-page .character.npc button.plus-max, .gm-page .character.npc button.minus-max {
+  display: none;
+}
+.gm-page .character.npc * {
+  flex-grow: 0;
+}
+.gm-page .character.npc > *, .gm-page .character.npc .abilities, .gm-page .character.npc .roller .group {
+  display: contents;
+}
+.gm-page .character.npc .roller .group button {
+  margin: 0;
+}
+.gm-page .character.npc > * > * {
+  margin-right: 0;
+}
+
+body.show-minmax.gm-page button.plus-max, body.show-minmax.gm-page button.minus-max {
+  display: initial !important;
 }
 
 .pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {

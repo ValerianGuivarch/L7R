@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 {% load static %}
-{% load bootstrap4 %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Page du MJ - interdit aux joueurs !</title>
-    <link href="{% static 'applsr/css/l7r.css' %}" rel="stylesheet">
+    <link href="{% static 'applsr/css/lsr.css' %}" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="{% static 'applsr/lsr.svg' %}" />
 </head>
 <body class="gm-page">
 
@@ -16,8 +16,9 @@
     }
 </script>
 
-<div class="menu">
+{% include "applsr/templates.html" %}
 
+<div class="menu">
     <div>
         <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
     </div>
