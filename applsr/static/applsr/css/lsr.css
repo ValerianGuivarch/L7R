@@ -214,11 +214,14 @@ body {
   color: #28a745;
 }
 
+.gm-page .character button.plus-max, .gm-page .character button.minus-max {
+  display: none;
+}
 .gm-page .character.npc {
   align-items: start;
   flex-direction: row;
 }
-.gm-page .character.npc .portrait, .gm-page .character.npc .title, .gm-page .character.npc .level, .gm-page .character.npc .story, .gm-page .character.npc .logo, .gm-page .character.npc .notes, .gm-page .character.npc button.plus-max, .gm-page .character.npc button.minus-max {
+.gm-page .character.npc .portrait, .gm-page .character.npc .title, .gm-page .character.npc .level, .gm-page .character.npc .story, .gm-page .character.npc .logo, .gm-page .character.npc .notes {
   display: none;
 }
 .gm-page .character.npc * {

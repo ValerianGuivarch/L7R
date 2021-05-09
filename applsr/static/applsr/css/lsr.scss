@@ -311,10 +311,15 @@ body {
 // gm
 
 .gm-page {
+  .character {
+    button.plus-max, button.minus-max {
+      display: none;
+    }
+  }
   .character.npc {
     align-items: start;
     flex-direction: row;
-    .portrait, .title, .level, .story, .logo, .notes, button.plus-max, button.minus-max {
+    .portrait, .title, .level, .story, .logo, .notes {
       display: none;
     }
     * {
@@ -329,7 +334,6 @@ body {
     & > * > * {
       margin-right: 0;
     }
-    
   }
 }
 

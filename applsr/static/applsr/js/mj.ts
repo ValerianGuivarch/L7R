@@ -22,7 +22,7 @@ function modif(nom: string, stat: Stat, valeur: number, add: boolean) {
     }).then(() => afficherPJ());
 }
 
-function ajouter_pj(name: string) {
+function ajouter_pj2(name: string) {
     const option = document.querySelector('#pj-select option[value="' + name + '"]');
     option?.parentElement?.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
 
@@ -68,6 +68,14 @@ function ajouter_pj(name: string) {
     const liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
     liste_pj.appendChild(pcElement);
     afficherPJ();
+}
+
+function ajouter_pj(name: string) {
+    const option = document.querySelector('#pj-select option[value="' + name + '"]');
+    option?.parentElement?.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
+    const liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
+    liste_pj.appendChild(createCharacter(name));
+    updateCharactersOnPage();
 }
 
 function afficherPJ() {

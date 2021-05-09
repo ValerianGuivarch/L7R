@@ -17,7 +17,7 @@ function modif(nom, stat, valeur, add) {
         console.error("error", e);
     }).then(function () { return afficherPJ(); });
 }
-function ajouter_pj(name) {
+function ajouter_pj2(name) {
     var _a;
     var option = document.querySelector('#pj-select option[value="' + name + '"]');
     (_a = option === null || option === void 0 ? void 0 : option.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
@@ -63,6 +63,14 @@ function ajouter_pj(name) {
     var liste_pj = document.querySelector('#liste_pj');
     liste_pj.appendChild(pcElement);
     afficherPJ();
+}
+function ajouter_pj(name) {
+    var _a;
+    var option = document.querySelector('#pj-select option[value="' + name + '"]');
+    (_a = option === null || option === void 0 ? void 0 : option.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
+    var liste_pj = document.querySelector('#liste_pj');
+    liste_pj.appendChild(createCharacter(name));
+    updateCharactersOnPage();
 }
 function afficherPJ() {
     var liste_pj = document.querySelector('#liste_pj');
