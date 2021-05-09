@@ -938,3 +938,12 @@ def list_characters(request):
         'characters_names': characters_names
     }
     return HttpResponse(template.render(context, request))
+
+def create_character(request, name, flesh, spirit, essence, hp, hp_max, focus, focus_max, power, power_max, level, arcana, arcana_max, debt, title, lux, secunda, umbra, proficiency1, proficiency2, hidden):
+    # /Name/2/3/4/3/4/2/3/3/4/1/2/3/5/Champion de Machin/The lux/The secunda/The umbra/pro1/pro2/true
+    print("Will create character", name, flesh, spirit, essence, hp, hp_max, focus, focus_max, focus, power, power_max, level, arcana, arcana_max, debt, title, lux, secunda, umbra, proficiency1, proficiency2, hidden=="true")
+
+    character = Character(name=name, chair=flesh, esprit=spirit, essence=essence, point_de_vie=hp, point_de_focus=focus, point_de_pouvoir=power, dettes=debt, arcanes=arcana, element=title, arcanes_max=arcana_max, point_de_focus_max=focus_max, point_de_pouvoir_max=power_max, point_de_vie_max=hp_max, fl=lux, fs=secunda, fu=umbra, niveau=level, force1=proficiency1, force2=proficiency2, hidden=hidden=="true", notes="")
+
+    character.save()
+    return JsonResponse(character, encoder=ExtendedEncoder, safe=False)

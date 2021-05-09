@@ -162,3 +162,8 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
 function effacerLancersDes() {
     fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => afficher(nompj));
 }
+
+function duplicateInDb(characterElement: HTMLElement) {
+    let character = new LocalCharacterView(characterElement);
+    fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux + '/' + character.secunda + '/' + character.umbra + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true');
+}

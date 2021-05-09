@@ -119,7 +119,7 @@ body.pc-page {
   //background-color: darkorange;
 }
 
-.proficiency, .secret, .hidden-number {
+.proficiency, .secret, .hidden-number, .save {
   @extend %option;
 }
 .name, .proficiency, .secret, .hidden-number { // don't really get why I need that but .secret don't have the same size if I don't do it.
@@ -367,6 +367,9 @@ body.pc-page {
   .controls {
     & > * {
       margin-right: 0.5rem;
+    }
+    .duplicate-in-db {
+      @extend .round-button;
     }
     .delete {
       @extend .round-button;
