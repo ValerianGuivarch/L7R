@@ -111,7 +111,7 @@ body {
 .proficiency, .secret {
   @extend %option;
 }
-.secret { // don't really get why I need that but .secret don't have the same size if I don't do it.
+.name, .proficiency, .secret { // don't really get why I need that but .secret don't have the same size if I don't do it.
   border: 1px solid $blue-info-light;
 }
 
@@ -321,7 +321,7 @@ body {
 
 body.compact {
   .character {
-    button.plus-max, button.minus-max {
+    button.plus-max, button.minus-max, button.edit {
       display: none;
     }
   }

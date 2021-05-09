@@ -555,7 +555,7 @@ function afficher(nompj: string) {
 }
 
 function updateCharactersOnPage() {
-    document.querySelectorAll<HTMLElement>("body > .main .character").forEach(e => updateCharacter(e));
+    document.querySelectorAll<HTMLElement>("body > .main .character:not(.npc)").forEach(e => updateCharacter(e));
 }
 
 function createCharacter(name: string, withRoller = true) {

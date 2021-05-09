@@ -594,7 +594,7 @@ function afficher(nompj) {
     });
 }
 function updateCharactersOnPage() {
-    document.querySelectorAll("body > .main .character").forEach(function (e) { return updateCharacter(e); });
+    document.querySelectorAll("body > .main .character:not(.npc)").forEach(function (e) { return updateCharacter(e); });
 }
 function createCharacter(name, withRoller) {
     if (withRoller === void 0) { withRoller = true; }

@@ -8,20 +8,13 @@ function getCurrentCharacter(): string | HTMLElement | null {
     return document.querySelector<HTMLElement>('input[name="resist"]:checked')?.parentElement ?? null;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    setInterval(() => {
-        afficherPJ();
-    }, 2000);
-
-    afficherPJ();
-});
-
 function modif(nom: string, stat: Stat, valeur: number, add: boolean) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function(e) {
         console.error("error", e);
     }).then(() => afficherPJ());
 }
 
+// to del
 function ajouter_pj2(name: string) {
     const option = document.querySelector('#pj-select option[value="' + name + '"]');
     option?.parentElement?.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list

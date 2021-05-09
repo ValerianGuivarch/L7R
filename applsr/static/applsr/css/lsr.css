@@ -48,7 +48,7 @@ body {
   background-color: transparent;
 }
 
-.secret {
+.name, .proficiency, .secret {
   border: 1px solid #67c2d0;
 }
 
@@ -223,7 +223,7 @@ body {
   color: #28a745;
 }
 
-body.compact .character button.plus-max, body.compact .character button.minus-max {
+body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit {
   display: none;
 }
 body.compact .character {

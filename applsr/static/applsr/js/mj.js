@@ -6,17 +6,12 @@ function getCurrentCharacter() {
     //return document.querySelector<HTMLInputElement>("#pj-select")!.value;
     return (_b = (_a = document.querySelector('input[name="resist"]:checked')) === null || _a === void 0 ? void 0 : _a.parentElement) !== null && _b !== void 0 ? _b : null;
 }
-document.addEventListener("DOMContentLoaded", function () {
-    setInterval(function () {
-        afficherPJ();
-    }, 2000);
-    afficherPJ();
-});
 function modif(nom, stat, valeur, add) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function (e) {
         console.error("error", e);
     }).then(function () { return afficherPJ(); });
 }
+// to del
 function ajouter_pj2(name) {
     var _a;
     var option = document.querySelector('#pj-select option[value="' + name + '"]');
