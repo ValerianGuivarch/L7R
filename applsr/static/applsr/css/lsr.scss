@@ -1,6 +1,7 @@
 // Root
 
 $blue-info: #17a2b8;
+$blue-info-light: #67c2d0;
 $red-danger: #dc3545;
 $green-success: #28a745;
 $orange-warning: #b48c14;
@@ -109,6 +110,9 @@ body {
 
 .proficiency, .secret {
   @extend %option;
+}
+.secret { // don't really get why I need that but .secret don't have the same size if I don't do it.
+  border: 1px solid $blue-info-light;
 }
 
 .arcana {
@@ -227,7 +231,7 @@ body {
     flex-grow: 1;
   }
   & > * {
-    background-color: #67c2d0;
+    background-color: $blue-info-light;
     color: white;
     padding: 0.2rem; // like the buttons
     display: flex;
@@ -310,13 +314,13 @@ body {
 
 // gm
 
-.gm-page {
+body.compact {
   .character {
     button.plus-max, button.minus-max {
       display: none;
     }
   }
-  .character.npc {
+  .character {
     align-items: start;
     flex-direction: row;
     .portrait, .title, .level, .story, .logo, .notes {
@@ -334,12 +338,6 @@ body {
     & > * > * {
       margin-right: 0;
     }
-  }
-}
-
-body.show-minmax.gm-page {
-  button.plus-max, button.minus-max {
-    display: initial !important;
   }
 }
 

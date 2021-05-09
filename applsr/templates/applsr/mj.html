@@ -33,7 +33,6 @@
         </select>
 
         <button onclick="ajouter_pj(document.getElementById('pj-select').value)">Ajouter</button>
-        <button onclick="document.body.classList.toggle('show-minmax')">minmax</button>
     </div>
 
     <div class="npc-menu">
@@ -50,6 +49,10 @@
     <div class="opposition">
         <input id="opposition" size="2" type="text" value="opposition">
         <label class="btn active"><input id="opposition_checked" type="checkbox" autocomplete="off">Opposition</label>
+    </div>
+
+    <div>
+        <button onclick="document.body.classList.toggle('compact')">Afficher tout</button>
     </div>
 
 </div>

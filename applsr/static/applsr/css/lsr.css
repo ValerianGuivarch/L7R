@@ -48,6 +48,10 @@ body {
   background-color: transparent;
 }
 
+.secret {
+  border: 1px solid #67c2d0;
+}
+
 .text-container {
   display: inline-block;
 }
@@ -214,31 +218,27 @@ body {
   color: #28a745;
 }
 
-.gm-page .character button.plus-max, .gm-page .character button.minus-max {
+body.compact .character button.plus-max, body.compact .character button.minus-max {
   display: none;
 }
-.gm-page .character.npc {
+body.compact .character {
   align-items: start;
   flex-direction: row;
 }
-.gm-page .character.npc .portrait, .gm-page .character.npc .title, .gm-page .character.npc .level, .gm-page .character.npc .story, .gm-page .character.npc .logo, .gm-page .character.npc .notes {
+body.compact .character .portrait, body.compact .character .title, body.compact .character .level, body.compact .character .story, body.compact .character .logo, body.compact .character .notes {
   display: none;
 }
-.gm-page .character.npc * {
+body.compact .character * {
   flex-grow: 0;
 }
-.gm-page .character.npc > *, .gm-page .character.npc .abilities, .gm-page .character.npc .roller .group {
+body.compact .character > *, body.compact .character .abilities, body.compact .character .roller .group {
   display: contents;
 }
-.gm-page .character.npc .roller .group button {
+body.compact .character .roller .group button {
   margin: 0;
 }
-.gm-page .character.npc > * > * {
+body.compact .character > * > * {
   margin-right: 0;
-}
-
-body.show-minmax.gm-page button.plus-max, body.show-minmax.gm-page button.minus-max {
-  display: initial !important;
 }
 
 .pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
