@@ -1,7 +1,7 @@
 declare var nompj: string; // set in html
 
 type JEMP = `Jemp-${string}`;
-type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
+type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
 
 class WithLabel {
     constructor(protected element: HTMLElement) { }
@@ -128,8 +128,25 @@ class AttributeWithMaxActivable extends AttributeWithMax {
     }
 }
 
+function getCurrentCharacter(): HTMLElement | null {
+    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
+    if(characterElements.length == 0) {
+        return null;
+    }
+    else if(characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
+    }
+}
+
 class LocalCharacterView {
     constructor(private element: HTMLElement) {
+    }
+
+    public isOnline(): boolean {
+        return !this.element.classList.contains("npc");
     }
 
     updateFromDatabase(characterFromDatabase: CharacterFromDatabase) {
@@ -329,7 +346,7 @@ interface Roll {
     pf: boolean,
     ra: boolean,
     hidden_dice: boolean,
-    roll_type: RollType,
+    roll_type: RollTypeBackend,
     parent_roll?: Roll,
     related_rolls: Roll[]
 }
@@ -339,7 +356,7 @@ interface ChatHistory {
     "rolls": Roll[]
 }
 
-function rollTypeToString(rollType: RollType) {
+function rollTypeToString(rollType: RollTypeBackend) {
     if(rollType == 'Jsoin') {
         return "<i>Soigne</i>";
     }
@@ -412,20 +429,14 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
 }
 
 function resist(elem: HTMLElement, action: RollType) {
-    let character: LocalCharacterView;
-    if(document.body.classList.contains("pc-page")) {
-        character = new LocalCharacterView(document.querySelector<HTMLElement>(".main .character")!);
-        loadLancer2(character.name.current, action, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
-        return;
-    }
     const char = getCurrentCharacter();
-    if(char === null || typeof(char) == "string") {
-        console.error("Cannot roll with no character: " + char);
-        return;
+    const parentRollId = elem.closest<HTMLElement>(".roll")?.dataset.rollid ?? null;
+    if(char == null) {
+        throw new Error("Can't find an active character");
     }
     else {
-        const new_pnj_name = char.querySelector(".name")!.innerHTML;
-        jetPNJ(char, action, char.querySelector<HTMLInputElement>('.use_dc')!.checked, elem.closest<HTMLElement>('.roll')!.dataset.rollid);
+        let character = new LocalCharacterView(char);
+        autoRoll2(character, action, parentRollId);
     }
 }
 
@@ -488,9 +499,9 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     let resist = "";
     if(sub == false) {
-        resist = ' Résister avec <button onclick="resist(this, \'JC\')">chair</button>'
-            + '<button onclick="resist(this, \'JS\')">esprit</button>'
-            + '<button onclick="resist(this, \'JE\')">essence</button> ?';
+        resist = ' Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
+            + '<button onclick="resist(this, \'spirit\')">esprit</button>'
+            + '<button onclick="resist(this, \'essence\')">essence</button> ?';
     }
 
     let success = 'et obtient <span title="Juge12: '
@@ -733,9 +744,9 @@ function autoClick(sourceElement: HTMLElement) {
     }
 }
 
-type RollType2 = "flesh" | "spirit" | "essence" | "death" | "magic" | "heal" | "empirical" | "arcana" | "arcana-spirit" | "arcana-essence";
+type RollType = "flesh" | "spirit" | "essence" | "death" | "magic" | "heal" | "empirical" | "arcana" | "arcana-spirit" | "arcana-essence";
 
-function convertRollType2(rollType2: RollType2): RollType {
+function convertRollTypeToBackend(rollType2: RollType): RollTypeBackend {
     //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
     if(rollType2 == "flesh") {
         return "JC";
@@ -772,8 +783,12 @@ function convertRollType2(rollType2: RollType2): RollType {
 
 function autoRoll(sourceElement: HTMLElement) {
     const characterElement = sourceElement.closest<HTMLElement>(".character")!;
+    const rollType = sourceElement.dataset.roll as RollType;
     const character = new LocalCharacterView(characterElement);
-    const rollType = sourceElement.dataset.roll as RollType2;
+    autoRoll2(character, rollType);
+}
+
+function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId : string | null = null) {
     if(rollType == "empirical") {
         loadLancerEmpirique(character.name.current, character.secret.enabled);
     }
@@ -781,17 +796,17 @@ function autoRoll(sourceElement: HTMLElement) {
         loadLancerJdSvM(character.name.current);
     }
     else {
-        const rollType2 = convertRollType2(rollType);
-        if(characterElement.classList.contains("npc")) {
-            jetPNJ(character, rollType, true);
+        if(!character.isOnline()) {
+            jetPNJ(character, rollType, true, parentRollId);
         }
         else {
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current);
+            const rollType2 = convertRollTypeToBackend(rollType);
+            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, parentRollId);
         }
     }
 }
 
-function loadLancer2(name: string, action: RollType, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, parentRollId: string | null = null) {
+function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, parentRollId: string | null = null) {
     fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
 }
 

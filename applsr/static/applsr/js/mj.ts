@@ -3,11 +3,6 @@ type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 nompj = "mj";
 display_secret = true; // override value from lsr.js
 
-function getCurrentCharacter(): string | HTMLElement | null {
-    //return document.querySelector<HTMLInputElement>("#pj-select")!.value;
-    return document.querySelector<HTMLElement>('input[name="resist"]:checked')?.parentElement ?? null;
-}
-
 function modif(nom: string, stat: Stat, valeur: number, add: boolean) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function(e) {
         console.error("error", e);
@@ -104,12 +99,12 @@ var remove_pnj_ok = false;
 function effacer_pnj(pnjElement: HTMLElement) {
     if(remove_pnj_ok == false) {
         remove_pnj_ok = true;
-        document.querySelectorAll(".character-container .delete").forEach(btn => {
+        document.querySelectorAll(".character .controls .delete").forEach(btn => {
             btn.classList.replace("disabled", "enabled");
         });
         remove_pnj_timeout = setTimeout(() => {
             remove_pnj_ok = false;
-            document.querySelectorAll(".character-container .delete").forEach(btn => {
+            document.querySelectorAll(".character .controls .delete").forEach(btn => {
                 btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
@@ -133,7 +128,7 @@ function modifPNJ(pnjElement: HTMLElement, stat: Stat, valeur: number) {
     mod.innerHTML = (parseInt(mod.innerHTML) + valeur).toString();
 }
 
-function jetPNJ(c: LocalCharacterView, action: RollType2, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
+function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
     let stat: number = 0;
@@ -149,7 +144,7 @@ function jetPNJ(c: LocalCharacterView, action: RollType2, dc: boolean /** dés c
     else if(action == "empirical") { stat = 0; }
 
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
             response.text().then(function(text) {
                 const degats = parseInt(text);
                 c.hp.current -= degats;
@@ -158,7 +153,7 @@ function jetPNJ(c: LocalCharacterView, action: RollType2, dc: boolean /** dés c
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => afficher("mj"));
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => afficher("mj"));
     }
     if(action == 'magic') {
         c.debt.current += 1;
@@ -175,7 +170,7 @@ function jetPNJ(c: LocalCharacterView, action: RollType2, dc: boolean /** dés c
     }
 }
 
-function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, new_pnj_stat_name: string, action: RollType) {
+function createJetPnjTemplate(new_pnj_name: string, new_pnj_stat_value: string, new_pnj_stat_name: string, action: RollTypeBackend) {
     return '<button class="btn" onclick="jetPNJ(this.closest(\'.pnj\'),\'' + action + '\',' + new_pnj_stat_value + ',this.closest(\'.pnj\').querySelector(\'.use_pf\').checked,this.closest(\'.pnj\').querySelector(\'.use_pp\').checked,this.closest(\'.pnj\').querySelector(\'.use_ra\').checked, this.closest(\'.pnj\').querySelector(\'.use_sc\').checked, this.closest(\'.pnj\').querySelector(\'.use_dc\').checked);">' + new_pnj_stat_name + '</button>'
 }
 
@@ -222,16 +217,8 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
     c.power.current = parseInt(new_pnj_pp_max);
     c.power.max = parseInt(new_pnj_pp_max);
     c.debt.current = new_pnj_dettes;
-
-    const container = document.createElement("div");
-    container.classList.add("character-container");
-    container.innerHTML = '<div class="controls">'
-    + '<input type="radio" name="resist" />'
-    + '<button class="delete disabled" onclick="effacer_pnj(this.closest(\'.character-container\'));"> X </button>'
-    + '</div>';
-    container.appendChild(pnjElement);
     
-    liste_pnj.appendChild(container);
+    liste_pnj.appendChild(pnjElement);
 }
 
 // to del

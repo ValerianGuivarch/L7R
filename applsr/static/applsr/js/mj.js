@@ -1,11 +1,6 @@
 "use strict";
 nompj = "mj";
 display_secret = true; // override value from lsr.js
-function getCurrentCharacter() {
-    var _a, _b;
-    //return document.querySelector<HTMLInputElement>("#pj-select")!.value;
-    return (_b = (_a = document.querySelector('input[name="resist"]:checked')) === null || _a === void 0 ? void 0 : _a.parentElement) !== null && _b !== void 0 ? _b : null;
-}
 function modif(nom, stat, valeur, add) {
     fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + nom + '/' + stat + '/' + valeur + '/' + add).catch(function (e) {
         console.error("error", e);
@@ -99,12 +94,12 @@ function effacer_pnj(pnjElement) {
     var _a;
     if (remove_pnj_ok == false) {
         remove_pnj_ok = true;
-        document.querySelectorAll(".character-container .delete").forEach(function (btn) {
+        document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
             btn.classList.replace("disabled", "enabled");
         });
         remove_pnj_timeout = setTimeout(function () {
             remove_pnj_ok = false;
-            document.querySelectorAll(".character-container .delete").forEach(function (btn) {
+            document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
                 btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
@@ -161,7 +156,7 @@ function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
         stat = 0;
     }
     if (document.querySelector('#opposition_checked').checked) {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function (response) {
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function (response) {
             response.text().then(function (text) {
                 var degats = parseInt(text);
                 c.hp.current -= degats;
@@ -170,7 +165,7 @@ function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollType2(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(function () { return afficher("mj"); });
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(function () { return afficher("mj"); });
     }
     if (action == 'magic') {
         c.debt.current += 1;
@@ -226,14 +221,7 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     c.power.current = parseInt(new_pnj_pp_max);
     c.power.max = parseInt(new_pnj_pp_max);
     c.debt.current = new_pnj_dettes;
-    var container = document.createElement("div");
-    container.classList.add("character-container");
-    container.innerHTML = '<div class="controls">'
-        + '<input type="radio" name="resist" />'
-        + '<button class="delete disabled" onclick="effacer_pnj(this.closest(\'.character-container\'));"> X </button>'
-        + '</div>';
-    container.appendChild(pnjElement);
-    liste_pnj.appendChild(container);
+    liste_pnj.appendChild(pnjElement);
 }
 // to del
 function ajouter_pnj2(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {

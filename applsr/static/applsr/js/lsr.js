@@ -164,11 +164,27 @@ var AttributeWithMaxActivable = /** @class */ (function (_super) {
     });
     return AttributeWithMaxActivable;
 }(AttributeWithMax));
+function getCurrentCharacter() {
+    var _a, _b;
+    var characterElements = document.querySelectorAll(".main .character");
+    if (characterElements.length == 0) {
+        return null;
+    }
+    else if (characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
+    }
+}
 var LocalCharacterView = /** @class */ (function () {
     function LocalCharacterView(element) {
         this.element = element;
         this.hpTimeoutSet = false; // necessary to avoid infinitly startinf timeouts
     }
+    LocalCharacterView.prototype.isOnline = function () {
+        return !this.element.classList.contains("npc");
+    };
     LocalCharacterView.prototype.updateFromDatabase = function (characterFromDatabase) {
         var _a;
         this.name.current = characterFromDatabase.name;
@@ -461,20 +477,15 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     return successCount + bonus;
 }
 function resist(elem, action) {
-    var character;
-    if (document.body.classList.contains("pc-page")) {
-        character = new LocalCharacterView(document.querySelector(".main .character"));
-        loadLancer2(character.name.current, action, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, elem.closest('.roll').dataset.rollid);
-        return;
-    }
+    var _a, _b;
     var char = getCurrentCharacter();
-    if (char === null || typeof (char) == "string") {
-        console.error("Cannot roll with no character: " + char);
-        return;
+    var parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
+    if (char == null) {
+        throw new Error("Can't find an active character");
     }
     else {
-        var new_pnj_name = char.querySelector(".name").innerHTML;
-        jetPNJ(char, action, char.querySelector('.use_dc').checked, elem.closest('.roll').dataset.rollid);
+        var character = new LocalCharacterView(char);
+        autoRoll2(character, action, parentRollId);
     }
 }
 function jsonRollToHtml(roll, sub) {
@@ -530,9 +541,9 @@ function jsonRollToHtml(roll, sub) {
     }
     var resist = "";
     if (sub == false) {
-        resist = ' Résister avec <button onclick="resist(this, \'JC\')">chair</button>'
-            + '<button onclick="resist(this, \'JS\')">esprit</button>'
-            + '<button onclick="resist(this, \'JE\')">essence</button> ?';
+        resist = ' Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
+            + '<button onclick="resist(this, \'spirit\')">esprit</button>'
+            + '<button onclick="resist(this, \'essence\')">essence</button> ?';
     }
     var success = 'et obtient <span title="Juge12: '
         + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
@@ -758,7 +769,7 @@ function autoClick(sourceElement) {
         }
     }
 }
-function convertRollType2(rollType2) {
+function convertRollTypeToBackend(rollType2) {
     //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
     if (rollType2 == "flesh") {
         return "JC";
@@ -794,8 +805,12 @@ function convertRollType2(rollType2) {
 }
 function autoRoll(sourceElement) {
     var characterElement = sourceElement.closest(".character");
-    var character = new LocalCharacterView(characterElement);
     var rollType = sourceElement.dataset.roll;
+    var character = new LocalCharacterView(characterElement);
+    autoRoll2(character, rollType);
+}
+function autoRoll2(character, rollType, parentRollId) {
+    if (parentRollId === void 0) { parentRollId = null; }
     if (rollType == "empirical") {
         loadLancerEmpirique(character.name.current, character.secret.enabled);
     }
@@ -803,12 +818,12 @@ function autoRoll(sourceElement) {
         loadLancerJdSvM(character.name.current);
     }
     else {
-        var rollType2 = convertRollType2(rollType);
-        if (characterElement.classList.contains("npc")) {
-            jetPNJ(character, rollType, true);
+        if (!character.isOnline()) {
+            jetPNJ(character, rollType, true, parentRollId);
         }
         else {
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current);
+            var rollType2 = convertRollTypeToBackend(rollType);
+            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, parentRollId);
         }
     }
 }

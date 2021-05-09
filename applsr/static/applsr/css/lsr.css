@@ -26,7 +26,7 @@ body {
   color: #212529;
 }
 
-.button, .name > button, .title > button, .level > button, .lux > button, .umbra > button, .secunda > button, .flesh > button, .spirit > button, .essence > button, .hp > button, .debt > button, .arcana > button, .focus > button, .power > button, .curse > button, .curse2 > button, .blessing > button, .proficiency > button, .secret > button, .round-button, .character-container .controls .delete, #chat button, .roller button {
+.button, .name > button, .title > button, .level > button, .lux > button, .umbra > button, .secunda > button, .flesh > button, .spirit > button, .essence > button, .hp > button, .debt > button, .arcana > button, .focus > button, .power > button, .curse > button, .curse2 > button, .blessing > button, .proficiency > button, .secret > button, .round-button, .character .controls .delete, #chat button, .roller button {
   display: inline-block;
   font-size: 1rem;
   border: 1px solid;
@@ -37,11 +37,11 @@ body {
   padding: 0.2rem 0.7rem;
   transition: background-color 1000ms linear, border-color 1000ms linear;
 }
-body.compact .button, body.compact .name > button, body.compact .title > button, body.compact .level > button, body.compact .lux > button, body.compact .umbra > button, body.compact .secunda > button, body.compact .flesh > button, body.compact .spirit > button, body.compact .essence > button, body.compact .hp > button, body.compact .debt > button, body.compact .arcana > button, body.compact .focus > button, body.compact .power > button, body.compact .curse > button, body.compact .curse2 > button, body.compact .blessing > button, body.compact .proficiency > button, body.compact .secret > button, body.compact .round-button, body.compact .character-container .controls .delete, .character-container .controls body.compact .delete, body.compact #chat button, #chat body.compact button, body.compact .roller button, .roller body.compact button {
+body.compact .button, body.compact .name > button, body.compact .title > button, body.compact .level > button, body.compact .lux > button, body.compact .umbra > button, body.compact .secunda > button, body.compact .flesh > button, body.compact .spirit > button, body.compact .essence > button, body.compact .hp > button, body.compact .debt > button, body.compact .arcana > button, body.compact .focus > button, body.compact .power > button, body.compact .curse > button, body.compact .curse2 > button, body.compact .blessing > button, body.compact .proficiency > button, body.compact .secret > button, body.compact .round-button, body.compact .character .controls .delete, .character .controls body.compact .delete, body.compact #chat button, #chat body.compact button, body.compact .roller button, .roller body.compact button {
   padding: 2px;
 }
 
-.round-button, .character-container .controls .delete, #chat button, .roller button {
+.round-button, .character .controls .delete, #chat button, .roller button {
   border-radius: 5px;
 }
 
@@ -232,22 +232,26 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   color: #28a745;
 }
 
-.character-container {
-  padding: 5px;
-  border-bottom: 1px solid black;
+.pc-page .character .controls {
+  display: none;
 }
-.character-container .controls > * {
+
+.character .controls > * {
   margin-right: 0.5rem;
 }
-.character-container .controls .delete.disabled {
+.character .controls .delete.disabled {
   border-color: #dc3545;
   background-color: #dc3545;
 }
-.character-container .controls .delete.enabled {
+.character .controls .delete.enabled {
   border-color: #28a745;
   background-color: #28a745;
 }
 
+body.compact .character {
+  padding: 5px;
+  border-bottom: 1px solid black;
+}
 body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit {
   display: none;
 }

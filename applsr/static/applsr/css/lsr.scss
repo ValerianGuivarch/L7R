@@ -326,9 +326,13 @@ body {
   }
 }
 
-.character-container {
-  padding: 5px;
-  border-bottom: 1px solid black;
+.pc-page {
+  .character .controls {
+    display: none;
+  }
+}
+
+.character {
   .controls {
     & > * {
       margin-right: 0.5rem;
@@ -351,6 +355,8 @@ body {
 
 body.compact {
   .character {
+    padding: 5px;
+    border-bottom: 1px solid black;
     button.plus-max, button.minus-max, button.edit {
       display: none;
     }

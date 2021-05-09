@@ -2,6 +2,12 @@
 
 <div class="templates" style="display: none;">
     <div class="character">
+
+        <div class="controls">
+            <input type="radio" name="activeCharacter" />
+            <button class="delete disabled" onclick="effacer_pnj(this.closest('.character'));"> X </button>
+        </div>
+        
         <div class="summary">
             <span data-thing="name" class="name">
                 <button class="edit" onclick="autoClick(this);">Edit</button>
