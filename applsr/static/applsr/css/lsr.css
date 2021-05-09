@@ -37,6 +37,9 @@ body {
   padding: 0.2rem 0.7rem;
   transition: background-color 1000ms linear, border-color 1000ms linear;
 }
+body.compact .button, body.compact .name > button, body.compact .title > button, body.compact .level > button, body.compact .lux > button, body.compact .umbra > button, body.compact .secunda > button, body.compact .flesh > button, body.compact .spirit > button, body.compact .essence > button, body.compact .hp > button, body.compact .debt > button, body.compact .arcana > button, body.compact .focus > button, body.compact .power > button, body.compact .curse > button, body.compact .curse2 > button, body.compact .blessing > button, body.compact .proficiency > button, body.compact .secret > button, body.compact .round-button, body.compact #chat button, #chat body.compact button, body.compact .roller button, .roller body.compact button {
+  padding: 2px;
+}
 
 .round-button, #chat button, .roller button {
   border-radius: 5px;
@@ -155,6 +158,9 @@ body {
   display: flex;
   align-items: center;
 }
+body.compact .name > *, body.compact .title > *, body.compact .level > *, body.compact .lux > *, body.compact .umbra > *, body.compact .secunda > *, body.compact .flesh > *, body.compact .spirit > *, body.compact .essence > *, body.compact .hp > *, body.compact .debt > *, body.compact .arcana > *, body.compact .focus > *, body.compact .power > *, body.compact .curse > *, body.compact .curse2 > *, body.compact .blessing > *, body.compact .proficiency > *, body.compact .secret > * {
+  padding: 2px;
+}
 .name > button:first-child, .title > button:first-child, .level > button:first-child, .lux > button:first-child, .umbra > button:first-child, .secunda > button:first-child, .flesh > button:first-child, .spirit > button:first-child, .essence > button:first-child, .hp > button:first-child, .debt > button:first-child, .arcana > button:first-child, .focus > button:first-child, .power > button:first-child, .curse > button:first-child, .curse2 > button:first-child, .blessing > button:first-child, .proficiency > button:first-child, .secret > button:first-child {
   border-radius: 0.25rem;
   border-top-right-radius: 0;
@@ -185,6 +191,9 @@ body {
   margin-bottom: 0.5em;
 }
 
+.curse2 {
+  padding: 0 !important;
+}
 .curse2 button {
   display: none;
 }
@@ -223,6 +232,11 @@ body {
   color: #28a745;
 }
 
+.gm-page .character {
+  padding: 5px;
+  border-bottom: 1px solid black;
+}
+
 body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit {
   display: none;
 }
@@ -230,17 +244,23 @@ body.compact .character {
   align-items: start;
   flex-direction: row;
 }
+body.compact .character * {
+  font-size: 14px !important;
+}
 body.compact .character .portrait, body.compact .character .title, body.compact .character .level, body.compact .character .story, body.compact .character .logo, body.compact .character .notes {
   display: none;
-}
-body.compact .character * {
-  flex-grow: 0;
 }
 body.compact .character > *, body.compact .character .abilities, body.compact .character .roller .group {
   display: contents;
 }
+body.compact .character .roller {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
 body.compact .character .roller .group button {
   margin: 0;
+  flex-grow: 0;
 }
 body.compact .character > * > * {
   margin-right: 0;
@@ -248,6 +268,10 @@ body.compact .character > * > * {
 
 .pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
   display: none;
+}
+
+.character .notes {
+  display: none !important;
 }
 
 /*# sourceMappingURL=lsr.css.map */

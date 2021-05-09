@@ -46,6 +46,9 @@ body {
   background-color: $blue-info;
   border-color: $blue-info;
   padding: 0.2rem 0.7rem;
+  body.compact & {
+    padding: 2px;
+  }
   transition: background-color 1000ms linear, border-color 1000ms linear;
 }
 
@@ -234,6 +237,9 @@ body {
     background-color: $blue-info-light;
     color: white;
     padding: 0.2rem; // like the buttons
+    body.compact & {
+      padding: 2px;
+    }
     display: flex;
     align-items: center;
   }
@@ -274,8 +280,11 @@ body {
   }
 }
 
-.curse2 button {
-  display: none;
+.curse2 {
+  padding: 0 !important; // because it's already inside another item
+  button {
+    display: none;
+  }
 }
 
 .pc-page {
@@ -317,7 +326,14 @@ body {
   }
 }
 
-// gm
+.gm-page {
+  .character {
+    padding: 5px;
+    border-bottom: 1px solid black;
+  }
+}
+
+// compact
 
 body.compact {
   .character {
@@ -326,19 +342,25 @@ body.compact {
     }
   }
   .character {
+    * {
+      font-size: 14px !important;
+    }
     align-items: start;
     flex-direction: row;
     .portrait, .title, .level, .story, .logo, .notes {
       display: none;
     }
-    * {
-      flex-grow: 0;
-    }
     & > *, .abilities, .roller .group {
       display: contents;
     }
+    .roller {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
     .roller .group button {
       margin: 0;
+      flex-grow: 0;
     }
     & > * > * {
       margin-right: 0;
@@ -352,3 +374,8 @@ body.compact {
   display: none;
 }
 
+// hide element not implemented
+
+.character .notes {
+  display: none !important;
+}
