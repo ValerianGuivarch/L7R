@@ -27,6 +27,14 @@ function afficherPJ() {
         });
     });
 }
+function ajouter_pj(name) {
+    var _a;
+    var option = document.querySelector('#pj-select option[value="' + name + '"]');
+    (_a = option === null || option === void 0 ? void 0 : option.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
+    var liste_pj = document.querySelector('#liste_pj');
+    liste_pj.appendChild(createCharacter(name));
+    updateCharactersOnPage();
+}
 var remove_pnj_timeout = null;
 var remove_pnj_ok = false;
 function effacer_pnj(pnjElement) {
@@ -153,6 +161,7 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     c.power.current = parseInt(new_pnj_pp_max);
     c.power.max = parseInt(new_pnj_pp_max);
     c.debt.current = new_pnj_dettes;
+    c.hidden.enabled = true;
     liste_pnj.appendChild(pnjElement);
 }
 function effacerLancersDes() {

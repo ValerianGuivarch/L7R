@@ -392,6 +392,13 @@ var LocalCharacterView = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(LocalCharacterView.prototype, "hidden", {
+        get: function () {
+            return new AttributeWithoutValueActivable(this.element.querySelector(".hidden-number"));
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(LocalCharacterView.prototype, "portrait", {
         set: function (basename) {
             var portrait = this.element.querySelector(".portrait img");
@@ -819,17 +826,17 @@ function autoRoll2(character, rollType, parentRollId) {
     }
     else {
         if (!character.isOnline()) {
-            jetPNJ(character, rollType, true, parentRollId);
+            jetPNJ(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
             var rollType2 = convertRollTypeToBackend(rollType);
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, parentRollId);
+            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, parentRollId);
         }
     }
 }
-function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, parentRollId) {
+function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(function () { return afficher(nompj); });
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(function () { return afficher(nompj); });
 }
 function getCar(name) {
     fetch('/lsr/getcar/' + name)

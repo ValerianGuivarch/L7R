@@ -30,6 +30,15 @@ function afficherPJ() {
     });
 }
 
+
+function ajouter_pj(name: string) {
+    const option = document.querySelector('#pj-select option[value="' + name + '"]');
+    option?.parentElement?.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
+    const liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
+    liste_pj.appendChild(createCharacter(name));
+    updateCharactersOnPage();
+}
+
 let remove_pnj_timeout: null | number = null;
 var remove_pnj_ok = false;
 
@@ -145,6 +154,7 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
     c.power.current = parseInt(new_pnj_pp_max);
     c.power.max = parseInt(new_pnj_pp_max);
     c.debt.current = new_pnj_dettes;
+    c.hidden.enabled = true;
     
     liste_pnj.appendChild(pnjElement);
 }

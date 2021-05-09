@@ -111,10 +111,10 @@ body {
   //background-color: darkorange;
 }
 
-.proficiency, .secret {
+.proficiency, .secret, .hidden-number {
   @extend %option;
 }
-.name, .proficiency, .secret { // don't really get why I need that but .secret don't have the same size if I don't do it.
+.name, .proficiency, .secret, .hidden-number { // don't really get why I need that but .secret don't have the same size if I don't do it.
   border: 1px solid $blue-info-light;
 }
 
@@ -224,7 +224,7 @@ body {
   }
 }
 
-.name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing, .proficiency, .secret {
+.name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing, .proficiency, .secret, .hidden-number {
   display: flex;
   justify-content: space-between;
   .logo img {
@@ -288,7 +288,7 @@ body {
 }
 
 .pc-page {
-  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button {
+  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button, .hidden-number {
     display: none;
   }
 }
@@ -302,6 +302,7 @@ body {
   }
   button {
     @extend .round-button;
+    padding: 0 !important;
     margin-left: 0.2rem;
   }
   .dice {

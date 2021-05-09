@@ -297,6 +297,10 @@ class LocalCharacterView {
         return new AttributeWithoutValueActivable(this.element.querySelector(".secret")!);
     }
 
+    public get hidden(): AttributeWithoutValueActivable {
+        return new AttributeWithoutValueActivable(this.element.querySelector(".hidden-number")!);
+    }
+
     public set portrait(basename: string) {
         const portrait = this.element.querySelector<HTMLImageElement>(".portrait img")!;
         const src = "/static/applsr/" + basename;
@@ -797,17 +801,17 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
     }
     else {
         if(!character.isOnline()) {
-            jetPNJ(character, rollType, true, parentRollId);
+            jetPNJ(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
             const rollType2 = convertRollTypeToBackend(rollType);
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, parentRollId);
+            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, parentRollId);
         }
     }
 }
 
-function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, parentRollId: string | null = null) {
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/false?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
+function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, parentRollId: string | null = null) {
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
 }
 
 function getCar(name: string) {
