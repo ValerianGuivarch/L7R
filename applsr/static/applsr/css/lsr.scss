@@ -360,10 +360,14 @@ body.compact {
     }
     .roller .group button {
       margin: 0;
+      margin-right: 2px;
       flex-grow: 0;
     }
+    .abilities > * {
+      margin-right: 2px;
+    }
     & > * > * {
-      margin-right: 0;
+      margin-right: 2px;
     }
   }
 }
