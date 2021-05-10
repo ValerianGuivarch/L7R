@@ -491,8 +491,8 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     }
     return successCount + bonus;
 }
-function isDm() {
-    return nompj == "mj";
+function isGm() {
+    return document.body.classList.contains("gm-page");
 }
 function resist(elem, action) {
     var _a, _b;
@@ -574,7 +574,7 @@ function jsonRollToHtml(roll, sub) {
         roll_string = "";
         success = "";
     }
-    else if (roll.hidden_dice == false || isDm()) {
+    else if (roll.hidden_dice == false || isGm()) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
     tr.innerHTML = ''
@@ -598,7 +598,14 @@ function jsonRollToHtml(roll, sub) {
     return tr;
 }
 var display_secret = false; // override value from lsr.js
-function updateChat(charName) {
+function updateChat() {
+    var charName;
+    if (isGm()) {
+        charName = "mj";
+    }
+    else {
+        charName = getCurrentCharacter().querySelector(".name .current").innerHTML;
+    }
     fetch('/afficher/' + charName + '/' + display_secret + '?json').then(function (response) { return response.text(); }).then(function (text) {
         var _a;
         var chat = document.querySelector('#chat').firstElementChild;
@@ -649,7 +656,7 @@ function updateCharacter(characterElement) {
 document.addEventListener("DOMContentLoaded", function () {
     var cb = function () {
         updateCharactersOnPage();
-        updateChat(nompj);
+        updateChat();
     };
     cb();
     setInterval(cb, 2000);
@@ -879,14 +886,14 @@ function autoRoll2(character, rollType, parentRollId) {
 }
 function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(function () { return updateChat(nompj); });
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(function () { return updateChat(); });
 }
 function loadLancerEmpirique(charName, secret) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
     fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret).catch(function (e) {
         console.error("error", e);
-    }).then(function () { return updateChat(charName); });
+    }).then(function () { return updateChat(); });
 }
 function loadLancerJdSvM(name) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return updateChat(nompj); });
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return updateChat(); });
 }

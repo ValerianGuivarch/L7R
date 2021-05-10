@@ -1,5 +1,3 @@
-declare var nompj: string; // set in html
-
 type JEMP = `Jemp-${string}`;
 type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
 
@@ -311,6 +309,7 @@ class LocalCharacterView {
 }
 
 interface CharacterFromDatabase {
+    id: number,
     name: string,
     titre: string,
     niveau: number,
@@ -442,8 +441,8 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
     return successCount + bonus;
 }
 
-function isDm(): boolean {
-    return nompj == "mj";
+function isGm(): boolean {
+    return document.body.classList.contains("gm-page");
 }
 
 function resist(elem: HTMLElement, action: RollType) {
@@ -534,7 +533,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         roll_string = "";
         success = "";
     }
-    else if(roll.hidden_dice == false || isDm()) {
+    else if(roll.hidden_dice == false || isGm()) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
 
@@ -561,7 +560,15 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
 let display_secret = false; // override value from lsr.js
 
-function updateChat(charName: string) {
+function updateChat() {
+    let charName: string;
+    if(isGm()) {
+        charName = "mj";
+    }
+    else {
+        charName = getCurrentCharacter()!.querySelector(".name .current")!.innerHTML;
+    }
+    
     fetch('/afficher/' + charName + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
         var chatHistory = JSON.parse(text);
@@ -614,7 +621,7 @@ function updateCharacter(characterElement: HTMLElement) {
 document.addEventListener("DOMContentLoaded", () => {
     var cb = () => {
         updateCharactersOnPage();
-        updateChat(nompj);
+        updateChat();
     };
     cb();
     setInterval(cb, 2000);
@@ -858,7 +865,7 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
 }
 
 function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, parentRollId: string | null = null) {
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(() => updateChat(nompj));
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(() => updateChat());
 }
 
 function loadLancerEmpirique(charName: string, secret: boolean) {
@@ -866,9 +873,9 @@ function loadLancerEmpirique(charName: string, secret: boolean) {
 
     fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret).catch(function(e) {
         console.error("error", e);
-    }).then(() => updateChat(charName));
+    }).then(() => updateChat());
 }
 
 function loadLancerJdSvM(name: string) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(() => updateChat(nompj));
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(() => updateChat());
 }

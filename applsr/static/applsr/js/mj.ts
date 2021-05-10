@@ -1,6 +1,5 @@
 type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 
-nompj = "mj";
 display_secret = true; // override value from lsr.js
 
 function afficherPJ() {
@@ -89,12 +88,12 @@ function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés ca
             response.text().then(function(text) {
                 const degats = parseInt(text);
                 c.hp.current -= degats;
-                updateChat("mj");
+                updateChat();
             });
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => updateChat("mj"));
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => updateChat());
     }
     if(action == 'magic') {
         c.debt.current += 1;
@@ -160,7 +159,7 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
 }
 
 function effacerLancersDes() {
-    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => updateChat(nompj));
+    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => updateChat());
 }
 
 function duplicateInDb(characterElement: HTMLElement) {
