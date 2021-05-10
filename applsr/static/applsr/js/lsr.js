@@ -187,6 +187,7 @@ var LocalCharacterView = /** @class */ (function () {
     };
     LocalCharacterView.prototype.updateFromDatabase = function (characterFromDatabase) {
         var _a;
+        this.id = characterFromDatabase.id.toString();
         this.name.current = characterFromDatabase.name;
         this.title.current = characterFromDatabase.titre;
         this.level.current = characterFromDatabase.niveau;
@@ -240,6 +241,16 @@ var LocalCharacterView = /** @class */ (function () {
             }
         }
     };
+    Object.defineProperty(LocalCharacterView.prototype, "id", {
+        get: function () {
+            return this.element.dataset.id;
+        },
+        set: function (id) {
+            this.element.dataset.id = id;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(LocalCharacterView.prototype, "name", {
         get: function () {
             return new SmartStringAttribute(this.element.querySelector(".name"));
@@ -401,9 +412,10 @@ var LocalCharacterView = /** @class */ (function () {
     });
     Object.defineProperty(LocalCharacterView.prototype, "portrait", {
         set: function (basename) {
+            var _a;
             var portrait = this.element.querySelector(".portrait img");
             var src = "/static/applsr/" + basename;
-            if (portrait.src != src) {
+            if (((_a = portrait.attributes.getNamedItem("src")) === null || _a === void 0 ? void 0 : _a.nodeValue) != src) {
                 portrait.src = src;
             }
         },
@@ -598,15 +610,36 @@ function jsonRollToHtml(roll, sub) {
     return tr;
 }
 var display_secret = false; // override value from lsr.js
+/** cid = Character ID */
+function createCidParameterString(character, prefix) {
+    if (prefix === void 0) { prefix = "&"; }
+    if (character == null) {
+        return "";
+    }
+    var idParameterString = "";
+    var id;
+    if ("dataset" in character) {
+        id = character.dataset.id;
+    }
+    else {
+        id = character.id;
+    }
+    if (id !== undefined) {
+        idParameterString = prefix + "cid=" + id;
+    }
+    return idParameterString;
+}
 function updateChat() {
     var charName;
+    var idParameterString = "";
+    var char = getCurrentCharacter();
     if (isGm()) {
         charName = "mj";
     }
     else {
-        charName = getCurrentCharacter().querySelector(".name .current").innerHTML;
+        charName = char.querySelector(".name .current").innerHTML;
     }
-    fetch('/afficher/' + charName + '/' + display_secret + '?json').then(function (response) { return response.text(); }).then(function (text) {
+    fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then(function (response) { return response.text(); }).then(function (text) {
         var _a;
         var chat = document.querySelector('#chat').firstElementChild;
         var chatHistory = JSON.parse(text);
@@ -645,7 +678,7 @@ function createCharacter(name, withRoller) {
 }
 function updateCharacter(characterElement) {
     var name = characterElement.querySelector(".name .current").innerHTML;
-    fetch('/lsr/getcar/' + name + "?json")
+    fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
         .then(function (response) { return response.text(); })
         .then(function (text) {
         var characterFromDatabase = JSON.parse(text);
@@ -772,7 +805,7 @@ function autoClick(sourceElement) {
         }
     }
     else {
-        if (character["element"].classList.contains("npc")) {
+        if (!character.isOnline()) {
             if (action == "Edit") {
                 character.localUpdate(target, maxSuffix == "_max", value);
             }
@@ -781,7 +814,7 @@ function autoClick(sourceElement) {
             }
         }
         else {
-            var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add;
+            var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
             fetch(url)
                 .then(function (response) { return response.text(); })
                 .then(function (text) {
@@ -872,7 +905,7 @@ function autoRoll2(character, rollType, parentRollId) {
     }
     else if (rollType == "death") {
         var rollType2 = convertRollTypeToBackend(rollType);
-        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, parentRollId);
+        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
     }
     else {
         if (!character.isOnline()) {
@@ -880,20 +913,17 @@ function autoRoll2(character, rollType, parentRollId) {
         }
         else {
             var rollType2 = convertRollTypeToBackend(rollType);
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, parentRollId);
+            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
         }
     }
 }
-function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, parentRollId) {
+function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, cidString, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(function () { return updateChat(); });
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(function () { return updateChat(); });
 }
-function loadLancerEmpirique(charName, secret) {
+function loadLancerEmpirique(charName, cidString, secret) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
-    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret).catch(function (e) {
+    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function (e) {
         console.error("error", e);
     }).then(function () { return updateChat(); });
-}
-function loadLancerJdSvM(name) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return updateChat(); });
 }

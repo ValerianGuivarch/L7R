@@ -7,7 +7,7 @@ function afficherPJ() {
     liste_pj.childNodes.forEach(function(pcNode) {
         const pcElement = pcNode as HTMLElement;
         const name = pcElement.querySelector(".name")!.innerHTML;
-        fetch('/lsr/getcar/' + name)
+        fetch('/lsr/getcar/' + name + createCidParameterString(pcElement, "?"))
             .then((response) => response.text())
             .then(json => {
                 const obj = JSON.parse(json);
@@ -84,7 +84,7 @@ function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés ca
     else if(action == "empirical") { stat = 0; }
 
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId).then(function(response) {
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId + createCidParameterString(c)).then(function(response) {
             response.text().then(function(text) {
                 const degats = parseInt(text);
                 c.hp.current -= degats;
@@ -93,7 +93,7 @@ function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés ca
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(() => updateChat());
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId + createCidParameterString(c)).then(() => updateChat());
     }
     if(action == 'magic') {
         c.debt.current += 1;

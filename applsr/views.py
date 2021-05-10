@@ -230,6 +230,7 @@ def getvik2(request, joueur):
     car = Viking.objects.all().filter(joueur=joueur)[0]
     return getvik(request, car.name)
 
+
 def getvik(request, nom):
     car = Viking.objects.all().filter(name=nom)[0]
     json = '{"name":"' + car.name + '","agriculture":' + str(car.agriculture) + ',"charisme":' + str(
@@ -240,14 +241,6 @@ def getvik(request, nom):
         car.point_de_vie_max) + ',"point_de_pouvoir":' + str(car.point_de_pouvoir) + '}'
     return HttpResponse(json)
 
-def mj(request):
-    template = loader.get_template('applsr/mj.html')
-    characters = Character.objects.all().order_by('name')
-    characters_names = [c.name for c in characters]
-    context = {
-        'characters_names': characters_names
-    }
-    return HttpResponse((template.render(context, request)))
 
 def masterwords(request, role):
     template = loader.get_template('applsr/masterwords.html')
@@ -324,7 +317,18 @@ def afficher_mw(request):
 
     return HttpResponse(info)
 
+
 # L7R
+
+
+def mj(request):
+    template = loader.get_template('applsr/mj.html')
+    characters = Character.objects.all().order_by('name')
+    characters_names = [c.name for c in characters]
+    context = {
+        'characters_names': characters_names
+    }
+    return HttpResponse((template.render(context, request)))
 
 
 def element_to_flavor(element):
@@ -360,6 +364,7 @@ def element_to_flavor(element):
         return "Rejeté de la Gorgonne"
     else:
         return element
+
 
 def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, elem, opposition=0, parent_roll_id=None):
     dices = []
@@ -609,7 +614,13 @@ def rollResultToDict(rollResult, computeRelated=True):
     return roll
 
 
+def findCharacterNameFromCid(cid):
+    char = Character.objects.filter(id=cid)
+    return char[0].name
+
 def afficher(request, nom, secret):
+    if "cid" in request.GET:
+        nom = findCharacterNameFromCid(request.GET["cid"])
     is_secret = (secret == "true")
     today = datetime.now().date()
     tomorrow = today + timedelta(1)
@@ -639,6 +650,8 @@ def afficher(request, nom, secret):
 
 
 def lancer_empirique(request, nom, valeur, secret):
+    if "cid" in request.GET:
+        nom = findCharacterNameFromCid(request.GET["cid"])
     is_secret = secret == "true"
     dices_string = ""
     if is_secret:
@@ -661,6 +674,8 @@ def lancer_empirique(request, nom, valeur, secret):
 
 
 def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
+    if "cid" in request.GET:
+        nom = findCharacterNameFromCid(request.GET["cid"])
     parent_roll_id = None
     if "parent_roll_id" in request.GET and request.GET["parent_roll_id"] != "null":
         parent_roll_id = int(request.GET["parent_roll_id"])
@@ -839,6 +854,8 @@ def effacer_lancers_des(request):
 
 
 def modifs_valeurs(request, nom, stat, valeur, add):
+    if "cid" in request.GET:
+        nom = findCharacterNameFromCid(request.GET["cid"])
     if add != "true":
         valeur = int(valeur) * -1
 
@@ -880,6 +897,7 @@ def modifs_valeurs(request, nom, stat, valeur, add):
         char.update(element=valeur)
     elif stat == "name":
         char.update(name=valeur)
+        nom=valeur # don't forget to update the parameter for the rest of the function live
     elif stat == "force":
         force1, force2 = valeur.split(" | ")
         char.update(force1=force1, force2=force2)
@@ -915,11 +933,15 @@ def filter_character_for_response(character):
     return data
 
 def getcar(request, nom):
+    if "cid" in request.GET:
+        nom = findCharacterNameFromCid(request.GET["cid"])
     car = Character.objects.all().filter(name=nom)[0]
     return JsonResponse(filter_character_for_response(car), encoder=ExtendedEncoder, safe=False)
 
 
 def updatepj(request, nom, chair, esprit, essence, point_de_vie_max,point_de_focus_max,point_de_pouvoir_max,niveau):
+    if "cid" in request.GET:
+        nom = findCharacterNameFromCid(request.GET["cid"])
     char = Character.objects.filter(name=nom)
     char.update(chair=chair)
     char.update(esprit=esprit)
