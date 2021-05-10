@@ -76,6 +76,7 @@ var AttributeWithMax = /** @class */ (function (_super) {
 var SmartStringAttribute = /** @class */ (function () {
     function SmartStringAttribute(element) {
         this.element = element;
+        this.onChangeCb = null;
     }
     Object.defineProperty(SmartStringAttribute.prototype, "current", {
         get: function () {
@@ -88,11 +89,17 @@ var SmartStringAttribute = /** @class */ (function () {
             }
             if (current.innerHTML != value.toString()) {
                 current.innerHTML = value.toString();
+                if (this.onChangeCb != null) {
+                    this.onChangeCb(this);
+                }
             }
         },
         enumerable: false,
         configurable: true
     });
+    SmartStringAttribute.prototype.onChange = function (cb) {
+        this.onChangeCb = cb;
+    };
     return SmartStringAttribute;
 }());
 var AttributeWithoutValueActivable = /** @class */ (function (_super) {
@@ -180,7 +187,7 @@ function getCurrentCharacter() {
 var LocalCharacterView = /** @class */ (function () {
     function LocalCharacterView(element) {
         this.element = element;
-        this.hpTimeoutSet = false; // necessary to avoid infinitly startinf timeouts
+        this.hpTimeoutSet = false; // necessary to avoid infinitly starting timeouts
     }
     LocalCharacterView.prototype.isOnline = function () {
         return !this.element.classList.contains("npc");
@@ -253,7 +260,11 @@ var LocalCharacterView = /** @class */ (function () {
     });
     Object.defineProperty(LocalCharacterView.prototype, "name", {
         get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".name"));
+            var attr = new SmartStringAttribute(this.element.querySelector(".name"));
+            attr.onChange(function (attr) {
+                history.pushState(null, "", "/lsr/" + attr.current);
+            });
+            return attr;
         },
         enumerable: false,
         configurable: true
@@ -901,7 +912,7 @@ function autoRoll(sourceElement) {
 function autoRoll2(character, rollType, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
     if (rollType == "empirical") {
-        loadLancerEmpirique(character.name.current, character.secret.enabled);
+        loadLancerEmpirique(character.name.current, createCidParameterString(character), character.secret.enabled);
     }
     else if (rollType == "death") {
         var rollType2 = convertRollTypeToBackend(rollType);

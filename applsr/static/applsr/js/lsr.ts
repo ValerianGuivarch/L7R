@@ -51,6 +51,7 @@ class AttributeWithMax extends Attribute {
 }
 
 class SmartStringAttribute {
+    private onChangeCb: ((attr: SmartStringAttribute) => void) | null = null;
     constructor(protected element: HTMLElement) { }
 
     public get current(): string {
@@ -64,7 +65,14 @@ class SmartStringAttribute {
         }
         if(current.innerHTML != value.toString()) {
             current.innerHTML = value.toString();
+            if(this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
         }
+    }
+
+    public onChange(cb: (attr: SmartStringAttribute) => void) {
+        this.onChangeCb = cb;
     }
 }
 
@@ -213,7 +221,11 @@ class LocalCharacterView {
     }
 
     public get name(): SmartStringAttribute {
-        return new SmartStringAttribute(this.element.querySelector(".name")!);
+        const attr = new SmartStringAttribute(this.element.querySelector(".name")!);
+        attr.onChange(attr => {
+            history.pushState(null, "", "/lsr/" + attr.current);
+        });
+        return attr;
     }
 
     public get title(): SmartStringAttribute {
@@ -264,10 +276,10 @@ class LocalCharacterView {
         return new AttributeActivable(this.element.querySelector(".curse2")!);
     }
 
-    private hpTimeoutSet = false;// necessary to avoid infinitly startinf timeouts
+    private hpTimeoutSet = false;// necessary to avoid infinitly starting timeouts
     public get hp(): AttributeWithMax {
         if(this.hpTimeoutSet == false) {
-            setTimeout(() => {
+            setTimeout(() => { // TODO this is ugly, there must be a better way! Probably like the onChange done for the name property
                 let curse2 = Math.floor((this.hp.max - this.hp.current) / 6)
                 if(curse2 < 0) {
                     curse2 = 0;
@@ -877,7 +889,7 @@ function autoRoll(sourceElement: HTMLElement) {
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId : string | null = null) {
     if(rollType == "empirical") {
-        loadLancerEmpirique(character.name.current, character.secret.enabled);
+        loadLancerEmpirique(character.name.current, createCidParameterString(character), character.secret.enabled);
     }
     else if(rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
