@@ -9,15 +9,15 @@ function afficherPJ() {
             .then(function (response) { return response.text(); })
             .then(function (json) {
             var obj = JSON.parse(json);
-            pcElement.querySelector('.pj_pv').innerHTML = obj.point_de_vie;
-            pcElement.querySelector('.pj_pv_max').innerHTML = obj.point_de_vie_max;
-            pcElement.querySelector('.pj_pf').innerHTML = obj.point_de_focus;
-            pcElement.querySelector('.pj_pf_max').innerHTML = obj.point_de_focus_max;
-            pcElement.querySelector('.pj_pp').innerHTML = obj.point_de_pouvoir;
-            pcElement.querySelector('.pj_pp_max').innerHTML = obj.point_de_pouvoir_max;
-            pcElement.querySelector('.pj_dettes').innerHTML = obj.dettes;
-            pcElement.querySelector('.pj_arcanes').innerHTML = obj.arcanes;
-            pcElement.querySelector('.pj_arcanes_max').innerHTML = obj.arcanes_max;
+            pcElement.querySelector('.pj_pv').innerHTML = obj.point_de_vie.toString();
+            pcElement.querySelector('.pj_pv_max').innerHTML = obj.point_de_vie_max.toString();
+            pcElement.querySelector('.pj_pf').innerHTML = obj.point_de_focus.toString();
+            pcElement.querySelector('.pj_pf_max').innerHTML = obj.point_de_focus_max.toString();
+            pcElement.querySelector('.pj_pp').innerHTML = obj.point_de_pouvoir.toString();
+            pcElement.querySelector('.pj_pp_max').innerHTML = obj.point_de_pouvoir_max.toString();
+            pcElement.querySelector('.pj_dettes').innerHTML = obj.dettes.toString();
+            pcElement.querySelector('.pj_arcanes').innerHTML = obj.arcanes.toString();
+            pcElement.querySelector('.pj_arcanes_max').innerHTML = obj.arcanes_max.toString();
             pcElement.querySelector('.pj_fl').innerHTML = obj.fl;
             pcElement.querySelector('.pj_fu').innerHTML = obj.fu;
             pcElement.querySelector('.pj_fs').innerHTML = obj.fs;
@@ -26,41 +26,35 @@ function afficherPJ() {
         });
     });
 }
-function ajouter_pj(name) {
+var remove_char_timeout = null;
+var remove_char_ok = false;
+function deleteCharacter(pnjElement) {
     var _a;
-    var option = document.querySelector('#pj-select option[value="' + name + '"]');
-    (_a = option === null || option === void 0 ? void 0 : option.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(option); // since we can't add the same PC twice we might as well remove it from the drop down list
-    var liste_pj = document.querySelector('#liste_pj');
-    liste_pj.appendChild(createCharacter(name));
-    updateCharactersOnPage();
-}
-var remove_pnj_timeout = null;
-var remove_pnj_ok = false;
-function effacer_pnj(pnjElement) {
-    var _a;
-    if (remove_pnj_ok == false) {
-        remove_pnj_ok = true;
+    if (remove_char_ok == false) {
+        remove_char_ok = true;
         document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
             btn.classList.replace("disabled", "enabled");
         });
-        remove_pnj_timeout = setTimeout(function () {
-            remove_pnj_ok = false;
+        remove_char_timeout = setTimeout(function () {
+            remove_char_ok = false;
             document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
                 btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
     }
     else {
-        if (remove_pnj_timeout != null) {
-            clearTimeout(remove_pnj_timeout);
+        if (remove_char_timeout != null) {
+            clearTimeout(remove_char_timeout);
         }
-        remove_pnj_timeout = setTimeout(function () {
-            remove_pnj_ok = false;
-            document.querySelectorAll(".delete-npc").forEach(function (btn) {
-                btn.classList.replace("btn-success", "btn-danger");
+        remove_char_timeout = setTimeout(function () {
+            remove_char_ok = false;
+            document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
+                btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
         (_a = pnjElement.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(pnjElement);
+        console.log("remove char", pnjElement.dataset.id);
+        document.querySelectorAll('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(function (b) { return b.disabled = false; }); // using forEach as ifPresent
     }
 }
 function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
@@ -123,6 +117,22 @@ function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
         c.debt.current += 1;
     }
 }
+function incrementString(str, separator) {
+    if (separator === void 0) { separator = "-"; }
+    var parts = str.split(separator);
+    if (parts.length == 1) {
+        return str + "-1";
+    }
+    var last = parts.pop();
+    if (last === undefined) {
+        return str + "-1";
+    }
+    var i = parseInt(last);
+    if (isNaN(i)) {
+        return str + "-1";
+    }
+    return parts.join("-") + "-" + (i + 1);
+}
 function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {
     var new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     var liste_pnj = document.querySelector('#liste_pnj');
@@ -162,11 +172,27 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     c.debt.current = new_pnj_dettes;
     c.hidden.enabled = true;
     liste_pnj.appendChild(pnjElement);
+    document.querySelector("#new_pnj_name").value = incrementString(new_pnj_name);
 }
 function effacerLancersDes() {
     fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(function () { return updateChat(); });
 }
 function duplicateInDb(characterElement) {
     var character = new LocalCharacterView(characterElement);
-    fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux + '/' + character.secunda + '/' + character.umbra + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true');
+    fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true')
+        .then(function (response) { return response.text(); })
+        .then(function (json) {
+        var _a;
+        var cdb = JSON.parse(json);
+        console.log(cdb);
+        var container = document.createElement("div");
+        container.innerHTML = '<button data-cid="' + cdb.id + '" onclick="autoAddChar(this);">' + cdb.name + '</button>';
+        (_a = document.querySelector(".char-select")) === null || _a === void 0 ? void 0 : _a.appendChild(container.firstElementChild);
+    });
+}
+function autoAddChar(source) {
+    var pcList = document.querySelector("#liste_pj");
+    pcList.appendChild(createCharacterByCid(source.dataset.cid));
+    updateCharactersOnPage();
+    source.disabled = true;
 }

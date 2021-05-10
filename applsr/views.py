@@ -324,9 +324,9 @@ def afficher_mw(request):
 def mj(request):
     template = loader.get_template('applsr/mj.html')
     characters = Character.objects.all().order_by('name')
-    characters_names = [c.name for c in characters]
+    characters = [{"id": c.id, "name": c.name} for c in characters]
     context = {
-        'characters_names': characters_names
+        'characters': characters
     }
     return HttpResponse((template.render(context, request)))
 

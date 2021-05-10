@@ -390,7 +390,6 @@ body.pc-page {
 .menu {
   display: flex;
   flex-wrap: wrap;
-  margin-left: -1rem;
 }
 
 .menu > * {
@@ -400,6 +399,24 @@ body.pc-page {
 
 .menu > *:last-child {
   border-right: none;
+}
+
+.db-char-menu {
+  flex: 2;
+  .char-select {
+    display: grid;
+    overflow: auto;
+    height: 6em;
+    grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
+    gap: 2px;
+  }
+}
+
+.misc-menu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1;
 }
 
 // compact

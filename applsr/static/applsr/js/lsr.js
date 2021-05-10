@@ -280,21 +280,21 @@ var LocalCharacterView = /** @class */ (function () {
     });
     Object.defineProperty(LocalCharacterView.prototype, "lux", {
         get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".lux .current"));
+            return new SmartStringAttribute(this.element.querySelector(".lux"));
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(LocalCharacterView.prototype, "umbra", {
         get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".umbra .current"));
+            return new SmartStringAttribute(this.element.querySelector(".umbra"));
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(LocalCharacterView.prototype, "secunda", {
         get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".secunda .current"));
+            return new SmartStringAttribute(this.element.querySelector(".secunda"));
         },
         enumerable: false,
         configurable: true
@@ -683,6 +683,17 @@ function createCharacter(name, withRoller) {
     var characterElement = document.querySelector(".templates > .character").cloneNode(true);
     var character = new LocalCharacterView(characterElement);
     character.name.current = name;
+    if (withRoller == true) {
+        var rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
+        characterElement.appendChild(rollerElement);
+    }
+    return characterElement;
+}
+function createCharacterByCid(cid, withRoller) {
+    if (withRoller === void 0) { withRoller = true; }
+    var characterElement = document.querySelector(".templates > .character").cloneNode(true);
+    var character = new LocalCharacterView(characterElement);
+    character.id = cid;
     if (withRoller == true) {
         var rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
         characterElement.appendChild(rollerElement);

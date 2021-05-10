@@ -277,7 +277,6 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
 .menu {
   display: flex;
   flex-wrap: wrap;
-  margin-left: -1rem;
 }
 
 .menu > * {
@@ -287,6 +286,24 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
 
 .menu > *:last-child {
   border-right: none;
+}
+
+.db-char-menu {
+  flex: 2;
+}
+.db-char-menu .char-select {
+  display: grid;
+  overflow: auto;
+  height: 6em;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 2px;
+}
+
+.misc-menu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1;
 }
 
 #liste_pj, #liste_pnj {

@@ -235,15 +235,15 @@ class LocalCharacterView {
     }
 
     public get lux(): SmartStringAttribute {
-        return new SmartStringAttribute(this.element.querySelector(".lux .current")!);
+        return new SmartStringAttribute(this.element.querySelector(".lux")!);
     }
 
     public get umbra(): SmartStringAttribute {
-        return new SmartStringAttribute(this.element.querySelector(".umbra .current")!);
+        return new SmartStringAttribute(this.element.querySelector(".umbra")!);
     }
 
     public get secunda(): SmartStringAttribute {
-        return new SmartStringAttribute(this.element.querySelector(".secunda .current")!);
+        return new SmartStringAttribute(this.element.querySelector(".secunda")!);
     }
 
     public get notes(): SmartStringAttribute {
@@ -642,6 +642,19 @@ function createCharacter(name: string, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
     const character = new LocalCharacterView(characterElement);
     character.name.current = name;
+
+    if(withRoller == true) {
+        const rollerElement = document.querySelector(".templates > .roller")!.cloneNode(true) as HTMLElement;
+        characterElement.appendChild(rollerElement);
+    }
+
+    return characterElement;
+}
+
+function createCharacterByCid(cid: string, withRoller = true) {
+    const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
+    const character = new LocalCharacterView(characterElement);
+    character.id = cid;
 
     if(withRoller == true) {
         const rollerElement = document.querySelector(".templates > .roller")!.cloneNode(true) as HTMLElement;
