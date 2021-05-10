@@ -103,20 +103,31 @@ function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés ca
     }
 }
 
-function incrementString(str: string, separator="-") {
+/** Get the last number in a string with separators, for example getIndexInString("a-b-c-3") would return 3 */
+function getIndexInString(str: string, separator="-", byDefault: number | null = null): number | null {
     const parts = str.split(separator);
     if(parts.length == 1) {
-        return str + "-1";
+        return byDefault;
     }
     const last = parts.pop();
     if(last === undefined) {
-        return str + "-1";
+        return byDefault;
     }
     const i = parseInt(last);
     if(isNaN(i)) {
-        return str + "-1";
+        return byDefault;
     }
-    return parts.join("-") + "-" + (i + 1);
+    return i;
+}
+
+function incrementString(str: string, separator="-") {
+    const i = getIndexInString(str, separator);
+    if(i === null) {
+        return str + separator + "1";
+    }
+    const parts = str.split(separator);
+    const last = parts.pop();
+    return parts.join(separator) + separator + (i + 1);
 }
 
 
@@ -192,8 +203,15 @@ function duplicateAsOfflineCharacter(characterElement: HTMLElement) {
     const offlineChar = characterElement.cloneNode(true) as HTMLElement;
     offlineChar.classList.add("npc");
     delete offlineChar.dataset.id;
-    let c = new LocalCharacterView(offlineChar);
-    c.name.current = incrementString(c.name.current);
+
+    // find correct number to suffix the character, aka the highest suffix already present on the page
+    const ids = Array.from(document.querySelectorAll(".character .name .current")).map(e => getIndexInString(e.innerHTML, "-", 0)!).sort();
+
+    if(ids.length !== 0) {
+        let c = new LocalCharacterView(offlineChar);
+        c.name.current = c.name.current + "-" + (ids[ids.length - 1] + 1);
+    }
+
     liste_pnj.appendChild(offlineChar);
 }
 

@@ -1,14 +1,14 @@
 "use strict";
 display_secret = true; // override value from lsr.js
 function afficherPJ() {
-    var liste_pj = document.querySelector('#liste_pj');
+    const liste_pj = document.querySelector('#liste_pj');
     liste_pj.childNodes.forEach(function (pcNode) {
-        var pcElement = pcNode;
-        var name = pcElement.querySelector(".name").innerHTML;
+        const pcElement = pcNode;
+        const name = pcElement.querySelector(".name").innerHTML;
         fetch('/lsr/getcar/' + name + createCidParameterString(pcElement, "?"))
-            .then(function (response) { return response.text(); })
-            .then(function (json) {
-            var obj = JSON.parse(json);
+            .then((response) => response.text())
+            .then(json => {
+            const obj = JSON.parse(json);
             pcElement.querySelector('.pj_pv').innerHTML = obj.point_de_vie.toString();
             pcElement.querySelector('.pj_pv_max').innerHTML = obj.point_de_vie_max.toString();
             pcElement.querySelector('.pj_pf').innerHTML = obj.point_de_focus.toString();
@@ -26,18 +26,18 @@ function afficherPJ() {
         });
     });
 }
-var remove_char_timeout = null;
+let remove_char_timeout = null;
 var remove_char_ok = false;
 function deleteCharacter(pnjElement) {
     var _a;
     if (remove_char_ok == false) {
         remove_char_ok = true;
-        document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
+        document.querySelectorAll(".character .controls .delete").forEach(btn => {
             btn.classList.replace("disabled", "enabled");
         });
-        remove_char_timeout = setTimeout(function () {
+        remove_char_timeout = setTimeout(() => {
             remove_char_ok = false;
-            document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
+            document.querySelectorAll(".character .controls .delete").forEach(btn => {
                 btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
@@ -46,21 +46,20 @@ function deleteCharacter(pnjElement) {
         if (remove_char_timeout != null) {
             clearTimeout(remove_char_timeout);
         }
-        remove_char_timeout = setTimeout(function () {
+        remove_char_timeout = setTimeout(() => {
             remove_char_ok = false;
-            document.querySelectorAll(".character .controls .delete").forEach(function (btn) {
+            document.querySelectorAll(".character .controls .delete").forEach(btn => {
                 btn.classList.replace("enabled", "disabled");
             });
         }, 5000);
         (_a = pnjElement.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(pnjElement);
         console.log("remove char", pnjElement.dataset.id);
-        document.querySelectorAll('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(function (b) { return b.disabled = false; }); // using forEach as ifPresent
+        document.querySelectorAll('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(b => b.disabled = false); // using forEach as ifPresent
     }
 }
-function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
-    if (parentRollId === void 0) { parentRollId = null; }
-    var opposition = parseInt(document.querySelector('#opposition').value);
-    var stat = 0;
+function jetPNJ(c, action, dc /** dés cachés */, parentRollId = null) {
+    const opposition = parseInt(document.querySelector('#opposition').value);
+    let stat = 0;
     if (action == "flesh") {
         stat = c.flesh.current;
     }
@@ -94,14 +93,14 @@ function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
     if (document.querySelector('#opposition_checked').checked) {
         fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId + createCidParameterString(c)).then(function (response) {
             response.text().then(function (text) {
-                var degats = parseInt(text);
+                const degats = parseInt(text);
                 c.hp.current -= degats;
                 updateChat();
             });
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId + createCidParameterString(c)).then(function () { return updateChat(); });
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId + createCidParameterString(c)).then(() => updateChat());
     }
     if (action == 'magic') {
         c.debt.current += 1;
@@ -117,25 +116,34 @@ function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
         c.debt.current += 1;
     }
 }
-function incrementString(str, separator) {
-    if (separator === void 0) { separator = "-"; }
-    var parts = str.split(separator);
+/** Get the last number in a string with separators, for example getIndexInString("a-b-c-3") would return 3 */
+function getIndexInString(str, separator = "-", byDefault = null) {
+    const parts = str.split(separator);
     if (parts.length == 1) {
-        return str + "-1";
+        return byDefault;
     }
-    var last = parts.pop();
+    const last = parts.pop();
     if (last === undefined) {
-        return str + "-1";
+        return byDefault;
     }
-    var i = parseInt(last);
+    const i = parseInt(last);
     if (isNaN(i)) {
-        return str + "-1";
+        return byDefault;
     }
-    return parts.join("-") + "-" + (i + 1);
+    return i;
+}
+function incrementString(str, separator = "-") {
+    const i = getIndexInString(str, separator);
+    if (i === null) {
+        return str + separator + "1";
+    }
+    const parts = str.split(separator);
+    const last = parts.pop();
+    return parts.join(separator) + separator + (i + 1);
 }
 function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essence, new_pnj_pv_max, new_pnj_pf_max, new_pnj_pp_max) {
-    var new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
-    var liste_pnj = document.querySelector('#liste_pnj');
+    const new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
+    const liste_pnj = document.querySelector('#liste_pnj');
     if (new_pnj_name == "") {
         new_pnj_name = "Name";
     }
@@ -157,9 +165,9 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     if (new_pnj_pp_max == "") {
         new_pnj_pp_max = new_pnj_essence;
     }
-    var pnjElement = createCharacter(new_pnj_name);
+    const pnjElement = createCharacter(new_pnj_name);
     pnjElement.classList.add("npc");
-    var c = new LocalCharacterView(pnjElement);
+    const c = new LocalCharacterView(pnjElement);
     c.flesh.current = parseInt(new_pnj_chair);
     c.spirit.current = parseInt(new_pnj_esprit);
     c.essence.current = parseInt(new_pnj_essence);
@@ -175,32 +183,36 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     document.querySelector("#new_pnj_name").value = incrementString(new_pnj_name);
 }
 function effacerLancersDes() {
-    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(function () { return updateChat(); });
+    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => updateChat());
 }
 function duplicateInDb(characterElement) {
-    var character = new LocalCharacterView(characterElement);
+    let character = new LocalCharacterView(characterElement);
     fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true')
-        .then(function (response) { return response.text(); })
-        .then(function (json) {
+        .then((response) => response.text())
+        .then(json => {
         var _a;
-        var cdb = JSON.parse(json);
+        const cdb = JSON.parse(json);
         console.log(cdb);
-        var container = document.createElement("div");
+        const container = document.createElement("div");
         container.innerHTML = '<button data-cid="' + cdb.id + '" onclick="autoAddChar(this);">' + cdb.name + '</button>';
         (_a = document.querySelector(".char-select")) === null || _a === void 0 ? void 0 : _a.appendChild(container.firstElementChild);
     });
 }
 function duplicateAsOfflineCharacter(characterElement) {
-    var liste_pnj = document.querySelector('#liste_pnj');
-    var offlineChar = characterElement.cloneNode(true);
+    const liste_pnj = document.querySelector('#liste_pnj');
+    const offlineChar = characterElement.cloneNode(true);
     offlineChar.classList.add("npc");
     delete offlineChar.dataset.id;
-    var c = new LocalCharacterView(offlineChar);
-    c.name.current = incrementString(c.name.current);
+    // find correct number to suffix the character, aka the highest suffix already present on the page
+    const ids = Array.from(document.querySelectorAll(".character .name .current")).map(e => getIndexInString(e.innerHTML, "-", 0)).sort();
+    if (ids.length !== 0) {
+        let c = new LocalCharacterView(offlineChar);
+        c.name.current = c.name.current + "-" + (ids[ids.length - 1] + 1);
+    }
     liste_pnj.appendChild(offlineChar);
 }
 function autoAddChar(source) {
-    var pcList = document.querySelector("#liste_pj");
+    const pcList = document.querySelector("#liste_pj");
     pcList.appendChild(createCharacterByCid(source.dataset.cid));
     updateCharactersOnPage();
     source.disabled = true;

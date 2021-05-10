@@ -1,179 +1,120 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var WithLabel = /** @class */ (function () {
-    function WithLabel(element) {
+class WithLabel {
+    constructor(element) {
         this.element = element;
     }
-    Object.defineProperty(WithLabel.prototype, "label", {
-        get: function () {
-            return this.element.querySelector(".label").innerHTML;
-        },
-        set: function (value) {
-            var label = this.element.querySelector(".label");
-            if (label.innerHTML != value.toString()) {
-                label.innerHTML = value.toString();
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return WithLabel;
-}());
-var Attribute = /** @class */ (function (_super) {
-    __extends(Attribute, _super);
-    function Attribute(element) {
-        return _super.call(this, element) || this;
+    get label() {
+        return this.element.querySelector(".label").innerHTML;
     }
-    Object.defineProperty(Attribute.prototype, "current", {
-        get: function () {
-            return parseInt(this.element.querySelector(".current").innerHTML);
-        },
-        set: function (value) {
-            var current = this.element.querySelector(".current");
-            if (current.innerHTML != value.toString()) {
-                current.innerHTML = value.toString();
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return Attribute;
-}(WithLabel));
-var AttributeWithMax = /** @class */ (function (_super) {
-    __extends(AttributeWithMax, _super);
-    function AttributeWithMax(element) {
-        return _super.call(this, element) || this;
+    set label(value) {
+        const label = this.element.querySelector(".label");
+        if (label.innerHTML != value.toString()) {
+            label.innerHTML = value.toString();
+        }
     }
-    Object.defineProperty(AttributeWithMax.prototype, "max", {
-        get: function () {
-            return parseInt(this.element.querySelector(".max").innerHTML);
-        },
-        set: function (value) {
-            var max = this.element.querySelector(".max");
-            if (max.innerHTML != value.toString()) {
-                max.innerHTML = value.toString();
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return AttributeWithMax;
-}(Attribute));
-var SmartStringAttribute = /** @class */ (function () {
-    function SmartStringAttribute(element) {
+}
+class Attribute extends WithLabel {
+    constructor(element) {
+        super(element);
+    }
+    get current() {
+        return parseInt(this.element.querySelector(".current").innerHTML);
+    }
+    set current(value) {
+        const current = this.element.querySelector(".current");
+        if (current.innerHTML != value.toString()) {
+            current.innerHTML = value.toString();
+        }
+    }
+}
+class AttributeWithMax extends Attribute {
+    constructor(element) {
+        super(element);
+    }
+    get max() {
+        return parseInt(this.element.querySelector(".max").innerHTML);
+    }
+    set max(value) {
+        const max = this.element.querySelector(".max");
+        if (max.innerHTML != value.toString()) {
+            max.innerHTML = value.toString();
+        }
+    }
+}
+class SmartStringAttribute {
+    constructor(element) {
         this.element = element;
         this.onChangeCb = null;
     }
-    Object.defineProperty(SmartStringAttribute.prototype, "current", {
-        get: function () {
-            return this.element.querySelector(".current").innerHTML;
-        },
-        set: function (value) {
-            var current = this.element.querySelector(".current");
-            if (current == null) {
-                current = this.element;
+    get current() {
+        return this.element.querySelector(".current").innerHTML;
+    }
+    set current(value) {
+        let current = this.element.querySelector(".current");
+        if (current == null) {
+            current = this.element;
+        }
+        if (current.innerHTML != value.toString()) {
+            current.innerHTML = value.toString();
+            if (this.onChangeCb != null) {
+                this.onChangeCb(this);
             }
-            if (current.innerHTML != value.toString()) {
-                current.innerHTML = value.toString();
-                if (this.onChangeCb != null) {
-                    this.onChangeCb(this);
-                }
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    SmartStringAttribute.prototype.onChange = function (cb) {
+        }
+    }
+    onChange(cb) {
         this.onChangeCb = cb;
-    };
-    return SmartStringAttribute;
-}());
-var AttributeWithoutValueActivable = /** @class */ (function (_super) {
-    __extends(AttributeWithoutValueActivable, _super);
-    function AttributeWithoutValueActivable(element) {
-        return _super.call(this, element) || this;
     }
-    Object.defineProperty(AttributeWithoutValueActivable.prototype, "enabled", {
-        get: function () {
-            return this.element.querySelector(".enabled input").checked;
-        },
-        set: function (value) {
-            this.element.querySelector(".enabled input").checked = value;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return AttributeWithoutValueActivable;
-}(WithLabel));
-var AttributeActivable = /** @class */ (function (_super) {
-    __extends(AttributeActivable, _super);
-    function AttributeActivable(element) {
-        return _super.call(this, element) || this;
+}
+class AttributeWithoutValueActivable extends WithLabel {
+    constructor(element) {
+        super(element);
     }
-    Object.defineProperty(AttributeActivable.prototype, "current", {
-        get: function () {
-            if (this.enabled) {
-                return parseInt(this.element.querySelector(".current").innerHTML);
-            }
-            else {
-                return 0;
-            }
-        },
-        set: function (value) {
-            var current = this.element.querySelector(".current");
-            if (current.innerHTML != value.toString()) {
-                current.innerHTML = value.toString();
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(AttributeActivable.prototype, "enabled", {
-        get: function () {
-            return this.element.querySelector(".enabled input").checked;
-        },
-        set: function (value) {
-            this.element.querySelector(".enabled input").checked = value;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return AttributeActivable;
-}(Attribute));
-var AttributeWithMaxActivable = /** @class */ (function (_super) {
-    __extends(AttributeWithMaxActivable, _super);
-    function AttributeWithMaxActivable(element) {
-        return _super.call(this, element) || this;
+    get enabled() {
+        return this.element.querySelector(".enabled input").checked;
     }
-    Object.defineProperty(AttributeWithMaxActivable.prototype, "enabled", {
-        get: function () {
-            return this.element.querySelector(".enabled input").checked;
-        },
-        set: function (value) {
-            this.element.querySelector(".enabled input").checked = value;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return AttributeWithMaxActivable;
-}(AttributeWithMax));
+    set enabled(value) {
+        this.element.querySelector(".enabled input").checked = value;
+    }
+}
+class AttributeActivable extends Attribute {
+    constructor(element) {
+        super(element);
+    }
+    get current() {
+        if (this.enabled) {
+            return parseInt(this.element.querySelector(".current").innerHTML);
+        }
+        else {
+            return 0;
+        }
+    }
+    set current(value) {
+        const current = this.element.querySelector(".current");
+        if (current.innerHTML != value.toString()) {
+            current.innerHTML = value.toString();
+        }
+    }
+    get enabled() {
+        return this.element.querySelector(".enabled input").checked;
+    }
+    set enabled(value) {
+        this.element.querySelector(".enabled input").checked = value;
+    }
+}
+class AttributeWithMaxActivable extends AttributeWithMax {
+    constructor(element) {
+        super(element);
+    }
+    get enabled() {
+        return this.element.querySelector(".enabled input").checked;
+    }
+    set enabled(value) {
+        this.element.querySelector(".enabled input").checked = value;
+    }
+}
 function getCurrentCharacter() {
     var _a, _b;
-    var characterElements = document.querySelectorAll(".main .character");
+    const characterElements = document.querySelectorAll(".main .character");
     if (characterElements.length == 0) {
         return null;
     }
@@ -184,15 +125,15 @@ function getCurrentCharacter() {
         return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
     }
 }
-var LocalCharacterView = /** @class */ (function () {
-    function LocalCharacterView(element) {
+class LocalCharacterView {
+    constructor(element) {
         this.element = element;
         this.hpTimeoutSet = false; // necessary to avoid infinitly starting timeouts
     }
-    LocalCharacterView.prototype.isOnline = function () {
+    isOnline() {
         return !this.element.classList.contains("npc");
-    };
-    LocalCharacterView.prototype.updateFromDatabase = function (characterFromDatabase) {
+    }
+    updateFromDatabase(characterFromDatabase) {
         var _a;
         this.id = characterFromDatabase.id.toString();
         this.name.current = characterFromDatabase.name;
@@ -219,13 +160,13 @@ var LocalCharacterView = /** @class */ (function () {
         }
         this.notes.current = (_a = characterFromDatabase.notes) !== null && _a !== void 0 ? _a : "";
         this.portrait = characterFromDatabase.name + ".png";
-    };
-    LocalCharacterView.prototype.localUpdate = function (prop, max, value) {
+    }
+    localUpdate(prop, max, value) {
         if (prop == "portrait" || prop == "proficiency" || prop == "secret") {
             console.log("Should probably do nothing when localUpdate called on", prop);
         }
         else {
-            var attr = this[prop];
+            const attr = this[prop];
             if (attr instanceof SmartStringAttribute) {
                 if (typeof (value) != "string") {
                     throw new Error("wrong type for value: " + value);
@@ -247,196 +188,102 @@ var LocalCharacterView = /** @class */ (function () {
                 }
             }
         }
-    };
-    Object.defineProperty(LocalCharacterView.prototype, "id", {
-        get: function () {
-            return this.element.dataset.id;
-        },
-        set: function (id) {
-            this.element.dataset.id = id;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "name", {
-        get: function () {
-            var attr = new SmartStringAttribute(this.element.querySelector(".name"));
-            if (!isGm()) {
-                attr.onChange(function (attr) {
-                    history.pushState(null, "", "/lsr/" + attr.current);
-                });
-            }
-            return attr;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "title", {
-        get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".title"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "lux", {
-        get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".lux"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "umbra", {
-        get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".umbra"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "secunda", {
-        get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".secunda"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "notes", {
-        get: function () {
-            return new SmartStringAttribute(this.element.querySelector(".notes .current"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "level", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".level"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "flesh", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".flesh"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "spirit", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".spirit"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "essence", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".essence"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "blessing", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".blessing"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "curse", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".curse"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "curse2", {
-        get: function () {
-            return new AttributeActivable(this.element.querySelector(".curse2"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "hp", {
-        get: function () {
-            var _this = this;
-            if (this.hpTimeoutSet == false) {
-                setTimeout(function () {
-                    var curse2 = Math.floor((_this.hp.max - _this.hp.current) / 6);
-                    if (curse2 < 0) {
-                        curse2 = 0;
-                    }
-                    _this.curse2.current = curse2;
-                    _this.hpTimeoutSet = false;
-                }, 1);
-                this.hpTimeoutSet = true;
-            }
-            return new AttributeWithMax(this.element.querySelector(".hp"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "debt", {
-        get: function () {
-            return new Attribute(this.element.querySelector(".debt"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "arcana", {
-        get: function () {
-            return new AttributeWithMax(this.element.querySelector(".arcana"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "focus", {
-        get: function () {
-            return new AttributeWithMaxActivable(this.element.querySelector(".focus"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "power", {
-        get: function () {
-            return new AttributeWithMaxActivable(this.element.querySelector(".power"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "proficiency", {
-        get: function () {
-            return new AttributeWithoutValueActivable(this.element.querySelector(".proficiency"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "secret", {
-        get: function () {
-            return new AttributeWithoutValueActivable(this.element.querySelector(".secret"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "hidden", {
-        get: function () {
-            return new AttributeWithoutValueActivable(this.element.querySelector(".hidden-number"));
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LocalCharacterView.prototype, "portrait", {
-        set: function (basename) {
-            var _a;
-            var portrait = this.element.querySelector(".portrait img");
-            var src = "/static/applsr/" + basename;
-            if (((_a = portrait.attributes.getNamedItem("src")) === null || _a === void 0 ? void 0 : _a.nodeValue) != src) {
-                portrait.src = src;
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    return LocalCharacterView;
-}());
+    }
+    get id() {
+        return this.element.dataset.id;
+    }
+    set id(id) {
+        this.element.dataset.id = id;
+    }
+    get name() {
+        const attr = new SmartStringAttribute(this.element.querySelector(".name"));
+        if (!isGm()) {
+            attr.onChange(attr => {
+                history.pushState(null, "", "/lsr/" + attr.current);
+            });
+        }
+        return attr;
+    }
+    get title() {
+        return new SmartStringAttribute(this.element.querySelector(".title"));
+    }
+    get lux() {
+        return new SmartStringAttribute(this.element.querySelector(".lux"));
+    }
+    get umbra() {
+        return new SmartStringAttribute(this.element.querySelector(".umbra"));
+    }
+    get secunda() {
+        return new SmartStringAttribute(this.element.querySelector(".secunda"));
+    }
+    get notes() {
+        return new SmartStringAttribute(this.element.querySelector(".notes .current"));
+    }
+    get level() {
+        return new Attribute(this.element.querySelector(".level"));
+    }
+    get flesh() {
+        return new Attribute(this.element.querySelector(".flesh"));
+    }
+    get spirit() {
+        return new Attribute(this.element.querySelector(".spirit"));
+    }
+    get essence() {
+        return new Attribute(this.element.querySelector(".essence"));
+    }
+    get blessing() {
+        return new Attribute(this.element.querySelector(".blessing"));
+    }
+    get curse() {
+        return new Attribute(this.element.querySelector(".curse"));
+    }
+    get curse2() {
+        return new AttributeActivable(this.element.querySelector(".curse2"));
+    }
+    get hp() {
+        if (this.hpTimeoutSet == false) {
+            setTimeout(() => {
+                let curse2 = Math.floor((this.hp.max - this.hp.current) / 6);
+                if (curse2 < 0) {
+                    curse2 = 0;
+                }
+                this.curse2.current = curse2;
+                this.hpTimeoutSet = false;
+            }, 1);
+            this.hpTimeoutSet = true;
+        }
+        return new AttributeWithMax(this.element.querySelector(".hp"));
+    }
+    get debt() {
+        return new Attribute(this.element.querySelector(".debt"));
+    }
+    get arcana() {
+        return new AttributeWithMax(this.element.querySelector(".arcana"));
+    }
+    get focus() {
+        return new AttributeWithMaxActivable(this.element.querySelector(".focus"));
+    }
+    get power() {
+        return new AttributeWithMaxActivable(this.element.querySelector(".power"));
+    }
+    get proficiency() {
+        return new AttributeWithoutValueActivable(this.element.querySelector(".proficiency"));
+    }
+    get secret() {
+        return new AttributeWithoutValueActivable(this.element.querySelector(".secret"));
+    }
+    get hidden() {
+        return new AttributeWithoutValueActivable(this.element.querySelector(".hidden-number"));
+    }
+    set portrait(basename) {
+        var _a;
+        const portrait = this.element.querySelector(".portrait img");
+        const src = "/static/applsr/" + basename;
+        if (((_a = portrait.attributes.getNamedItem("src")) === null || _a === void 0 ? void 0 : _a.nodeValue) != src) {
+            portrait.src = src;
+        }
+    }
+}
 function rollTypeToString(rollType) {
     if (rollType == 'Jsoin') {
         return "<i>Soigne</i>";
@@ -472,13 +319,11 @@ function rollTypeToString(rollType) {
         return rollType + "?";
     }
 }
-var diceTable = ["?", "&#9856;", "&#9857;", "&#9858;", "&#9859;", "&#9860;", "&#9861;"];
-function formatRollResults(dice_results, rollType, symbol) {
-    if (symbol === void 0) { symbol = true; }
+const diceTable = ["?", "&#9856;", "&#9857;", "&#9858;", "&#9859;", "&#9860;", "&#9861;"];
+function formatRollResults(dice_results, rollType, symbol = true) {
     var str = "";
-    for (var _i = 0, dice_results_1 = dice_results; _i < dice_results_1.length; _i++) {
-        var result = dice_results_1[_i];
-        var diceText = void 0;
+    for (var result of dice_results) {
+        let diceText;
         if (symbol && (rollType == "flesh" ||
             rollType == "spirit" ||
             rollType == "essence" ||
@@ -505,8 +350,7 @@ function formatRollResults(dice_results, rollType, symbol) {
 }
 function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     var successCount = 0;
-    for (var _i = 0, dice_results_2 = dice_results; _i < dice_results_2.length; _i++) {
-        var result = dice_results_2[_i];
+    for (var result of dice_results) {
         if (countAsOne.indexOf(result) !== -1) {
             successCount += 1;
         }
@@ -521,24 +365,23 @@ function isGm() {
 }
 function resist(elem, action) {
     var _a, _b;
-    var char = getCurrentCharacter();
-    var parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
+    const char = getCurrentCharacter();
+    const parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
     if (char == null) {
         throw new Error("Can't find an active character");
     }
     else {
-        var character = new LocalCharacterView(char);
+        let character = new LocalCharacterView(char);
         autoRoll2(character, action, parentRollId);
     }
 }
-function jsonRollToHtml(roll, sub) {
-    if (sub === void 0) { sub = false; }
-    var tr = document.createElement("tr");
-    var secret = "";
+function jsonRollToHtml(roll, sub = false) {
+    let tr = document.createElement("tr");
+    let secret = "";
     if (roll.secret == true) {
         secret = "(secret) ";
     }
-    var benemal = "";
+    let benemal = "";
     if (roll.malediction_count > 0 && roll.benediction_count > 0) {
         benemal = "Avec " + roll.benediction_count + " bénédictions et " + roll.malediction_count + " malédictions, ";
     }
@@ -548,29 +391,29 @@ function jsonRollToHtml(roll, sub) {
     else if (roll.benediction_count > 0) {
         benemal = "Avec " + roll.benediction_count + " bénédictions, ";
     }
-    var pp = "";
+    let pp = "";
     if (roll.pp == true) {
         pp = " en y mettant toute sa <i>puissance</i> ";
     }
-    var pf = "";
+    let pf = "";
     if (roll.pf == true) {
         pf = " se <i>concentre</i> et ";
     }
-    var ra = "";
+    let ra = "";
     if (roll.ra == true) {
         ra = ", grâce à son <i>héritage latent</i>";
     }
-    var delta = "";
+    let delta = "";
     if (roll.parent_roll != null) {
-        var parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
-        var thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
-        var diff = parentSuccessCount - thisSuccessCount;
+        let parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
+        let thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
+        let diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
         if (diff <= 0) {
             delta += ' <span class="low">(aucun dégâts)</span>';
         }
         else {
-            var dmg = Math.ceil(diff / 2);
+            const dmg = Math.ceil(diff / 2);
             if (dmg >= 4) {
                 delta += ' <span class="high">(' + dmg + ' dégâts)</span>.';
             }
@@ -582,19 +425,19 @@ function jsonRollToHtml(roll, sub) {
             }
         }
     }
-    var resist = "";
+    let resist = "";
     if (sub == false) {
         resist = ' Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
             + '<button onclick="resist(this, \'spirit\')">esprit</button>'
             + '<button onclick="resist(this, \'essence\')">essence</button> ?';
     }
-    var success = 'et obtient <span title="Juge12: '
+    let success = 'et obtient <span title="Juge12: '
         + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
         + ', Juge34: '
         + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
         + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
         + " succès</span>";
-    var roll_string = " ";
+    let roll_string = " ";
     if (roll.roll_type == "JAF") {
         roll_string = "";
         success = "";
@@ -622,15 +465,14 @@ function jsonRollToHtml(roll, sub) {
         + "</td>";
     return tr;
 }
-var display_secret = false; // override value from lsr.js
+let display_secret = false; // override value from lsr.js
 /** cid = Character ID */
-function createCidParameterString(character, prefix) {
-    if (prefix === void 0) { prefix = "&"; }
+function createCidParameterString(character, prefix = "&") {
     if (character == null) {
         return "";
     }
-    var idParameterString = "";
-    var id;
+    let idParameterString = "";
+    let id;
     if ("dataset" in character) {
         id = character.dataset.id;
     }
@@ -643,29 +485,27 @@ function createCidParameterString(character, prefix) {
     return idParameterString;
 }
 function updateChat() {
-    var charName;
-    var idParameterString = "";
-    var char = getCurrentCharacter();
+    let charName;
+    let idParameterString = "";
+    const char = getCurrentCharacter();
     if (isGm()) {
         charName = "mj";
     }
     else {
         charName = char.querySelector(".name .current").innerHTML;
     }
-    fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then(function (response) { return response.text(); }).then(function (text) {
+    fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then((response) => response.text()).then(text => {
         var _a;
-        var chat = document.querySelector('#chat').firstElementChild;
+        const chat = document.querySelector('#chat').firstElementChild;
         var chatHistory = JSON.parse(text);
         if (chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
             chat.dataset.update = chatHistory.update;
-            for (var _i = 0, _b = chatHistory.rolls; _i < _b.length; _i++) {
-                var roll = _b[_i];
+            for (var roll of chatHistory.rolls) {
                 var line = jsonRollToHtml(roll);
                 var subtable = document.createElement("table");
                 (_a = line.querySelector("td.roll")) === null || _a === void 0 ? void 0 : _a.appendChild(subtable);
-                for (var _c = 0, _d = roll.related_rolls; _c < _d.length; _c++) {
-                    var related_roll = _d[_c];
+                for (var related_roll of roll.related_rolls) {
                     subtable.appendChild(jsonRollToHtml(related_roll, true));
                 }
                 chat.appendChild(line);
@@ -676,42 +516,40 @@ function updateChat() {
     });
 }
 function updateCharactersOnPage() {
-    document.querySelectorAll("body > .main .character:not(.npc)").forEach(function (e) { return updateCharacter(e); });
+    document.querySelectorAll("body > .main .character:not(.npc)").forEach(e => updateCharacter(e));
 }
-function createCharacter(name, withRoller) {
-    if (withRoller === void 0) { withRoller = true; }
-    var characterElement = document.querySelector(".templates > .character").cloneNode(true);
-    var character = new LocalCharacterView(characterElement);
+function createCharacter(name, withRoller = true) {
+    const characterElement = document.querySelector(".templates > .character").cloneNode(true);
+    const character = new LocalCharacterView(characterElement);
     character.name.current = name;
     if (withRoller == true) {
-        var rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
+        const rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
         characterElement.appendChild(rollerElement);
     }
     return characterElement;
 }
-function createCharacterByCid(cid, withRoller) {
-    if (withRoller === void 0) { withRoller = true; }
-    var characterElement = document.querySelector(".templates > .character").cloneNode(true);
-    var character = new LocalCharacterView(characterElement);
+function createCharacterByCid(cid, withRoller = true) {
+    const characterElement = document.querySelector(".templates > .character").cloneNode(true);
+    const character = new LocalCharacterView(characterElement);
     character.id = cid;
     if (withRoller == true) {
-        var rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
+        const rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
         characterElement.appendChild(rollerElement);
     }
     return characterElement;
 }
 function updateCharacter(characterElement) {
-    var name = characterElement.querySelector(".name .current").innerHTML;
+    const name = characterElement.querySelector(".name .current").innerHTML;
     fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
-        .then(function (response) { return response.text(); })
-        .then(function (text) {
-        var characterFromDatabase = JSON.parse(text);
-        var character = new LocalCharacterView(characterElement);
+        .then(response => response.text())
+        .then(text => {
+        const characterFromDatabase = JSON.parse(text);
+        const character = new LocalCharacterView(characterElement);
         character.updateFromDatabase(characterFromDatabase);
     });
 }
-document.addEventListener("DOMContentLoaded", function () {
-    var cb = function () {
+document.addEventListener("DOMContentLoaded", () => {
+    var cb = () => {
         updateCharactersOnPage();
         updateChat();
     };
@@ -785,18 +623,18 @@ function thingToName(thing) {
     }
 }
 function autoClick(sourceElement) {
-    var characterElement = sourceElement.closest(".character");
-    var character = new LocalCharacterView(characterElement);
-    var action = sourceElement.innerHTML;
-    var target = sourceElement.parentElement.dataset.thing;
-    var value = null;
+    const characterElement = sourceElement.closest(".character");
+    const character = new LocalCharacterView(characterElement);
+    const action = sourceElement.innerHTML;
+    const target = sourceElement.parentElement.dataset.thing;
+    let value = null;
     if (action == "Edit") {
-        var currentElement = sourceElement.parentElement.querySelector(".current");
+        let currentElement = sourceElement.parentElement.querySelector(".current");
         if (currentElement == null) {
             currentElement = sourceElement.parentElement.querySelector(".label");
         }
-        var currentValue = currentElement.innerHTML;
-        var read = prompt(target + " ?", currentValue);
+        const currentValue = currentElement.innerHTML;
+        const read = prompt(target + " ?", currentValue);
         if (read == null) {
             return;
         }
@@ -805,15 +643,15 @@ function autoClick(sourceElement) {
     else {
         value = "1";
     }
-    var add = true;
+    let add = true;
     if (action == "-" || action == "--") {
         add = false;
     }
-    var maxSuffix = "";
+    let maxSuffix = "";
     if (action == "++" || action == "--") {
         maxSuffix = "_max";
     }
-    var increment = 1;
+    let increment = 1;
     if (action == "-" || action == "--") {
         increment = -1;
     }
@@ -838,11 +676,11 @@ function autoClick(sourceElement) {
             }
         }
         else {
-            var url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
+            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
             fetch(url)
-                .then(function (response) { return response.text(); })
-                .then(function (text) {
-                var characterFromDatabase = JSON.parse(text);
+                .then(response => response.text())
+                .then(text => {
+                const characterFromDatabase = JSON.parse(text);
                 character.updateFromDatabase(characterFromDatabase);
             });
         }
@@ -917,18 +755,17 @@ function convertRollTypeBackendToFrontend(rollTypeBackend) {
     throw new Error("unknown roll type: " + rollTypeBackend);
 }
 function autoRoll(sourceElement) {
-    var characterElement = sourceElement.closest(".character");
-    var rollType = sourceElement.dataset.roll;
-    var character = new LocalCharacterView(characterElement);
+    const characterElement = sourceElement.closest(".character");
+    const rollType = sourceElement.dataset.roll;
+    const character = new LocalCharacterView(characterElement);
     autoRoll2(character, rollType);
 }
-function autoRoll2(character, rollType, parentRollId) {
-    if (parentRollId === void 0) { parentRollId = null; }
+function autoRoll2(character, rollType, parentRollId = null) {
     if (rollType == "empirical") {
         loadLancerEmpirique(character.name.current, createCidParameterString(character), character.secret.enabled);
     }
     else if (rollType == "death") {
-        var rollType2 = convertRollTypeToBackend(rollType);
+        const rollType2 = convertRollTypeToBackend(rollType);
         loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
     }
     else {
@@ -936,18 +773,17 @@ function autoRoll2(character, rollType, parentRollId) {
             jetPNJ(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
-            var rollType2 = convertRollTypeToBackend(rollType);
+            const rollType2 = convertRollTypeToBackend(rollType);
             loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
         }
     }
 }
-function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, cidString, parentRollId) {
-    if (parentRollId === void 0) { parentRollId = null; }
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(function () { return updateChat(); });
+function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, cidString, parentRollId = null) {
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
 }
 function loadLancerEmpirique(charName, cidString, secret) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
     fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function (e) {
         console.error("error", e);
-    }).then(function () { return updateChat(); });
+    }).then(() => updateChat());
 }
