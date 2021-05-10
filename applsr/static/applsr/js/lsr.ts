@@ -222,9 +222,11 @@ class LocalCharacterView {
 
     public get name(): SmartStringAttribute {
         const attr = new SmartStringAttribute(this.element.querySelector(".name")!);
-        attr.onChange(attr => {
-            history.pushState(null, "", "/lsr/" + attr.current);
-        });
+        if(!isGm()) {
+            attr.onChange(attr => {
+                history.pushState(null, "", "/lsr/" + attr.current);
+            });
+        }
         return attr;
     }
 

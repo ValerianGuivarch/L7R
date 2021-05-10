@@ -261,9 +261,11 @@ var LocalCharacterView = /** @class */ (function () {
     Object.defineProperty(LocalCharacterView.prototype, "name", {
         get: function () {
             var attr = new SmartStringAttribute(this.element.querySelector(".name"));
-            attr.onChange(function (attr) {
-                history.pushState(null, "", "/lsr/" + attr.current);
-            });
+            if (!isGm()) {
+                attr.onChange(function (attr) {
+                    history.pushState(null, "", "/lsr/" + attr.current);
+                });
+            }
             return attr;
         },
         enumerable: false,
