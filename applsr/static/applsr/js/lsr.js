@@ -648,7 +648,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateCharactersOnPage();
         afficher(nompj);
         if (nompj != "mj") {
-            getCar(nompj);
+            //getCar(nompj);
         }
     };
     cb();

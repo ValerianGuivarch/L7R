@@ -612,7 +612,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateCharactersOnPage();
         afficher(nompj);
         if(nompj != "mj") {
-            getCar(nompj);
+            //getCar(nompj);
         }
     };
     cb();
