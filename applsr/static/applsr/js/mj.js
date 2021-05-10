@@ -190,6 +190,15 @@ function duplicateInDb(characterElement) {
         (_a = document.querySelector(".char-select")) === null || _a === void 0 ? void 0 : _a.appendChild(container.firstElementChild);
     });
 }
+function duplicateAsOfflineCharacter(characterElement) {
+    var liste_pnj = document.querySelector('#liste_pnj');
+    var offlineChar = characterElement.cloneNode(true);
+    offlineChar.classList.add("npc");
+    delete offlineChar.dataset.id;
+    var c = new LocalCharacterView(offlineChar);
+    c.name.current = incrementString(c.name.current);
+    liste_pnj.appendChild(offlineChar);
+}
 function autoAddChar(source) {
     var pcList = document.querySelector("#liste_pj");
     pcList.appendChild(createCharacterByCid(source.dataset.cid));

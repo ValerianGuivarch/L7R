@@ -187,6 +187,16 @@ function duplicateInDb(characterElement: HTMLElement) {
     });
 }
 
+function duplicateAsOfflineCharacter(characterElement: HTMLElement) {
+    const liste_pnj = document.querySelector('#liste_pnj')!;
+    const offlineChar = characterElement.cloneNode(true) as HTMLElement;
+    offlineChar.classList.add("npc");
+    delete offlineChar.dataset.id;
+    let c = new LocalCharacterView(offlineChar);
+    c.name.current = incrementString(c.name.current);
+    liste_pnj.appendChild(offlineChar);
+}
+
 function autoAddChar(source: HTMLButtonElement) {
     const pcList = document.querySelector<HTMLElement>("#liste_pj")!;
     pcList.appendChild(createCharacterByCid(source.dataset.cid!));

@@ -6,7 +6,8 @@
         <div class="controls">
             <input type="radio" name="activeCharacter" />
             <button class="delete disabled" onclick="deleteCharacter(this.closest('.character'));"> X </button>
-            <button class="duplicate-in-db" onclick="duplicateInDb(this.closest('.character'));">Duplicate in DB</button>
+            <button class="duplicate-in-db" onclick="duplicateInDb(this.closest('.character'));">Copier dans la BD</button>
+            <button class="duplicate-as-offline" onclick="duplicateAsOfflineCharacter(this.closest('.character'));">Copier dans les PNJ</button>
         </div>
         
         <div class="summary">

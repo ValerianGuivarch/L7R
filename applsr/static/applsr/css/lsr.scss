@@ -368,7 +368,7 @@ body.pc-page {
     & > * {
       margin-right: 0.5rem;
     }
-    .duplicate-in-db {
+    .duplicate-in-db, .duplicate-as-offline {
       @extend .round-button;
     }
     .delete {
