@@ -103,12 +103,12 @@ function jetPNJ(c, action, dc /** dés cachés */, parentRollId) {
             response.text().then(function (text) {
                 var degats = parseInt(text);
                 c.hp.current -= degats;
-                afficher("mj");
+                updateChat("mj");
             });
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(function () { return afficher("mj"); });
+        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId).then(function () { return updateChat("mj"); });
     }
     if (action == 'magic') {
         c.debt.current += 1;
@@ -165,7 +165,7 @@ function ajouter_pnj(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_essenc
     liste_pnj.appendChild(pnjElement);
 }
 function effacerLancersDes() {
-    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(function () { return afficher(nompj); });
+    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(function () { return updateChat(nompj); });
 }
 function duplicateInDb(characterElement) {
     var character = new LocalCharacterView(characterElement);

@@ -442,6 +442,10 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
     return successCount + bonus;
 }
 
+function isDm(): boolean {
+    return nompj == "mj";
+}
+
 function resist(elem: HTMLElement, action: RollType) {
     const char = getCurrentCharacter();
     const parentRollId = elem.closest<HTMLElement>(".roll")?.dataset.rollid ?? null;
@@ -530,7 +534,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         roll_string = "";
         success = "";
     }
-    else if(roll.hidden_dice == false || nompj == "mj") {
+    else if(roll.hidden_dice == false || isDm()) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
 
@@ -557,8 +561,8 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
 let display_secret = false; // override value from lsr.js
 
-function afficher(nompj: string) {
-    fetch('/afficher/' + nompj + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
+function updateChat(charName: string) {
+    fetch('/afficher/' + charName + '/' + display_secret + '?json').then((response) => response.text()).then(text => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
         var chatHistory = JSON.parse(text);
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
@@ -610,10 +614,7 @@ function updateCharacter(characterElement: HTMLElement) {
 document.addEventListener("DOMContentLoaded", () => {
     var cb = () => {
         updateCharactersOnPage();
-        afficher(nompj);
-        if(nompj != "mj") {
-            //getCar(nompj);
-        }
+        updateChat(nompj);
     };
     cb();
     setInterval(cb, 2000);
@@ -857,49 +858,17 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
 }
 
 function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, parentRollId: string | null = null) {
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(() => afficher(nompj));
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(() => updateChat(nompj));
 }
 
-function getCar(name: string) {
-    fetch('/lsr/getcar/' + name)
-        .then((response) => response.text())
-        .then(json => {
-            const obj = JSON.parse(json);
-            const pv = document.querySelector('#pv')!;
-            const pvMax = obj.point_de_vie_max;
-            var prevPv = pv.innerHTML;
-            pv.innerHTML = obj.point_de_vie;
-
-            const dettes = document.querySelector('#dettes')!;
-            if(dettes.innerHTML != obj.dettes) {
-                dettes.innerHTML = obj.dettes;
-            }
-            const arcanes = document.querySelector('#arcanes')!;
-            if(arcanes.innerHTML != obj.arcanes) {
-                arcanes.innerHTML = obj.arcanes;
-            }
-            const pf = document.querySelector('#pf')!;
-            if(pf.innerHTML != obj.point_de_focus) {
-                pf.innerHTML = obj.point_de_focus;
-            }
-            const pp = document.querySelector('#pp')!;
-            if(pp.innerHTML != obj.point_de_pouvoir) {
-                pp.innerHTML = obj.point_de_pouvoir;
-            }
-
-        }).catch(function(e) {
-            console.error("error", e);
-        });
-}
-
-function loadLancerEmpirique(nompj: string, secret: boolean) {
+function loadLancerEmpirique(charName: string, secret: boolean) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
 
-    fetch('/lancer_empirique/' + nompj + '/' + valeur + '/' + secret).catch(function(e) {
+    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret).catch(function(e) {
         console.error("error", e);
-    }).then(() => afficher(nompj));
+    }).then(() => updateChat(charName));
 }
 
 function loadLancerJdSvM(name: string) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(() => afficher(nompj));
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(() => updateChat(nompj));
 }

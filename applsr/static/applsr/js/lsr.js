@@ -491,6 +491,9 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
     }
     return successCount + bonus;
 }
+function isDm() {
+    return nompj == "mj";
+}
 function resist(elem, action) {
     var _a, _b;
     var char = getCurrentCharacter();
@@ -571,7 +574,7 @@ function jsonRollToHtml(roll, sub) {
         roll_string = "";
         success = "";
     }
-    else if (roll.hidden_dice == false || nompj == "mj") {
+    else if (roll.hidden_dice == false || isDm()) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
     tr.innerHTML = ''
@@ -595,8 +598,8 @@ function jsonRollToHtml(roll, sub) {
     return tr;
 }
 var display_secret = false; // override value from lsr.js
-function afficher(nompj) {
-    fetch('/afficher/' + nompj + '/' + display_secret + '?json').then(function (response) { return response.text(); }).then(function (text) {
+function updateChat(charName) {
+    fetch('/afficher/' + charName + '/' + display_secret + '?json').then(function (response) { return response.text(); }).then(function (text) {
         var _a;
         var chat = document.querySelector('#chat').firstElementChild;
         var chatHistory = JSON.parse(text);
@@ -646,10 +649,7 @@ function updateCharacter(characterElement) {
 document.addEventListener("DOMContentLoaded", function () {
     var cb = function () {
         updateCharactersOnPage();
-        afficher(nompj);
-        if (nompj != "mj") {
-            //getCar(nompj);
-        }
+        updateChat(nompj);
     };
     cb();
     setInterval(cb, 2000);
@@ -879,43 +879,14 @@ function autoRoll2(character, rollType, parentRollId) {
 }
 function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, parentRollId) {
     if (parentRollId === void 0) { parentRollId = null; }
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(function () { return afficher(nompj); });
+    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId).then(function () { return updateChat(nompj); });
 }
-function getCar(name) {
-    fetch('/lsr/getcar/' + name)
-        .then(function (response) { return response.text(); })
-        .then(function (json) {
-        var obj = JSON.parse(json);
-        var pv = document.querySelector('#pv');
-        var pvMax = obj.point_de_vie_max;
-        var prevPv = pv.innerHTML;
-        pv.innerHTML = obj.point_de_vie;
-        var dettes = document.querySelector('#dettes');
-        if (dettes.innerHTML != obj.dettes) {
-            dettes.innerHTML = obj.dettes;
-        }
-        var arcanes = document.querySelector('#arcanes');
-        if (arcanes.innerHTML != obj.arcanes) {
-            arcanes.innerHTML = obj.arcanes;
-        }
-        var pf = document.querySelector('#pf');
-        if (pf.innerHTML != obj.point_de_focus) {
-            pf.innerHTML = obj.point_de_focus;
-        }
-        var pp = document.querySelector('#pp');
-        if (pp.innerHTML != obj.point_de_pouvoir) {
-            pp.innerHTML = obj.point_de_pouvoir;
-        }
-    }).catch(function (e) {
-        console.error("error", e);
-    });
-}
-function loadLancerEmpirique(nompj, secret) {
+function loadLancerEmpirique(charName, secret) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
-    fetch('/lancer_empirique/' + nompj + '/' + valeur + '/' + secret).catch(function (e) {
+    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret).catch(function (e) {
         console.error("error", e);
-    }).then(function () { return afficher(nompj); });
+    }).then(function () { return updateChat(charName); });
 }
 function loadLancerJdSvM(name) {
-    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return afficher(nompj); });
+    fetch('/lancer_empirique/' + name + '/1d20/true').then(function () { return updateChat(nompj); });
 }
