@@ -350,10 +350,6 @@ body.compact .character > * > * {
   margin-right: 2px;
 }
 
-.pc-page .perso-title, .pc-page .perso, .pc-page .control-panel {
-  display: none;
-}
-
 .character .notes {
   display: none !important;
 }

@@ -888,6 +888,7 @@ def modifs_valeurs(request, nom, stat, valeur, add):
 
 def filter_character_for_response(character):
     data = {
+        "id": character.id,
         "name": character.name,
         "chair": character.chair,
         "esprit": character.esprit,
