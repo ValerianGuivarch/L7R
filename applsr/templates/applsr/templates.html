@@ -6,8 +6,9 @@
         <div class="controls">
             <input type="radio" name="activeCharacter" />
             <button class="delete disabled" onclick="deleteCharacter(this.closest('.character'));"> X </button>
-            <button class="duplicate-in-db" onclick="duplicateInDb(this.closest('.character'));">Copier dans la BD</button>
-            <button class="duplicate-as-offline" onclick="duplicateAsOfflineCharacter(this.closest('.character'));">Copier dans les PNJ</button>
+            <button class="duplicate-in-db" onclick="duplicateInDb(this.closest('.character'));" title="Copier dans la BD"> 	
+                &#x2398;&nbsp;BD</button>
+            <button class="duplicate-as-offline" onclick="duplicateAsOfflineCharacter(this.closest('.character'));" title="Copier dans les personages temporaires">&#x2398;&nbsp;Temp</button>
         </div>
         
         <div class="summary">
@@ -28,7 +29,7 @@
             <span data-thing="category" class="category">
                 <button class="edit" onclick="autoClick(this);">Edit</button>
                 <span class="label">Categorie :</span>
-                <span class="current"></span>
+                <span class="current">New</span>
             </span>
         </div>
 

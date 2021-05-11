@@ -187,15 +187,22 @@ function effacerLancersDes() {
 }
 function duplicateInDb(characterElement) {
     let character = new LocalCharacterView(characterElement);
-    fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true')
+    fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true' + '/' + character.category.current)
         .then((response) => response.text())
         .then(json => {
-        var _a;
         const cdb = JSON.parse(json);
         console.log(cdb);
         const container = document.createElement("div");
         container.innerHTML = '<button data-cid="' + cdb.id + '" onclick="autoAddChar(this);">' + cdb.name + '</button>';
-        (_a = document.querySelector(".char-select")) === null || _a === void 0 ? void 0 : _a.appendChild(container.firstElementChild);
+        let categoryElement = document.querySelector(".char-select .category-" + cdb.category);
+        if (categoryElement == null) {
+            const charSelect = document.querySelector(".char-select");
+            const container = document.createElement("div");
+            container.innerHTML = '<div class="category-' + c.category.current + '"><summary class="label">' + c.category.current + '</summary><div class="content"></div></div>';
+            categoryElement = container.firstElementChild;
+            charSelect.appendChild(categoryElement);
+        }
+        categoryElement.querySelector(".content").appendChild(container.firstElementChild);
     });
 }
 function duplicateAsOfflineCharacter(characterElement) {

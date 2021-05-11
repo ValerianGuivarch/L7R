@@ -2,6 +2,7 @@ from django.http import HttpResponse
 import random
 from datetime import datetime, timedelta, time
 import types
+from collections import defaultdict
 
 from django.http import HttpResponse
 from django.template import loader
@@ -323,11 +324,14 @@ def afficher_mw(request):
 
 def mj(request):
     template = loader.get_template('applsr/mj.html')
-    characters = Character.objects.all().order_by('name')
-    characters = [{"id": c.id, "name": c.name} for c in characters]
+    characters_from_db = Character.objects.all().order_by('name')
+    characters_by_category = defaultdict(list)
+    for c in characters_from_db:
+        characters_by_category[c.category].append(filter_character_for_response(c))
     context = {
-        'characters': characters
+        'characters_by_category': dict(characters_by_category) # need to put in a real dict and not a default dict because https://stackoverflow.com/questions/10705669/my-defaultdictlist-wont-show-up-on-template-but-does-in-my-view
     }
+    print(characters_by_category)
     return HttpResponse((template.render(context, request)))
 
 
@@ -940,8 +944,9 @@ def filter_character_for_response(character):
 
 def getcar(request, nom):
     if "cid" in request.GET:
-        nom = findCharacterNameFromCid(request.GET["cid"])
-    car = Character.objects.all().filter(name=nom)[0]
+        car = Character.objects.all().filter(id=request.GET["cid"])[0]
+    else:
+        car = Character.objects.all().filter(name=nom)[0]
     return JsonResponse(filter_character_for_response(car), encoder=ExtendedEncoder, safe=False)
 
 
@@ -970,11 +975,8 @@ def list_characters(request):
     return HttpResponse(template.render(context, request))
 
 
-def create_character(request, name, flesh, spirit, essence, hp, hp_max, focus, focus_max, power, power_max, level, arcana, arcana_max, debt, title, lux, secunda, umbra, proficiency1, proficiency2, hidden):
-    # /Name/2/3/4/3/4/2/3/3/4/1/2/3/5/Champion de Machin/The lux/The secunda/The umbra/pro1/pro2/true
-    print("Will create character", name, flesh, spirit, essence, hp, hp_max, focus, focus_max, focus, power, power_max, level, arcana, arcana_max, debt, title, lux, secunda, umbra, proficiency1, proficiency2, hidden=="true")
-
-    character = Character(name=name, chair=flesh, esprit=spirit, essence=essence, point_de_vie=hp, point_de_focus=focus, point_de_pouvoir=power, dettes=debt, arcanes=arcana, element=title, arcanes_max=arcana_max, point_de_focus_max=focus_max, point_de_pouvoir_max=power_max, point_de_vie_max=hp_max, fl=lux, fs=secunda, fu=umbra, niveau=level, force1=proficiency1, force2=proficiency2, hidden=hidden=="true", notes="")
+def create_character(request, name, flesh, spirit, essence, hp, hp_max, focus, focus_max, power, power_max, level, arcana, arcana_max, debt, title, lux, secunda, umbra, proficiency1, proficiency2, hidden, category):
+    character = Character(name=name, chair=flesh, esprit=spirit, essence=essence, point_de_vie=hp, point_de_focus=focus, point_de_pouvoir=power, dettes=debt, arcanes=arcana, element=title, arcanes_max=arcana_max, point_de_focus_max=focus_max, point_de_pouvoir_max=power_max, point_de_vie_max=hp_max, fl=lux, fs=secunda, fu=umbra, niveau=level, force1=proficiency1, force2=proficiency2, hidden=hidden=="true", notes="", category=category)
 
     character.save()
     return JsonResponse(character, encoder=ExtendedEncoder, safe=False)

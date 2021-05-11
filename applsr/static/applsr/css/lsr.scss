@@ -402,13 +402,15 @@ body.pc-page {
 }
 
 .db-char-menu {
-  flex: 2;
-  .char-select {
-    display: grid;
-    overflow: auto;
-    height: 6em;
-    grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
-    gap: 2px;
+  float: right;
+  padding: 1rem;
+  min-width: 10em;
+  .content {
+    display: flex;
+    flex-direction: column;
+    & > * {
+      flex: 1;
+    }
   }
 }
 

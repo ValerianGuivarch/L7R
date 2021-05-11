@@ -13,43 +13,56 @@
 
 <div class="main">
 
-<div class="menu">
-    <div class="db-char-menu">
-        <div class="char-select">
-            {% for c in characters %}
-            <button data-cid="{{ c.id }}" onclick="autoAddChar(this);">{{ c.name }}</button>
+<div class="db-char-menu">
+    <div class="char-select">
+        <p>
+            <input type="text" class="filter-characters" placeholder="Recherche ..." />
+        </p>
+        {% for category, chars in characters_by_category.items %}
+        <div class="category-{{ category }}">
+            <summary class="label">{{ category }}</summary>
+            <div class="content">
+            {% for c in chars %}
+                <button data-cid="{{ c.id }}" onclick="autoAddChar(this);">{{ c.name }}</button>
             {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="left">
+
+    <div class="menu">
+        <div class="local-char-menu">
+            <input id="new_pnj_name" size="5" type="text" placeholder="name">
+            <button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
+            <br />
+            <input id="new_pnj_chair" size="2" type="text" placeholder="chair">
+            <input id="new_pnj_esprit" size="2" type="text" placeholder="esprit">
+            <input id="new_pnj_essence" size="2" type="text" placeholder="essence"><br />
+            <input id="new_pnj_pv_max" size="2" type="text" placeholder="PV" title="leave empty for max">
+            <input id="new_pnj_pf_max" size="2" type="text" placeholder="PF" title="leave empty for max">
+            <input id="new_pnj_pp_max" size="2" type="text" placeholder="PP" title="leave empty for max">
+        </div>
+
+        <div class="misc-menu">
+            <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
+
+            <input id="opposition" size="4" type="text" placeholder="opposition">
+            <label class="btn active"><input id="opposition_checked" type="checkbox" autocomplete="off">Opposition</label>
+
+            <button onclick="document.body.classList.toggle('compact')">Afficher tout</button>
         </div>
     </div>
 
-    <div class="local-char-menu">
-        <input id="new_pnj_name" size="5" type="text" placeholder="name">
-        <button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
-        <br />
-        <input id="new_pnj_chair" size="2" type="text" placeholder="chair">
-        <input id="new_pnj_esprit" size="2" type="text" placeholder="esprit">
-        <input id="new_pnj_essence" size="2" type="text" placeholder="essence"><br />
-        <input id="new_pnj_pv_max" size="2" type="text" placeholder="PV" title="leave empty for max">
-        <input id="new_pnj_pf_max" size="2" type="text" placeholder="PF" title="leave empty for max">
-        <input id="new_pnj_pp_max" size="2" type="text" placeholder="PP" title="leave empty for max">
-    </div>
+    <div id="liste_pj"></div>
 
-    <div class="misc-menu">
-        <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
+    <div id="liste_pnj"></div>
 
-        <input id="opposition" size="4" type="text" placeholder="opposition">
-        <label class="btn active"><input id="opposition_checked" type="checkbox" autocomplete="off">Opposition</label>
-
-        <button onclick="document.body.classList.toggle('compact')">Afficher tout</button>
-    </div>
+    <div id="chat"><table></table></div>
 
 </div>
-
-<div id="liste_pj"></div>
-
-<div id="liste_pnj"></div>
-
-<div id="chat"><table></table></div>
 
 </div>
 
