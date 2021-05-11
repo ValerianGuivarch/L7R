@@ -224,3 +224,13 @@ function autoAddChar(source) {
     updateCharactersOnPage();
     source.disabled = true;
 }
+function autoFilter(source) {
+    document.querySelectorAll(".char-select .content button").forEach(b => {
+        if (b.innerHTML.indexOf(source.value) === -1) {
+            b.style.display = "none";
+        }
+        else {
+            b.style.display = "initial";
+        }
+    });
+}

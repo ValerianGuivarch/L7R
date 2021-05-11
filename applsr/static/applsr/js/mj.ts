@@ -232,3 +232,14 @@ function autoAddChar(source: HTMLButtonElement) {
     updateCharactersOnPage();
     source.disabled = true;
 }
+
+function autoFilter(source: HTMLInputElement) {
+    document.querySelectorAll<HTMLButtonElement>(".char-select .content button").forEach(b => {
+        if(b.innerHTML.indexOf(source.value) === -1) {
+            b.style.display = "none";
+        }
+        else {
+            b.style.display = "initial";
+        }
+    });
+}
