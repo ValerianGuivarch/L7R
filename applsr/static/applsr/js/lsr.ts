@@ -181,6 +181,7 @@ class LocalCharacterView {
         }
         this.notes.current = characterFromDatabase.notes ?? "";
         this.portrait = characterFromDatabase.name + ".png";
+        this.category.current = characterFromDatabase.category;
     }
 
     localUpdate(prop: Thing, max: boolean, value: string | number) {
@@ -329,6 +330,10 @@ class LocalCharacterView {
             portrait.src = src;
         }
     }
+
+    public get category(): SmartStringAttribute {
+        return new SmartStringAttribute(this.element.querySelector(".category")!);
+    }
 }
 
 interface CharacterFromDatabase {
@@ -358,6 +363,7 @@ interface CharacterFromDatabase {
     /** secunda */
     fs: string,
     notes: string | undefined,
+    category: string,
 }
 
 interface Roll {
@@ -685,7 +691,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 type Action = "+" | "-" | "--" | "++" | "Edit";
-type Thing =  "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes";
+type Thing =  "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
 
 function thingToName(thing: Thing) {
     // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
@@ -751,6 +757,9 @@ function thingToName(thing: Thing) {
     }
     else if(thing == "notes") {
         throw new Error("Not implemented");
+    }
+    else if(thing == "category") {
+        return "category";
     }
 }
 

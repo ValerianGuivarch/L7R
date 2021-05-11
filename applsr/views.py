@@ -618,6 +618,7 @@ def findCharacterNameFromCid(cid):
     char = Character.objects.filter(id=cid)
     return char[0].name
 
+
 def afficher(request, nom, secret):
     if "cid" in request.GET:
         nom = findCharacterNameFromCid(request.GET["cid"])
@@ -895,6 +896,8 @@ def modifs_valeurs(request, nom, stat, valeur, add):
         char.update(fu=valeur)
     elif stat == "titre":
         char.update(element=valeur)
+    elif stat == "category":
+        char.update(category=valeur)
     elif stat == "name":
         char.update(name=valeur)
         nom=valeur # don't forget to update the parameter for the rest of the function live
@@ -903,6 +906,7 @@ def modifs_valeurs(request, nom, stat, valeur, add):
         char.update(force1=force1, force2=force2)
     car = Character.objects.all().filter(name=nom)[0]
     return JsonResponse(filter_character_for_response(car), encoder=ExtendedEncoder, safe=False)
+
 
 def filter_character_for_response(character):
     data = {
@@ -928,9 +932,11 @@ def filter_character_for_response(character):
         "force2": character.force2 if character.niveau >= 13 else None,
         "element": character.element,
         "notes": character.notes,
-        "titre": element_to_flavor(character.element)
+        "titre": element_to_flavor(character.element),
+        "category": character.category
     }
     return data
+
 
 def getcar(request, nom):
     if "cid" in request.GET:
@@ -953,6 +959,7 @@ def updatepj(request, nom, chair, esprit, essence, point_de_vie_max,point_de_foc
 
     return HttpResponse("")
 
+
 def list_characters(request):
     template = loader.get_template('applsr/character_list.html')
     characters = Character.objects.all()
@@ -961,6 +968,7 @@ def list_characters(request):
         'characters_names': characters_names
     }
     return HttpResponse(template.render(context, request))
+
 
 def create_character(request, name, flesh, spirit, essence, hp, hp_max, focus, focus_max, power, power_max, level, arcana, arcana_max, debt, title, lux, secunda, umbra, proficiency1, proficiency2, hidden):
     # /Name/2/3/4/3/4/2/3/3/4/1/2/3/5/Champion de Machin/The lux/The secunda/The umbra/pro1/pro2/true

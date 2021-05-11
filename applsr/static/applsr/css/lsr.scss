@@ -239,7 +239,7 @@ body.pc-page {
   }
 }
 
-.name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing, .proficiency, .secret, .hidden-number {
+.name, .title, .level, .lux, .umbra, .secunda, .flesh, .spirit, .essence, .hp, .debt, .arcana, .focus, .power, .curse, .curse2, .blessing, .proficiency, .secret, .hidden-number, .category {
   display: flex;
   justify-content: space-between;
   .logo img {
@@ -303,7 +303,7 @@ body.pc-page {
 }
 
 .pc-page {
-  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button, .hidden-number, .abilities button {
+  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button, .hidden-number, .abilities button, .category {
     display: none;
   }
 
@@ -450,7 +450,7 @@ body.compact {
         display: none; // only display lux, umbra and secunda for PC
       }
     }
-    button.plus-max, button.minus-max, button.edit {
+    .category, button.plus-max, button.minus-max, button.edit {
       display: none;
     }
   }

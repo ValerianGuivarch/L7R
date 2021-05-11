@@ -160,6 +160,7 @@ class LocalCharacterView {
         }
         this.notes.current = (_a = characterFromDatabase.notes) !== null && _a !== void 0 ? _a : "";
         this.portrait = characterFromDatabase.name + ".png";
+        this.category.current = characterFromDatabase.category;
     }
     localUpdate(prop, max, value) {
         if (prop == "portrait" || prop == "proficiency" || prop == "secret") {
@@ -282,6 +283,9 @@ class LocalCharacterView {
         if (((_a = portrait.attributes.getNamedItem("src")) === null || _a === void 0 ? void 0 : _a.nodeValue) != src) {
             portrait.src = src;
         }
+    }
+    get category() {
+        return new SmartStringAttribute(this.element.querySelector(".category"));
     }
 }
 function rollTypeToString(rollType) {
@@ -620,6 +624,9 @@ function thingToName(thing) {
     }
     else if (thing == "notes") {
         throw new Error("Not implemented");
+    }
+    else if (thing == "category") {
+        return "category";
     }
 }
 function autoClick(sourceElement) {
