@@ -40,7 +40,7 @@ class LsrApi {
     // TODO should not update chat, should also probably not be blocking
     public empiricalRollAndUpdateChat(charName: string, cidString: string, secret: boolean) {
         var valeur = prompt("Quel lancer de dé ?", "1d6");
-        fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {
+        fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {
             console.error("error", e);
         }).then(() => updateChat());
     }
