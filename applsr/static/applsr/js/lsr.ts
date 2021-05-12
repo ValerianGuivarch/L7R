@@ -13,7 +13,6 @@ function assertNever(x: never): never {
 
 
 let somethingIsNotSaved = false;
-let display_secret = false; // override value from lsr.js
 
 
 class LsrApi {
@@ -713,7 +712,7 @@ function updateChat() {
     }
 
 
-    lsrApi.getChat(charName, display_secret, getCharId(charElem)).then(chatHistory => {
+    lsrApi.getChat(charName, isGm(), getCharId(charElem)).then(chatHistory => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
         
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {

@@ -1,6 +1,5 @@
 /// <reference path="lsr.d.ts" />
 
-display_secret = true; // override value from lsr.js
 let remove_char_timeout: null | number = null;
 var remove_char_ok = false;
 

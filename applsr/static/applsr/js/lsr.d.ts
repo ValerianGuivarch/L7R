@@ -20,6 +20,7 @@ type Thing = "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "ess
 
 type BackendThing = "name" | "essence" | "category" | "titre" | "niveau" | "chair" | "esprit" | "fl" | "fu" | "fs" | "pv" | "dettes" | "arcanes" | "pf" | "pp" | "force";
 
+
 interface CharacterFromDatabase {
     id: number,
     name: string,

@@ -6,7 +6,6 @@ function assertNever(x) {
 }
 // ### Lsr
 let somethingIsNotSaved = false;
-let display_secret = false; // override value from lsr.js
 class LsrApi {
     constructor() {
         /** Must end with "/" */
@@ -603,7 +602,7 @@ function updateChat() {
     else {
         charName = charElem.querySelector(".name .current").innerHTML;
     }
-    lsrApi.getChat(charName, display_secret, getCharId(charElem)).then(chatHistory => {
+    lsrApi.getChat(charName, isGm(), getCharId(charElem)).then(chatHistory => {
         var _a;
         const chat = document.querySelector('#chat').firstElementChild;
         if (chatHistory.update == null || chat.dataset.update != chatHistory.update) {
