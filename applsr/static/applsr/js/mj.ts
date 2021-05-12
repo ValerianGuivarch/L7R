@@ -5,7 +5,7 @@ let remove_char_timeout: null | number = null;
 var remove_char_ok = false;
 
 
-function deleteCharacter(pnjElement: HTMLElement) {
+function deleteCharacterView(pnjElement: HTMLElement) {
     if(remove_char_ok == false) {
         remove_char_ok = true;
         document.querySelectorAll(".character .controls .delete").forEach(btn => {
@@ -34,21 +34,44 @@ function deleteCharacter(pnjElement: HTMLElement) {
     }
 }
 
+// TODO should probably have an object representing the actual action, for example we should not take the fact that power was used from the character but from the action
+function applyActionCosts(char: LocalCharacterView, action: RollType) {
+    if(action == 'magic') {
+        char.debt.current += 1;
+    }
+    if(action == 'arcana' || action == "arcana-essence" || action == "arcana-spirit") {
+        char.arcana.current -= 1;
+    }
+    if(char.focus.enabled) {
+        char.focus.current -= 1;
+    }
+    if(char.power.enabled) {
+        char.power.current -= 1;
+        char.debt.current += 1;
+    }
+}
+
+
+function actionToStatValue(char: LocalCharacterView, action: RollType): number {
+    if(action == "flesh") { return char.flesh.current; }
+    else if(action == "spirit") { return char.spirit.current; }
+    else if(action == "essence") { return char.essence.current; }
+    else if(action == "death") { return 0; }
+    else if(action == "magic") { return char.essence.current; }
+    else if(action == "heal") { return char.essence.current; }
+    else if(action == "empirical") { return 0; }
+    else if(action == "arcana") { return 0; }
+    else if(action == "arcana-spirit") { return char.spirit.current; }
+    else if(action == "arcana-essence") { return char.essence.current; }
+    assertNever(action);
+}
+
+
 /** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
-function rollForLocalCharacterAndConsumeResources(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
+function rollForLocalCharacterAndApplyCosts(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
-    let stat: number = 0;
-    if(action == "flesh") { stat = c.flesh.current; }
-    else if(action == "spirit") { stat = c.spirit.current; }
-    else if(action == "essence") { stat = c.essence.current; }
-    else if(action == "magic") { stat = c.essence.current; }
-    else if(action == "heal") { stat = c.essence.current; }
-    else if(action == "arcana") { stat = 0; }
-    else if(action == "arcana-essence") { stat = c.essence.current; }
-    else if(action == "arcana-spirit") { stat = c.spirit.current; }
-    else if(action == "death") { stat = 0; }
-    else if(action == "empirical") { stat = 0; }
+    let stat: number = actionToStatValue(c, action);
 
     if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
         lsrApi.rollForLocalCharacter(c, action, stat, dc, opposition, parentRollId).then(text => {
@@ -61,19 +84,8 @@ function rollForLocalCharacterAndConsumeResources(c: LocalCharacterView, action:
         lsrApi.rollForLocalCharacter(c, action, stat, dc, 0, parentRollId)
         .then(() => updateChat());
     }
-    if(action == 'magic') {
-        c.debt.current += 1;
-    }
-    if(action == 'arcana' || action == "arcana-essence" || action == "arcana-spirit") {
-        c.arcana.current -= 1;
-    }
-    if(c.focus.enabled) {
-        c.focus.current -= 1;
-    }
-    if(c.power.enabled) {
-        c.power.current -= 1;
-        c.debt.current += 1;
-    }
+
+    applyActionCosts(c, action);
 }
 
 

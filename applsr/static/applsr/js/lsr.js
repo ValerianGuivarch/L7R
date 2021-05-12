@@ -1,5 +1,10 @@
 "use strict";
 /// <reference path="lsr.d.ts" />
+// ### Utils
+function assertNever(x) {
+    throw new Error("Unexpected object: " + x);
+}
+// ### Lsr
 let somethingIsNotSaved = false;
 let display_secret = false; // override value from lsr.js
 class LsrApi {
@@ -35,9 +40,7 @@ class LsrApi {
     // TODO should not update chat, should also probably not be blocking
     empiricalRoll(charName, cid, secret) {
         var valeur = prompt("Quel lancer de dé ?", "1d6");
-        fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid)).catch(function (e) {
-            console.error("error", e);
-        });
+        return fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid));
     }
     sendNotes(charName, cid, notes) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/notes/post/true?' + LsrApi.createCidParameterString(cid), {
@@ -855,7 +858,7 @@ function autoRoll2(character, rollType, parentRollId = null) {
     }
     else {
         if (!character.isOnline()) {
-            rollForLocalCharacterAndConsumeResources(character, rollType, character.hidden.enabled, parentRollId);
+            rollForLocalCharacterAndApplyCosts(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
             const rollType2 = convertRollTypeToBackend(rollType);
