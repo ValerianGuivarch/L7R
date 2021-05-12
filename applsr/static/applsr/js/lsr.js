@@ -1,4 +1,5 @@
 "use strict";
+let somethingIsNotSaved = false;
 class WithLabel {
     constructor(element) {
         this.element = element;
@@ -591,14 +592,6 @@ function updateCharacter(characterElement) {
         character.updateFromDatabase(characterFromDatabase);
     });
 }
-document.addEventListener("DOMContentLoaded", () => {
-    var cb = () => {
-        updateCharactersOnPage();
-        updateChat();
-    };
-    cb();
-    setInterval(cb, 2000);
-});
 function thingToName(thing) {
     // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
     if (thing == "name") {
@@ -852,12 +845,12 @@ const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
 notesInputTimer.reset();
 function onNotesInput(source) {
     source.dataset.commitNeeded = "true";
+    somethingIsNotSaved = true;
     notesInputTimer.reset();
 }
 function sendNotesToServer() {
     console.log("sending notes!");
     document.querySelectorAll('.notes textarea[data-commit-needed="true"]').forEach(ta => {
-        delete ta.dataset.commitNeeded;
         const charElem = ta.closest(".character");
         const char = new LocalCharacterView(charElem);
         fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
@@ -865,6 +858,28 @@ function sendNotesToServer() {
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value },
             credentials: 'include',
             body: char.notes.current,
+        }).then(() => {
+            somethingIsNotSaved = false;
+            delete ta.dataset.commitNeeded;
         });
     });
 }
+// Main
+document.addEventListener("DOMContentLoaded", () => {
+    var cb = () => {
+        updateCharactersOnPage();
+        updateChat();
+    };
+    cb();
+    setInterval(cb, 2000);
+});
+window.addEventListener("beforeunload", function (e) {
+    if (somethingIsNotSaved === true) {
+        var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    }
+    else {
+        return undefined;
+    }
+});

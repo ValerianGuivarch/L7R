@@ -1,3 +1,5 @@
+let somethingIsNotSaved = false;
+
 type JEMP = `Jemp-${string}`;
 type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
 
@@ -724,15 +726,6 @@ function updateCharacter(characterElement: HTMLElement) {
         });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    var cb = () => {
-        updateCharactersOnPage();
-        updateChat();
-    };
-    cb();
-    setInterval(cb, 2000);
-});
-
 type Action = "+" | "-" | "--" | "++" | "Edit";
 type Thing = "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
 
@@ -1008,13 +1001,13 @@ notesInputTimer.reset();
 
 function onNotesInput(source: HTMLTextAreaElement) {
     source.dataset.commitNeeded = "true";
+    somethingIsNotSaved = true;
     notesInputTimer.reset();
 }
 
 function sendNotesToServer() {
     console.log("sending notes!");
     document.querySelectorAll<HTMLTextAreaElement>('.notes textarea[data-commit-needed="true"]').forEach(ta => {
-        delete ta.dataset.commitNeeded;
         const charElem = ta.closest<HTMLElement>(".character")!;
         const char = new LocalCharacterView(charElem);
         fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
@@ -1022,6 +1015,31 @@ function sendNotesToServer() {
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector<HTMLInputElement>('[name="csrfmiddlewaretoken"]')!.value},
             credentials: 'include',
             body: char.notes.current,
+        }).then(() => {
+            somethingIsNotSaved = false;
+            delete ta.dataset.commitNeeded;
         });
     });
 }
+
+// Main
+
+document.addEventListener("DOMContentLoaded", () => {
+    var cb = () => {
+        updateCharactersOnPage();
+        updateChat();
+    };
+    cb();
+    setInterval(cb, 2000);
+});
+
+window.addEventListener("beforeunload", function (e) {
+    if(somethingIsNotSaved === true) {
+        var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    }
+    else {
+        return undefined;
+    }
+});
