@@ -4,8 +4,7 @@
 function assertNever(x) {
     throw new Error("Unexpected object: " + x);
 }
-// ### Lsr
-let somethingIsNotSaved = false;
+// ### Api
 class LsrApi {
     constructor() {
         /** Must end with "/" */
@@ -61,19 +60,7 @@ class LsrApi {
     }
 }
 const lsrApi = new LsrApi();
-function getCurrentCharacter() {
-    var _a, _b;
-    const characterElements = document.querySelectorAll(".main .character");
-    if (characterElements.length == 0) {
-        return null;
-    }
-    else if (characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
-    }
-}
+// ### Character view
 class WithLabel {
     constructor(element) {
         this.element = element;
@@ -406,6 +393,21 @@ class LocalCharacterView {
     }
 }
 LocalCharacterView.instances = new Map();
+// ### LSR
+let somethingIsNotSaved = false;
+function getCurrentCharacter() {
+    var _a, _b;
+    const characterElements = document.querySelectorAll(".main .character");
+    if (characterElements.length == 0) {
+        return null;
+    }
+    else if (characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
+    }
+}
 function rollTypeToString(rollType) {
     if (rollType == 'Jsoin') {
         return "<i>Soigne</i>";

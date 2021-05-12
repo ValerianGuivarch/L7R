@@ -9,10 +9,7 @@ function assertNever(x: never): never {
 }
 
 
-// ### Lsr
-
-
-let somethingIsNotSaved = false;
+// ### Api
 
 
 class LsrApi {
@@ -81,18 +78,7 @@ class LsrApi {
 const lsrApi = new LsrApi();
 
 
-function getCurrentCharacter(): HTMLElement | null {
-    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
-    if(characterElements.length == 0) {
-        return null;
-    }
-    else if(characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
-    }
-}
+// ### Character view
 
 
 class WithLabel {
@@ -486,6 +472,25 @@ class LocalCharacterView {
 
     public get category(): SmartStringAttribute {
         return new SmartStringAttribute(this.element.querySelector(".category")!);
+    }
+}
+
+
+// ### LSR
+
+let somethingIsNotSaved = false;
+
+
+function getCurrentCharacter(): HTMLElement | null {
+    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
+    if(characterElements.length == 0) {
+        return null;
+    }
+    else if(characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
     }
 }
 
