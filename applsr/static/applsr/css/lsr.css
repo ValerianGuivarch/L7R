@@ -333,7 +333,7 @@ body.compact .character.npc {
 body.compact .character.npc .story {
   display: none;
 }
-body.compact .character .category, body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit {
+body.compact .character .category, body.compact .character button.plus-max, body.compact .character button.minus-max, body.compact .character button.edit, body.compact .character .blessing .label, body.compact .character .curse .label {
   display: none;
 }
 body.compact .character {

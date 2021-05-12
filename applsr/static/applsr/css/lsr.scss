@@ -452,7 +452,7 @@ body.compact {
         display: none; // only display lux, umbra and secunda for PC
       }
     }
-    .category, button.plus-max, button.minus-max, button.edit {
+    .category, button.plus-max, button.minus-max, button.edit, .blessing .label, .curse .label {
       display: none;
     }
   }
