@@ -408,6 +408,14 @@ body.pc-page {
   float: right;
   padding: 1rem;
   min-width: 10em;
+  height: calc(100vh - 2em);
+  input {
+    width: 100%;
+  }
+  .char-select {
+    overflow-y: auto;
+    height: 100%;
+  }
   .content {
     display: flex;
     flex-direction: column;

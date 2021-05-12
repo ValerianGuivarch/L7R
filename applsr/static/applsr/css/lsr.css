@@ -295,6 +295,14 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   float: right;
   padding: 1rem;
   min-width: 10em;
+  height: calc(100vh - 2em);
+}
+.db-char-menu input {
+  width: 100%;
+}
+.db-char-menu .char-select {
+  overflow-y: auto;
+  height: 100%;
 }
 .db-char-menu .content {
   display: flex;
