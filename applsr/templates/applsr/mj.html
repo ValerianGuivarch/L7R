@@ -16,10 +16,10 @@
 <div class="main">
 
 <div class="db-char-menu">
+    <p>
+        <input type="text" class="filter-characters" placeholder="Recherche ..." oninput="autoFilter(this);"/>
+    </p>
     <div class="char-select">
-        <p>
-            <input type="text" class="filter-characters" placeholder="Recherche ..." oninput="autoFilter(this);"/>
-        </p>
         {% for category, chars in characters_by_category.items %}
         <div class="category-{{ category }}">
             <summary class="label">{{ category }}</summary>
