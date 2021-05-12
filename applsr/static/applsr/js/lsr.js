@@ -1,5 +1,138 @@
 "use strict";
-let somethingIsNotSaved = false;
+/// <reference path="lsr.d.ts" />
+// ### Utils
+function assertNever(x) {
+    throw new Error("Unexpected object: " + x);
+}
+class DebouncedTimer {
+    constructor(cb, timeoutMs = 2000) {
+        this.timeoutMs = timeoutMs;
+        this.timeoutId = undefined;
+        this.cb = () => {
+            cb();
+            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+        };
+    }
+    reset() {
+        clearTimeout(this.timeoutId);
+        console.log("reset");
+        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+    }
+}
+// ### RollAction
+class BaseRollAction {
+    constructor(rollType, forGmOnly, 
+    /** Show only the number of successes */
+    hideDiceResults, parentRollId = null) {
+        this.rollType = rollType;
+        this.forGmOnly = forGmOnly;
+        this.hideDiceResults = hideDiceResults;
+        this.parentRollId = parentRollId;
+    }
+}
+class OneStatRollAction extends BaseRollAction {
+    constructor(char, rollType, parentRollId) {
+        super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
+        this.bonus = char.blessing.current;
+        this.malus = char.curse.current + char.curse2.current;
+        this.focusing = char.focus.enabled;
+        this.powering = char.power.enabled;
+        this.proficient = char.proficiency.enabled;
+        this.relevantStatValue = OneStatRollAction.actionToStatValue(char, rollType);
+    }
+    static actionToStatValue(char, action) {
+        if (action == "flesh") {
+            return char.flesh.current;
+        }
+        else if (action == "spirit") {
+            return char.spirit.current;
+        }
+        else if (action == "essence") {
+            return char.essence.current;
+        }
+        else if (action == "magic") {
+            return char.essence.current;
+        }
+        else if (action == "heal") {
+            return char.essence.current;
+        }
+        else if (action == "arcana") {
+            return 0;
+        }
+        else if (action == "arcana-spirit") {
+            return char.spirit.current;
+        }
+        else if (action == "arcana-essence") {
+            return char.essence.current;
+        }
+        else if (action == "death") {
+            return 0;
+        }
+        assertNever(action);
+    }
+}
+class EmpiricalRollAction extends BaseRollAction {
+    constructor(char, formula, parentRollId) {
+        super("empirical", char.secret.enabled, char.hidden.enabled, parentRollId);
+        this.formula = formula;
+    }
+}
+// ### Api
+class LsrApi {
+    constructor() {
+        /** Must end with "/" */
+        this.baseUrl = "/";
+        this.csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+    }
+    // TODO temporarily public, set to private after refactoring
+    static createCidParameterString(cid, prefix = "&") {
+        let idParameterString = "";
+        if (cid !== undefined) {
+            idParameterString = prefix + "cid=" + cid;
+        }
+        return idParameterString;
+    }
+    getChat(charName, showSecret, cid) {
+        return fetch(this.baseUrl + 'afficher/' + charName + '/' + showSecret + '?json' + LsrApi.createCidParameterString(cid))
+            .then(response => response.text()).then(t => JSON.parse(t));
+    }
+    getCharacter(charName, cid) {
+        return fetch(this.baseUrl + 'lsr/getcar/' + charName + "?json" + LsrApi.createCidParameterString(cid))
+            .then(response => response.text()).then(t => JSON.parse(t));
+    }
+    updateCharacter(charName, cid, target, maxSuffix, value, add) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + "?" + LsrApi.createCidParameterString(cid))
+            .then(response => response.text()).then(t => JSON.parse(t));
+    }
+    rollForServerCharacter(char, ra) {
+        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
+    }
+    empiricalRoll(char, ra) {
+        return fetch(this.baseUrl + 'lancer_empirique/' + char.name.current + '/' + ra.formula + '/' + ra.forGmOnly + "?" + LsrApi.createCidParameterString(char.id));
+    }
+    sendNotes(charName, cid, notes) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/notes/post/true?' + LsrApi.createCidParameterString(cid), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.csrfToken },
+            credentials: 'include',
+            body: notes,
+        });
+    }
+    rollForLocalCharacter(char, ra) {
+        const opposition = 0;
+        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
+    }
+    createCharacter(character) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true' + '/' + character.category.current)
+            .then(response => response.text())
+            .then(t => JSON.parse(t));
+    }
+    clearChat() {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes');
+    }
+}
+const lsrApi = new LsrApi();
+// ### Character view
 class WithLabel {
     constructor(element) {
         this.element = element;
@@ -17,6 +150,10 @@ class WithLabel {
 class Attribute extends WithLabel {
     constructor(element) {
         super(element);
+        this.onChangeCb = null;
+    }
+    onChange(cb) {
+        this.onChangeCb = cb;
     }
     get current() {
         return parseInt(this.element.querySelector(".current").innerHTML);
@@ -25,6 +162,9 @@ class Attribute extends WithLabel {
         const current = this.element.querySelector(".current");
         if (current.innerHTML != value.toString()) {
             current.innerHTML = value.toString();
+            if (this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
         }
     }
 }
@@ -39,6 +179,9 @@ class AttributeWithMax extends Attribute {
         const max = this.element.querySelector(".max");
         if (max.innerHTML != value.toString()) {
             max.innerHTML = value.toString();
+            if (this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
         }
     }
 }
@@ -72,6 +215,9 @@ class SmartStringAttribute {
         this.element = element;
         this.onChangeCb = null;
     }
+    onChange(cb) {
+        this.onChangeCb = cb;
+    }
     get current() {
         const current = this.element.querySelector(".current");
         if ("value" in current) {
@@ -100,9 +246,6 @@ class SmartStringAttribute {
                 }
             }
         }
-    }
-    onChange(cb) {
-        this.onChangeCb = cb;
     }
 }
 class AttributeWithoutValueActivable extends WithLabel {
@@ -152,23 +295,18 @@ class AttributeWithMaxActivable extends AttributeWithMax {
         this.element.querySelector(".enabled input").checked = value;
     }
 }
-function getCurrentCharacter() {
-    var _a, _b;
-    const characterElements = document.querySelectorAll(".main .character");
-    if (characterElements.length == 0) {
-        return null;
-    }
-    else if (characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
-    }
-}
 class LocalCharacterView {
     constructor(element) {
         this.element = element;
         this.hpTimeoutSet = false; // necessary to avoid infinitly starting timeouts
+    }
+    static fromElement(element) {
+        let instance = this.instances.get(element);
+        if (instance === undefined) {
+            instance = new LocalCharacterView(element);
+            this.instances.set(element, instance);
+        }
+        return instance;
     }
     isOnline() {
         return !this.element.classList.contains("npc");
@@ -208,7 +346,7 @@ class LocalCharacterView {
         }
         else {
             const attr = this[prop];
-            if (attr instanceof SmartStringAttribute) {
+            if (attr instanceof SmartStringAttribute || attr instanceof TextInputAttribute) {
                 if (typeof (value) != "string") {
                     throw new Error("wrong type for value: " + value);
                 }
@@ -282,18 +420,16 @@ class LocalCharacterView {
         return new AttributeActivable(this.element.querySelector(".curse2"));
     }
     get hp() {
-        if (this.hpTimeoutSet == false) {
-            setTimeout(() => {
-                let curse2 = Math.floor((this.hp.max - this.hp.current) / 6);
-                if (curse2 < 0) {
-                    curse2 = 0;
-                }
-                this.curse2.current = curse2;
-                this.hpTimeoutSet = false;
-            }, 1);
-            this.hpTimeoutSet = true;
-        }
-        return new AttributeWithMax(this.element.querySelector(".hp"));
+        const attr = new AttributeWithMax(this.element.querySelector(".hp"));
+        attr.onChange(() => {
+            // TODO this is ugly, there must be a better way! Probably like the onChange done for the name property
+            let curse2 = Math.floor((this.hp.max - this.hp.current) / 6);
+            if (curse2 < 0) {
+                curse2 = 0;
+            }
+            this.curse2.current = curse2;
+        });
+        return attr;
     }
     get debt() {
         return new Attribute(this.element.querySelector(".debt"));
@@ -328,6 +464,8 @@ class LocalCharacterView {
         return new SmartStringAttribute(this.element.querySelector(".category"));
     }
 }
+LocalCharacterView.instances = new Map();
+// ### Chat formatting
 function rollTypeToString(rollType) {
     if (rollType == 'Jsoin') {
         return "<i>Soigne</i>";
@@ -380,10 +518,10 @@ function formatRollResults(dice_results, rollType, symbol = true) {
         else {
             diceText = '[&nbsp;' + result + '&nbsp;]';
         }
-        if (result == 6) {
+        if (result == 6 && rollType != "empirical") {
             str += ' <span class="two-success">' + diceText + '</span> ';
         }
-        else if (result == 5) {
+        else if (result == 5 && rollType != "empirical") {
             str += ' <span class="one-success">' + diceText + '</span> ';
         }
         else {
@@ -403,21 +541,6 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
         }
     }
     return successCount + bonus;
-}
-function isGm() {
-    return document.body.classList.contains("gm-page");
-}
-function resist(elem, action) {
-    var _a, _b;
-    const char = getCurrentCharacter();
-    const parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
-    if (char == null) {
-        throw new Error("Can't find an active character");
-    }
-    else {
-        let character = new LocalCharacterView(char);
-        autoRoll2(character, action, parentRollId);
-    }
 }
 function jsonRollToHtml(roll, sub = false) {
     let tr = document.createElement("tr");
@@ -471,16 +594,22 @@ function jsonRollToHtml(roll, sub = false) {
     }
     let resist = "";
     if (sub == false) {
-        resist = ' Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
+        resist = '. Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
             + '<button onclick="resist(this, \'spirit\')">esprit</button>'
             + '<button onclick="resist(this, \'essence\')">essence</button> ?';
     }
-    let success = 'et obtient <span title="Juge12: '
-        + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-        + ', Juge34: '
-        + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
-        + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-        + " succès</span>";
+    let success = "";
+    if (roll.roll_type.indexOf('Jemp-') !== 0) {
+        success = 'et obtient <span title="Juge12: '
+            + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+            + ', Juge34: '
+            + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+            + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+            + " succès</span>";
+    }
+    else {
+        resist = "";
+    }
     let roll_string = " ";
     if (roll.roll_type == "JAF") {
         roll_string = "";
@@ -503,19 +632,45 @@ function jsonRollToHtml(roll, sub = false) {
         + roll_string
         + success
         + ra
-        + "."
         + resist
         + delta
         + "</td>";
     return tr;
 }
-let display_secret = false; // override value from lsr.js
-/** cid = Character ID */
-function createCidParameterString(character, prefix = "&") {
-    if (character == null) {
-        return "";
+// ### LSR
+let somethingIsNotSaved = false;
+function getCurrentCharacter() {
+    var _a, _b;
+    const characterElements = document.querySelectorAll(".main .character");
+    if (characterElements.length == 0) {
+        return null;
     }
-    let idParameterString = "";
+    else if (characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
+    }
+}
+function isGm() {
+    return document.body.classList.contains("gm-page");
+}
+function resist(elem, action) {
+    var _a;
+    const char = getCurrentCharacter();
+    const parentRollId = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid;
+    if (char == null) {
+        throw new Error("Can't find an active character");
+    }
+    else {
+        let character = LocalCharacterView.fromElement(char);
+        autoRoll2(character, action, parentRollId);
+    }
+}
+function getCharId(character) {
+    if (character == null) {
+        return undefined;
+    }
     let id;
     if ("dataset" in character) {
         id = character.dataset.id;
@@ -523,25 +678,21 @@ function createCidParameterString(character, prefix = "&") {
     else {
         id = character.id;
     }
-    if (id !== undefined) {
-        idParameterString = prefix + "cid=" + id;
-    }
-    return idParameterString;
+    return id;
 }
 function updateChat() {
     let charName;
     let idParameterString = "";
-    const char = getCurrentCharacter();
+    const charElem = getCurrentCharacter();
     if (isGm()) {
         charName = "mj";
     }
     else {
-        charName = char.querySelector(".name .current").innerHTML;
+        charName = charElem.querySelector(".name .current").innerHTML;
     }
-    fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then((response) => response.text()).then(text => {
+    lsrApi.getChat(charName, isGm(), getCharId(charElem)).then(chatHistory => {
         var _a;
         const chat = document.querySelector('#chat').firstElementChild;
-        var chatHistory = JSON.parse(text);
         if (chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
             chat.dataset.update = chatHistory.update;
@@ -564,7 +715,7 @@ function updateCharactersOnPage() {
 }
 function createCharacter(name, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character").cloneNode(true);
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     character.name.current = name;
     if (withRoller == true) {
         const rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
@@ -574,7 +725,7 @@ function createCharacter(name, withRoller = true) {
 }
 function createCharacterByCid(cid, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character").cloneNode(true);
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     character.id = cid;
     if (withRoller == true) {
         const rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
@@ -584,16 +735,12 @@ function createCharacterByCid(cid, withRoller = true) {
 }
 function updateCharacter(characterElement) {
     const name = characterElement.querySelector(".name .current").innerHTML;
-    fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
-        .then(response => response.text())
-        .then(text => {
-        const characterFromDatabase = JSON.parse(text);
-        const character = new LocalCharacterView(characterElement);
+    lsrApi.getCharacter(name, getCharId(characterElement)).then(characterFromDatabase => {
+        const character = LocalCharacterView.fromElement(characterElement);
         character.updateFromDatabase(characterFromDatabase);
     });
 }
 function thingToName(thing) {
-    // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
     if (thing == "name") {
         return "name";
     }
@@ -663,7 +810,7 @@ function thingToName(thing) {
 }
 function autoClick(sourceElement) {
     const characterElement = sourceElement.closest(".character");
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     const action = sourceElement.innerHTML;
     const target = sourceElement.parentElement.dataset.thing;
     let value = null;
@@ -715,13 +862,9 @@ function autoClick(sourceElement) {
             }
         }
         else {
-            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
-            fetch(url)
-                .then(response => response.text())
-                .then(text => {
-                const characterFromDatabase = JSON.parse(text);
-                character.updateFromDatabase(characterFromDatabase);
-            });
+            // TODO rework maxSuffix logic
+            lsrApi.updateCharacter(character.name.current, getCharId(characterElement), target, maxSuffix, value, add)
+                .then(characterFromDatabase => character.updateFromDatabase(characterFromDatabase));
         }
     }
 }
@@ -796,53 +939,33 @@ function convertRollTypeBackendToFrontend(rollTypeBackend) {
 function autoRoll(sourceElement) {
     const characterElement = sourceElement.closest(".character");
     const rollType = sourceElement.dataset.roll;
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     autoRoll2(character, rollType);
 }
-function autoRoll2(character, rollType, parentRollId = null) {
+function autoRoll2(character, rollType, parentRollId = undefined) {
     if (rollType == "empirical") {
-        loadLancerEmpirique(character.name.current, createCidParameterString(character), character.secret.enabled);
+        const formula = prompt("Quel lancer de dé ?", "1d6");
+        if (formula == null) {
+            return;
+        }
+        const rollAction = new EmpiricalRollAction(character, formula, parentRollId);
+        lsrApi.empiricalRoll(character, rollAction).then(updateChat);
     }
     else if (rollType == "death") {
-        const rollType2 = convertRollTypeToBackend(rollType);
-        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+        const rollAction = new OneStatRollAction(character, rollType, parentRollId);
+        lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
     }
     else {
         if (!character.isOnline()) {
-            jetPNJ(character, rollType, character.hidden.enabled, parentRollId);
+            rollForLocalCharacterAndApplyCosts(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
-            const rollType2 = convertRollTypeToBackend(rollType);
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+            const rollAction = new OneStatRollAction(character, rollType, parentRollId);
+            lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
         }
-    }
-}
-function loadLancer2(name, action, pf, pp, ra, secret, bonus, malus, hidden, cidString, parentRollId = null) {
-    fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
-}
-function loadLancerEmpirique(charName, cidString, secret) {
-    var valeur = prompt("Quel lancer de dé ?", "1d6");
-    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function (e) {
-        console.error("error", e);
-    }).then(() => updateChat());
-}
-class DebouncedTimer {
-    constructor(cb, timeoutMs = 2000) {
-        this.timeoutMs = timeoutMs;
-        this.timeoutId = undefined;
-        this.cb = () => {
-            cb();
-            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
-        };
-    }
-    reset() {
-        clearTimeout(this.timeoutId);
-        console.log("reset");
-        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
     }
 }
 const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
-notesInputTimer.reset();
 function onNotesInput(source) {
     source.dataset.commitNeeded = "true";
     somethingIsNotSaved = true;
@@ -852,34 +975,32 @@ function sendNotesToServer() {
     console.log("sending notes!");
     document.querySelectorAll('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest(".character");
-        const char = new LocalCharacterView(charElem);
-        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value },
-            credentials: 'include',
-            body: char.notes.current,
-        }).then(() => {
+        const char = LocalCharacterView.fromElement(charElem);
+        lsrApi.sendNotes(char.name.current, getCharId(char), char.notes.current).then(() => {
             somethingIsNotSaved = false;
             delete ta.dataset.commitNeeded;
         });
     });
 }
-// Main
-document.addEventListener("DOMContentLoaded", () => {
-    var cb = () => {
-        updateCharactersOnPage();
-        updateChat();
-    };
-    cb();
-    setInterval(cb, 2000);
-});
-window.addEventListener("beforeunload", function (e) {
-    if (somethingIsNotSaved === true) {
-        var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-    }
-    else {
-        return undefined;
-    }
-});
+function main() {
+    document.addEventListener("DOMContentLoaded", () => {
+        var cb = () => {
+            updateCharactersOnPage();
+            updateChat();
+        };
+        cb();
+        setInterval(cb, 2000);
+    });
+    window.addEventListener("beforeunload", function (e) {
+        if (somethingIsNotSaved === true) {
+            var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        }
+        else {
+            return undefined;
+        }
+    });
+    notesInputTimer.reset();
+}
+main();

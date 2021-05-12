@@ -1,0 +1,82 @@
+type JEMP = `Jemp-${string}`;
+type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
+
+declare enum CidBrand { _ = "" }
+interface CharId extends string {
+    _cidBrand: CidBrand;
+}
+
+type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
+
+
+type StatBasedRollType = "flesh" | "spirit" | "essence" | "magic" | "heal" | "arcana" | "arcana-spirit" | "arcana-essence" | "death";
+
+
+type AbsoluteRollType = "empirical";
+
+
+type RollType = StatBasedRollType | AbsoluteRollType;
+
+
+type Action = "+" | "-" | "--" | "++" | "Edit";
+
+
+type Thing = "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
+
+
+type BackendThing = "name" | "essence" | "category" | "titre" | "niveau" | "chair" | "esprit" | "fl" | "fu" | "fs" | "pv" | "dettes" | "arcanes" | "pf" | "pp" | "force";
+
+
+interface CharacterFromDatabase {
+    id: number,
+    name: string,
+    titre: string,
+    niveau: number,
+    element: string,
+    force1: string,
+    force2: string | null,
+    chair: number,
+    esprit: number,
+    essence: number,
+    point_de_vie: number,
+    point_de_vie_max: number,
+    point_de_focus: number,
+    point_de_focus_max: number,
+    point_de_pouvoir: number,
+    point_de_pouvoir_max: number,
+    dettes: number,
+    arcanes: number,
+    arcanes_max: number,
+    /** lux */
+    fl: string,
+    /** umbra */
+    fu: string,
+    /** secunda */
+    fs: string,
+    notes: string | undefined,
+    category: string,
+}
+
+
+interface Roll {
+    id: number,
+    date: string, // 2021-05-02T18:03:41.551Z
+    secret: boolean,
+    character: string,
+    malediction_count: number,
+    benediction_count: number,
+    dice_results: number[],
+    pp: boolean,
+    pf: boolean,
+    ra: boolean,
+    hidden_dice: boolean,
+    roll_type: RollTypeBackend,
+    parent_roll?: Roll,
+    related_rolls: Roll[]
+}
+
+
+interface ChatHistory {
+    "update": string, // iso datetime
+    "rolls": Roll[]
+}

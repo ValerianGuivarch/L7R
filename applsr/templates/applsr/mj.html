@@ -38,7 +38,7 @@
     <div class="menu">
         <div class="local-char-menu">
             <input id="new_pnj_name" size="5" type="text" placeholder="name">
-            <button onclick="ajouter_pnj(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
+            <button onclick="addTempCharacter(document.getElementById('new_pnj_name').value, document.getElementById('new_pnj_chair').value, document.getElementById('new_pnj_esprit').value, document.getElementById('new_pnj_essence').value, document.getElementById('new_pnj_pv_max').value, document.getElementById('new_pnj_pf_max').value, document.getElementById('new_pnj_pp_max').value)">Ajouter</button>
             <br />
             <input id="new_pnj_chair" size="2" type="text" placeholder="chair">
             <input id="new_pnj_esprit" size="2" type="text" placeholder="esprit">
@@ -49,10 +49,7 @@
         </div>
 
         <div class="misc-menu">
-            <button onclick="effacerLancersDes()">Effacer les lancers de dés</button>
-
-            <input id="opposition" size="4" type="text" placeholder="opposition">
-            <label class="btn active"><input id="opposition_checked" type="checkbox" autocomplete="off">Opposition</label>
+            <button onclick="clearAndUpdateChat()">Effacer les lancers de dés</button>
 
             <button onclick="document.body.classList.toggle('compact')">Afficher tout</button>
         </div>

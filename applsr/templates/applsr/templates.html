@@ -5,10 +5,10 @@
 
         <div class="controls">
             <input type="radio" name="activeCharacter" />
-            <button class="delete disabled" onclick="deleteCharacter(this.closest('.character'));"> X </button>
+            <button class="delete disabled" onclick="deleteCharacterView(this.closest('.character'));"> X </button>
             <button class="duplicate-in-db" onclick="duplicateInDb(this.closest('.character'));" title="Copier dans la BD"> 	
                 &#x2398;&nbsp;BD</button>
-            <button class="duplicate-as-offline" onclick="duplicateAsOfflineCharacter(this.closest('.character'));" title="Copier dans les personages temporaires">&#x2398;&nbsp;Temp</button>
+            <button class="duplicate-as-offline" onclick="duplicateAsTempCharacter(this.closest('.character'));" title="Copier dans les personages temporaires">&#x2398;&nbsp;Temp</button>
         </div>
         
         <div class="summary">
@@ -194,7 +194,7 @@
             </div>
         </div>
 
-        <details data-thing="notes" class="notes" title="Notes">
+        <details data-thing="notes" class="notes" title="Notes" open="">
             <summary class="label">Notes :</summary>
             <textarea class="current" placeholder="notes" oninput="onNotesInput(this);"></textarea>
         </details>

@@ -408,6 +408,14 @@ body.pc-page {
   float: right;
   padding: 1rem;
   min-width: 10em;
+  height: calc(100vh - 2em);
+  input {
+    width: 100%;
+  }
+  .char-select {
+    overflow-y: auto;
+    height: 100%;
+  }
   .content {
     display: flex;
     flex-direction: column;
@@ -465,8 +473,16 @@ body.compact {
     }
     align-items: start;
     flex-direction: row;
-    .portrait, .title, .level, .logo, .notes {
+    .portrait, .title, .level, .logo {
       display: none;
+    }
+    .notes {
+      summary {  display: none; } // no closing in compact mode
+      display: block;
+      textarea {
+        height: 2em;
+        resize: none;
+      }
     }
     & > *, .abilities, .roller .group {
       display: contents;
