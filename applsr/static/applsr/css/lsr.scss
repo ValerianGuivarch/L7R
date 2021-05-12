@@ -6,6 +6,8 @@ $red-danger: #dc3545;
 $green-success: #28a745;
 $orange-warning: #d3930b;
 
+$db-char-menu-width: 10em;
+
 
 * {
   box-sizing: border-box;
@@ -34,6 +36,10 @@ body.pc-page {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.left {
+  margin-right: $db-char-menu-width;
 }
 
 // Super generic styles
@@ -405,9 +411,10 @@ body.pc-page {
 }
 
 .db-char-menu {
-  float: right;
+  position: fixed;
+  right: 0;
   padding: 1rem;
-  min-width: 10em;
+  width: $db-char-menu-width;
   height: calc(100vh - 2em);
   input {
     width: 100%;
@@ -429,7 +436,7 @@ body.pc-page {
       background: #faf9f8;
     }
     button.disabled::before {
-      content: "\2192";
+      content: "\2192 ";
     }
   }
   .content {

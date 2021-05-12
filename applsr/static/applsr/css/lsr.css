@@ -26,6 +26,10 @@ body.pc-page {
   margin-right: auto;
 }
 
+.left {
+  margin-right: 10em;
+}
+
 .lux input[type=text], .umbra input[type=text], .secunda input[type=text] {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
@@ -293,9 +297,10 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
 }
 
 .db-char-menu {
-  float: right;
+  position: fixed;
+  right: 0;
   padding: 1rem;
-  min-width: 10em;
+  width: 10em;
   height: calc(100vh - 2em);
 }
 .db-char-menu input {
