@@ -619,10 +619,10 @@ function formatRollResults(dice_results: number[], rollType: RollType, symbol = 
         else {
             diceText = '[&nbsp;' + result + '&nbsp;]';
         }
-        if(result == 6) {
+        if(result == 6 && rollType != "empirical") {
             str += ' <span class="two-success">' + diceText + '</span> ';
         }
-        else if(result == 5) {
+        else if(result == 5 && rollType != "empirical") {
             str += ' <span class="one-success">' + diceText + '</span> ';
         }
         else {
