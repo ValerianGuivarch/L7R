@@ -74,7 +74,7 @@ body.compact .button, body.compact .name > button, body.compact .title > button,
 }
 
 *[data-commit-needed=true] {
-  background-color: red;
+  background-color: #ffa4a4;
 }
 
 .character {
