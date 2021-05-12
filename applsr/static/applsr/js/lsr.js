@@ -4,6 +4,21 @@
 function assertNever(x) {
     throw new Error("Unexpected object: " + x);
 }
+class DebouncedTimer {
+    constructor(cb, timeoutMs = 2000) {
+        this.timeoutMs = timeoutMs;
+        this.timeoutId = undefined;
+        this.cb = () => {
+            cb();
+            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+        };
+    }
+    reset() {
+        clearTimeout(this.timeoutId);
+        console.log("reset");
+        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+    }
+}
 // ### Api
 class LsrApi {
     constructor() {
@@ -393,21 +408,7 @@ class LocalCharacterView {
     }
 }
 LocalCharacterView.instances = new Map();
-// ### LSR
-let somethingIsNotSaved = false;
-function getCurrentCharacter() {
-    var _a, _b;
-    const characterElements = document.querySelectorAll(".main .character");
-    if (characterElements.length == 0) {
-        return null;
-    }
-    else if (characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
-    }
-}
+// ### Chat formatting
 function rollTypeToString(rollType) {
     if (rollType == 'Jsoin') {
         return "<i>Soigne</i>";
@@ -483,21 +484,6 @@ function countSuccessesWith(dice_results, countAsOne, countAsTwo, bonus) {
         }
     }
     return successCount + bonus;
-}
-function isGm() {
-    return document.body.classList.contains("gm-page");
-}
-function resist(elem, action) {
-    var _a, _b;
-    const char = getCurrentCharacter();
-    const parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
-    if (char == null) {
-        throw new Error("Can't find an active character");
-    }
-    else {
-        let character = LocalCharacterView.fromElement(char);
-        autoRoll2(character, action, parentRollId);
-    }
 }
 function jsonRollToHtml(roll, sub = false) {
     let tr = document.createElement("tr");
@@ -588,6 +574,36 @@ function jsonRollToHtml(roll, sub = false) {
         + delta
         + "</td>";
     return tr;
+}
+// ### LSR
+let somethingIsNotSaved = false;
+function getCurrentCharacter() {
+    var _a, _b;
+    const characterElements = document.querySelectorAll(".main .character");
+    if (characterElements.length == 0) {
+        return null;
+    }
+    else if (characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
+    }
+}
+function isGm() {
+    return document.body.classList.contains("gm-page");
+}
+function resist(elem, action) {
+    var _a, _b;
+    const char = getCurrentCharacter();
+    const parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
+    if (char == null) {
+        throw new Error("Can't find an active character");
+    }
+    else {
+        let character = LocalCharacterView.fromElement(char);
+        autoRoll2(character, action, parentRollId);
+    }
 }
 function getCharId(character) {
     if (character == null) {
@@ -880,21 +896,6 @@ function autoRoll2(character, rollType, parentRollId = null) {
             const rollType2 = convertRollTypeToBackend(rollType);
             lsrApi.rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, getCharId(character), parentRollId).then(() => updateChat());
         }
-    }
-}
-class DebouncedTimer {
-    constructor(cb, timeoutMs = 2000) {
-        this.timeoutMs = timeoutMs;
-        this.timeoutId = undefined;
-        this.cb = () => {
-            cb();
-            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
-        };
-    }
-    reset() {
-        clearTimeout(this.timeoutId);
-        console.log("reset");
-        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
     }
 }
 const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);

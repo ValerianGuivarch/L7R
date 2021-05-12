@@ -9,6 +9,25 @@ function assertNever(x: never): never {
 }
 
 
+class DebouncedTimer {
+    private timeoutId: number | undefined = undefined;
+    private cb: (() => void);
+
+    constructor(cb: () => void, private timeoutMs: number = 2000) {
+        this.cb = () => {
+            cb();
+            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+        }
+    }
+
+    public reset() {
+        clearTimeout(this.timeoutId);
+        console.log("reset");
+        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+    }
+}
+
+
 // ### Api
 
 
@@ -476,23 +495,7 @@ class LocalCharacterView {
 }
 
 
-// ### LSR
-
-let somethingIsNotSaved = false;
-
-
-function getCurrentCharacter(): HTMLElement | null {
-    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
-    if(characterElements.length == 0) {
-        return null;
-    }
-    else if(characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
-    }
-}
+// ### Chat formatting
 
 
 function rollTypeToString(rollType: RollTypeBackend) {
@@ -576,24 +579,6 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
         }
     }
     return successCount + bonus;
-}
-
-
-function isGm(): boolean {
-    return document.body.classList.contains("gm-page");
-}
-
-
-function resist(elem: HTMLElement, action: RollType) {
-    const char = getCurrentCharacter();
-    const parentRollId = elem.closest<HTMLElement>(".roll")?.dataset.rollid ?? null;
-    if(char == null) {
-        throw new Error("Can't find an active character");
-    }
-    else {
-        let character = LocalCharacterView.fromElement(char);
-        autoRoll2(character, action, parentRollId);
-    }
 }
 
 
@@ -697,6 +682,45 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         + "</td>";
     return tr;
 }
+
+
+// ### LSR
+
+
+let somethingIsNotSaved = false;
+
+
+function getCurrentCharacter(): HTMLElement | null {
+    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
+    if(characterElements.length == 0) {
+        return null;
+    }
+    else if(characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
+    }
+}
+
+
+function isGm(): boolean {
+    return document.body.classList.contains("gm-page");
+}
+
+
+function resist(elem: HTMLElement, action: RollType) {
+    const char = getCurrentCharacter();
+    const parentRollId = elem.closest<HTMLElement>(".roll")?.dataset.rollid ?? null;
+    if(char == null) {
+        throw new Error("Can't find an active character");
+    }
+    else {
+        let character = LocalCharacterView.fromElement(char);
+        autoRoll2(character, action, parentRollId);
+    }
+}
+
 
 function getCharId(character: LocalCharacterView | HTMLElement | null): CharId | undefined {
     if(character == null) {
@@ -1022,25 +1046,6 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
             const rollType2 = convertRollTypeToBackend(rollType);
             lsrApi.rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, getCharId(character), parentRollId).then(() => updateChat());
         }
-    }
-}
-
-
-class DebouncedTimer {
-    private timeoutId: number | undefined = undefined;
-    private cb: (() => void);
-
-    constructor(cb: () => void, private timeoutMs: number = 2000) {
-        this.cb = () => {
-            cb();
-            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
-        }
-    }
-
-    public reset() {
-        clearTimeout(this.timeoutId);
-        console.log("reset");
-        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
     }
 }
 
