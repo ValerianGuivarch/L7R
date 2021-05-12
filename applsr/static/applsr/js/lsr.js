@@ -72,8 +72,8 @@ class OneStatRollAction extends BaseRollAction {
     }
 }
 class EmpiricalRollAction extends BaseRollAction {
-    constructor(char, rollType, formula, parentRollId) {
-        super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
+    constructor(char, formula, parentRollId) {
+        super("empirical", char.secret.enabled, char.hidden.enabled, parentRollId);
         this.formula = formula;
     }
 }
@@ -104,18 +104,8 @@ class LsrApi {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + "?" + LsrApi.createCidParameterString(cid))
             .then(response => response.text()).then(t => JSON.parse(t));
     }
-    // TODO remove once we migrated to action base rolls
-    rollForServerCharacter(charName, action, pf, pp, ra, secret, bonus, malus, hidden, cid, parentRollId = null) {
-        return fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid));
-    }
     rollForServerCharacter2(char, ra) {
         return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
-    }
-    // TODO prompt should probably be outside of this function
-    // TODO remove once we migrated to action base rolls
-    empiricalRoll(charName, cid, secret) {
-        var valeur = prompt("Quel lancer de dé ?", "1d6");
-        return fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid));
     }
     empiricalRoll2(char, ra) {
         return fetch(this.baseUrl + 'lancer_empirique/' + char.name.current + '/' + ra.formula + '/' + ra.forGmOnly + "?" + LsrApi.createCidParameterString(char.id));
@@ -954,7 +944,12 @@ function autoRoll(sourceElement) {
 }
 function autoRoll2(character, rollType, parentRollId = undefined) {
     if (rollType == "empirical") {
-        lsrApi.empiricalRoll(character.name.current, getCharId(character), character.secret.enabled).then(() => updateChat());
+        const formula = prompt("Quel lancer de dé ?", "1d6");
+        if (formula == null) {
+            return;
+        }
+        const rollAction = new EmpiricalRollAction(character, formula, parentRollId);
+        lsrApi.empiricalRoll2(character, rollAction).then(updateChat);
     }
     else if (rollType == "death") {
         const rollAction = new OneStatRollAction(character, rollType, parentRollId);

@@ -81,11 +81,10 @@ class OneStatRollAction extends BaseRollAction {
 class EmpiricalRollAction extends BaseRollAction {
     public constructor(
         char: LocalCharacterView,
-        rollType: AbsoluteRollType,
         public readonly formula: string,
         parentRollId?: string,
     ) {
-        super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
+        super("empirical", char.secret.enabled, char.hidden.enabled, parentRollId);
     }
 }
 
@@ -121,20 +120,8 @@ class LsrApi {
         .then(response => response.text()).then(t => JSON.parse(t) as CharacterFromDatabase)
     }
 
-    // TODO remove once we migrated to action base rolls
-    public rollForServerCharacter(charName: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cid: CharId | undefined, parentRollId: string | null = null) {
-        return fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid));
-    }
-
     public rollForServerCharacter2(char: LocalCharacterView, ra: OneStatRollAction) {
         return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
-    }
-
-    // TODO prompt should probably be outside of this function
-    // TODO remove once we migrated to action base rolls
-    public empiricalRoll(charName: string, cid: CharId | undefined, secret: boolean) {
-        var valeur = prompt("Quel lancer de dé ?", "1d6");
-        return fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid));
     }
 
     public empiricalRoll2(char: LocalCharacterView, ra: EmpiricalRollAction) {
@@ -1110,7 +1097,12 @@ function autoRoll(sourceElement: HTMLElement) {
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | undefined = undefined) {
     if(rollType == "empirical") {
-        lsrApi.empiricalRoll(character.name.current, getCharId(character), character.secret.enabled).then(() => updateChat());
+        const formula = prompt("Quel lancer de dé ?", "1d6");
+        if(formula == null) {
+            return;
+        }
+        const rollAction = new EmpiricalRollAction(character, formula, parentRollId);
+        lsrApi.empiricalRoll2(character, rollAction).then(updateChat);
     }
     else if(rollType == "death") {
         const rollAction = new OneStatRollAction(character, rollType, parentRollId);
