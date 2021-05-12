@@ -205,7 +205,7 @@ function autoAddChar(source) {
 }
 function autoFilter(source) {
     document.querySelectorAll(".char-select .content button").forEach(b => {
-        if (b.innerHTML.indexOf(source.value) === -1) {
+        if (b.innerHTML.toUpperCase().indexOf(source.value.toUpperCase()) === -1) {
             b.style.display = "none";
         }
         else {

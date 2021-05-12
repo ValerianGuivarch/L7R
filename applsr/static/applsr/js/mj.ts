@@ -224,7 +224,7 @@ function autoAddChar(source: HTMLButtonElement) {
 
 function autoFilter(source: HTMLInputElement) {
     document.querySelectorAll<HTMLButtonElement>(".char-select .content button").forEach(b => {
-        if(b.innerHTML.indexOf(source.value) === -1) {
+        if(b.innerHTML.toUpperCase().indexOf(source.value.toUpperCase()) === -1) {
             b.style.display = "none";
         }
         else {
