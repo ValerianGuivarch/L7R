@@ -73,6 +73,10 @@ body.compact .button, body.compact .name > button, body.compact .title > button,
   width: 10em;
 }
 
+*[data-commit-needed=true] {
+  background-color: red;
+}
+
 .character {
   display: flex;
   width: 100%;
@@ -211,7 +215,7 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   display: none;
 }
 
-.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled, .pc-page .notes, .pc-page .level button, .pc-page .hidden-number, .pc-page .abilities button, .pc-page .category {
+.pc-page .minus-max, .pc-page .plus-max, .pc-page .edit, .pc-page .curse2 button, .pc-page .curse2 .enabled, .pc-page .level button, .pc-page .hidden-number, .pc-page .abilities button, .pc-page .category {
   display: none;
 }
 .pc-page .name, .pc-page .title, .pc-page .level, .pc-page .lux, .pc-page .umbra, .pc-page .secunda, .pc-page .proficiency, .pc-page .secret, .pc-page .abilities {
@@ -369,7 +373,7 @@ body.compact .character > * > * {
   margin-right: 2px;
 }
 
-.character .notes {
+.nocharacter .notes {
   display: none !important;
 }
 

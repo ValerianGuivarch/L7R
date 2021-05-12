@@ -13,6 +13,8 @@
 <body class="pc-page">
     {% include "applsr/templates.html" %}
 
+    {% csrf_token %}
+
     <script src="{% static 'applsr/js/lsr.js' %}"></script>
 
     <div class="main container">

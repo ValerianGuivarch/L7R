@@ -861,11 +861,14 @@ def effacer_lancers_des(request):
 def modifs_valeurs(request, nom, stat, valeur, add):
     if "cid" in request.GET:
         nom = findCharacterNameFromCid(request.GET["cid"])
+        char = Character.objects.filter(id=request.GET["cid"])
+        car = Character.objects.all().filter(id=request.GET["cid"])[0]
+    else:
+        char = Character.objects.filter(name=nom)
+        car = Character.objects.all().filter(name=nom)[0]
     if add != "true":
         valeur = int(valeur) * -1
 
-    char = Character.objects.filter(name=nom)
-    car = Character.objects.all().filter(name=nom)[0]
     if stat == "pv":
         char.update(point_de_vie=car.point_de_vie + int(valeur))
     elif stat == "pv_max":
@@ -908,6 +911,8 @@ def modifs_valeurs(request, nom, stat, valeur, add):
     elif stat == "force":
         force1, force2 = valeur.split(" | ")
         char.update(force1=force1, force2=force2)
+    elif stat == "notes":
+        char.update(notes=request.body.decode("utf8"))
     car = Character.objects.all().filter(name=nom)[0]
     return JsonResponse(filter_character_for_response(car), encoder=ExtendedEncoder, safe=False)
 

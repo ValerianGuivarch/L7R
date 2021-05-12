@@ -41,23 +41,62 @@ class AttributeWithMax extends Attribute {
         }
     }
 }
+class TextInputAttribute {
+    constructor(element) {
+        this.element = element;
+        this.onChangeCb = null;
+    }
+    get current() {
+        const current = this.element.querySelector(".current");
+        return current.value;
+    }
+    set current(value) {
+        let current = this.element.querySelector(".current");
+        if (current.dataset.commitNeeded === "true") {
+            return;
+        }
+        if (current.value != value.toString()) {
+            current.value = value.toString();
+            if (this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
+        }
+    }
+    onChange(cb) {
+        this.onChangeCb = cb;
+    }
+}
 class SmartStringAttribute {
     constructor(element) {
         this.element = element;
         this.onChangeCb = null;
     }
     get current() {
-        return this.element.querySelector(".current").innerHTML;
+        const current = this.element.querySelector(".current");
+        if ("value" in current) {
+            return current.value;
+        }
+        return current.innerHTML;
     }
     set current(value) {
         let current = this.element.querySelector(".current");
         if (current == null) {
             current = this.element;
         }
-        if (current.innerHTML != value.toString()) {
-            current.innerHTML = value.toString();
-            if (this.onChangeCb != null) {
-                this.onChangeCb(this);
+        if ("value" in current) {
+            if (current.value != value.toString()) {
+                current.value = value.toString();
+                if (this.onChangeCb != null) {
+                    this.onChangeCb(this);
+                }
+            }
+        }
+        else {
+            if (current.innerHTML != value.toString()) {
+                current.innerHTML = value.toString();
+                if (this.onChangeCb != null) {
+                    this.onChangeCb(this);
+                }
             }
         }
     }
@@ -218,7 +257,7 @@ class LocalCharacterView {
         return new SmartStringAttribute(this.element.querySelector(".secunda"));
     }
     get notes() {
-        return new SmartStringAttribute(this.element.querySelector(".notes .current"));
+        return new TextInputAttribute(this.element.querySelector(".notes"));
     }
     get level() {
         return new Attribute(this.element.querySelector(".level"));
@@ -793,4 +832,39 @@ function loadLancerEmpirique(charName, cidString, secret) {
     fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function (e) {
         console.error("error", e);
     }).then(() => updateChat());
+}
+class DebouncedTimer {
+    constructor(cb, timeoutMs = 2000) {
+        this.timeoutMs = timeoutMs;
+        this.timeoutId = undefined;
+        this.cb = () => {
+            cb();
+            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+        };
+    }
+    reset() {
+        clearTimeout(this.timeoutId);
+        console.log("reset");
+        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+    }
+}
+const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
+notesInputTimer.reset();
+function onNotesInput(source) {
+    source.dataset.commitNeeded = "true";
+    notesInputTimer.reset();
+}
+function sendNotesToServer() {
+    console.log("sending notes!");
+    document.querySelectorAll('.notes textarea[data-commit-needed="true"]').forEach(ta => {
+        delete ta.dataset.commitNeeded;
+        const charElem = ta.closest(".character");
+        const char = new LocalCharacterView(charElem);
+        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value },
+            credentials: 'include',
+            body: char.notes.current,
+        });
+    });
 }

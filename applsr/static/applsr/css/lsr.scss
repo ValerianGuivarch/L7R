@@ -154,6 +154,10 @@ body.pc-page {
   }
 }
 
+*[data-commit-needed="true"] {
+  background-color: red;
+}
+
 .character {
   display: flex;
   width: 100%;
@@ -303,7 +307,7 @@ body.pc-page {
 }
 
 .pc-page {
-  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .notes, .level button, .hidden-number, .abilities button, .category {
+  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .level button, .hidden-number, .abilities button, .category {
     display: none;
   }
 
@@ -492,6 +496,6 @@ body.compact {
 
 // hide element not implemented
 
-.character .notes {
+.nocharacter .notes {
   display: none !important;
 }

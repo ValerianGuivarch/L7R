@@ -200,7 +200,7 @@ function duplicateInDb(characterElement: HTMLElement) {
         if(categoryElement == null) {
             const charSelect = document.querySelector<HTMLElement>(".char-select")!;
             const container = document.createElement("div");
-            container.innerHTML = '<div class="category-' + c.category.current + '"><summary class="label">' + c.category.current + '</summary><div class="content"></div></div>';
+            container.innerHTML = '<div class="category-' + character.category.current + '"><summary class="label">' + character.category.current + '</summary><div class="content"></div></div>';
             categoryElement = container.firstElementChild! as HTMLElement;
             charSelect.appendChild(categoryElement);
         }

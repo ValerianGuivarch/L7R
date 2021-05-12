@@ -41,7 +41,7 @@ class AttributeWithMax extends Attribute {
     public get max(): number {
         return parseInt(this.element.querySelector(".max")!.innerHTML);
     }
-    
+
     public set max(value: number) {
         const max = this.element.querySelector(".max")!;
         if(max.innerHTML != value.toString()) {
@@ -50,23 +50,66 @@ class AttributeWithMax extends Attribute {
     }
 }
 
+class TextInputAttribute {
+    private onChangeCb: ((attr: TextInputAttribute) => void) | null = null;
+    constructor(protected element: HTMLElement) { }
+
+    public get current(): string {
+        const current = this.element.querySelector<HTMLInputElement | HTMLTextAreaElement>(".current")!;
+        return current.value;
+    }
+
+    public set current(value: string) {
+        let current = this.element.querySelector<HTMLInputElement | HTMLTextAreaElement>(".current")!;
+        if(current.dataset.commitNeeded === "true") {
+            return;
+        }
+        
+        if(current.value != value.toString()) {
+            current.value = value.toString();
+            if(this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
+        }
+    }
+
+    public onChange(cb: (attr: TextInputAttribute) => void) {
+        this.onChangeCb = cb;
+    }
+}
+
 class SmartStringAttribute {
     private onChangeCb: ((attr: SmartStringAttribute) => void) | null = null;
     constructor(protected element: HTMLElement) { }
 
     public get current(): string {
-        return this.element.querySelector(".current")!.innerHTML;
+        const current = this.element.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLElement>(".current")!;
+        if("value" in current) {
+            return current.value;
+        }
+        return current.innerHTML;
     }
 
     public set current(value: string) {
-        let current = this.element.querySelector(".current");
+        let current = this.element.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLElement>(".current");
         if(current == null) {
             current = this.element;
         }
-        if(current.innerHTML != value.toString()) {
-            current.innerHTML = value.toString();
-            if(this.onChangeCb != null) {
-                this.onChangeCb(this);
+        
+        if("value" in current) {
+            if(current.value != value.toString()) {
+                current.value = value.toString();
+                if(this.onChangeCb != null) {
+                    this.onChangeCb(this);
+                }
+            }
+        }
+        else {
+            if(current.innerHTML != value.toString()) {
+                current.innerHTML = value.toString();
+                if(this.onChangeCb != null) {
+                    this.onChangeCb(this);
+                }
             }
         }
     }
@@ -84,7 +127,7 @@ class AttributeWithoutValueActivable extends WithLabel {
     public get enabled(): boolean {
         return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
     }
-    
+
     public set enabled(value: boolean) {
         this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
     }
@@ -114,7 +157,7 @@ class AttributeActivable extends Attribute {
     public get enabled(): boolean {
         return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
     }
-    
+
     public set enabled(value: boolean) {
         this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
     }
@@ -128,7 +171,7 @@ class AttributeWithMaxActivable extends AttributeWithMax {
     public get enabled(): boolean {
         return this.element.querySelector<HTMLInputElement>(".enabled input")!.checked;
     }
-    
+
     public set enabled(value: boolean) {
         this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
     }
@@ -191,13 +234,13 @@ class LocalCharacterView {
         else {
             const attr = this[prop];
             if(attr instanceof SmartStringAttribute) {
-                if(typeof(value) != "string") {
+                if(typeof (value) != "string") {
                     throw new Error("wrong type for value: " + value);
                 }
                 attr.current = value
             }
             else {
-                if(typeof(value) != "number") {
+                if(typeof (value) != "number") {
                     throw new Error("wrong type for value: " + value);
                 }
                 if(max) {
@@ -247,8 +290,8 @@ class LocalCharacterView {
         return new SmartStringAttribute(this.element.querySelector(".secunda")!);
     }
 
-    public get notes(): SmartStringAttribute {
-        return new SmartStringAttribute(this.element.querySelector(".notes .current")!);
+    public get notes(): TextInputAttribute {
+        return new TextInputAttribute(this.element.querySelector(".notes")!);
     }
 
     public get level(): Attribute {
@@ -590,7 +633,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 let display_secret = false; // override value from lsr.js
 
 /** cid = Character ID */
-function createCidParameterString(character: LocalCharacterView | HTMLElement | null, prefix="&") {
+function createCidParameterString(character: LocalCharacterView | HTMLElement | null, prefix = "&") {
     if(character == null) {
         return "";
     }
@@ -618,7 +661,7 @@ function updateChat() {
     else {
         charName = char!.querySelector(".name .current")!.innerHTML;
     }
-    
+
     fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then((response) => response.text()).then(text => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
         var chatHistory = JSON.parse(text);
@@ -673,12 +716,12 @@ function createCharacterByCid(cid: string, withRoller = true) {
 function updateCharacter(characterElement: HTMLElement) {
     const name = characterElement.querySelector<HTMLElement>(".name .current")!.innerHTML;
     fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
-    .then(response => response.text())
-    .then(text => {
-        const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
-        const character = new LocalCharacterView(characterElement);
-        character.updateFromDatabase(characterFromDatabase);
-    });
+        .then(response => response.text())
+        .then(text => {
+            const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
+            const character = new LocalCharacterView(characterElement);
+            character.updateFromDatabase(characterFromDatabase);
+        });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -691,7 +734,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 type Action = "+" | "-" | "--" | "++" | "Edit";
-type Thing =  "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
+type Thing = "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
 
 function thingToName(thing: Thing) {
     // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
@@ -814,20 +857,20 @@ function autoClick(sourceElement: HTMLElement) {
     else {
         if(!character.isOnline()) {
             if(action == "Edit") {
-                character.localUpdate(target, maxSuffix=="_max", value);
+                character.localUpdate(target, maxSuffix == "_max", value);
             }
             else {
-                character.localUpdate(target, maxSuffix=="_max", increment);
+                character.localUpdate(target, maxSuffix == "_max", increment);
             }
         }
         else {
             const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
             fetch(url)
-            .then(response => response.text())
-            .then(text => {
-                const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
-                character.updateFromDatabase(characterFromDatabase);
-            });
+                .then(response => response.text())
+                .then(text => {
+                    const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
+                    character.updateFromDatabase(characterFromDatabase);
+                });
         }
     }
 }
@@ -911,7 +954,7 @@ function autoRoll(sourceElement: HTMLElement) {
     autoRoll2(character, rollType);
 }
 
-function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId : string | null = null) {
+function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | null = null) {
     if(rollType == "empirical") {
         loadLancerEmpirique(character.name.current, createCidParameterString(character), character.secret.enabled);
     }
@@ -940,4 +983,45 @@ function loadLancerEmpirique(charName: string, cidString: string, secret: boolea
     fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {
         console.error("error", e);
     }).then(() => updateChat());
+}
+
+class DebouncedTimer {
+    private timeoutId: number | undefined = undefined;
+    private cb: (() => void);
+
+    constructor(cb: () => void, private timeoutMs: number = 2000) {
+        this.cb = () => {
+            cb();
+            this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+        }
+    }
+
+    public reset() {
+        clearTimeout(this.timeoutId);
+        console.log("reset");
+        this.timeoutId = setTimeout(this.cb, this.timeoutMs);
+    }
+}
+
+const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
+notesInputTimer.reset();
+
+function onNotesInput(source: HTMLTextAreaElement) {
+    source.dataset.commitNeeded = "true";
+    notesInputTimer.reset();
+}
+
+function sendNotesToServer() {
+    console.log("sending notes!");
+    document.querySelectorAll<HTMLTextAreaElement>('.notes textarea[data-commit-needed="true"]').forEach(ta => {
+        delete ta.dataset.commitNeeded;
+        const charElem = ta.closest<HTMLElement>(".character")!;
+        const char = new LocalCharacterView(charElem);
+        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector<HTMLInputElement>('[name="csrfmiddlewaretoken"]')!.value},
+            credentials: 'include',
+            body: char.notes.current,
+        });
+    });
 }
