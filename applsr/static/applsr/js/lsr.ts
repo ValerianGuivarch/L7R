@@ -706,17 +706,23 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     let resist = "";
     if(sub == false) {
-        resist = ' Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
+        resist = '. Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
             + '<button onclick="resist(this, \'spirit\')">esprit</button>'
             + '<button onclick="resist(this, \'essence\')">essence</button> ?';
     }
 
-    let success = 'et obtient <span title="Juge12: '
-        + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-        + ', Juge34: '
-        + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
-        + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-        + " succès</span>"
+    let success = "";
+    if(roll.roll_type.indexOf('Jemp-') !== 0) {
+        success = 'et obtient <span title="Juge12: '
+            + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+            + ', Juge34: '
+            + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+            + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+            + " succès</span>"
+    }
+    else {
+        resist = "";
+    }
 
     let roll_string = " ";
     if(roll.roll_type == "JAF") {
@@ -741,7 +747,6 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         + roll_string
         + success
         + ra
-        + "."
         + resist
         + delta
         + "</td>";
