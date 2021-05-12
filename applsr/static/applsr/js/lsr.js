@@ -552,11 +552,9 @@ function updateChat() {
     else {
         charName = charElem.querySelector(".name .current").innerHTML;
     }
-    lsrApi.getChat(charName, display_secret, getCharId(charElem));
-    fetch('/afficher/' + charName + '/' + display_secret + '?json' + LsrApi.createCidParameterString(getCharId(charElem))).then((response) => response.text()).then(text => {
+    lsrApi.getChat(charName, display_secret, getCharId(charElem)).then(chatHistory => {
         var _a;
         const chat = document.querySelector('#chat').firstElementChild;
-        var chatHistory = JSON.parse(text);
         if (chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
             chat.dataset.update = chatHistory.update;

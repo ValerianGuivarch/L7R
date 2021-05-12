@@ -643,10 +643,9 @@ function updateChat() {
     }
 
 
-    lsrApi.getChat(charName, display_secret, getCharId(charElem));
-    fetch('/afficher/' + charName + '/' + display_secret + '?json' + LsrApi.createCidParameterString(getCharId(charElem))).then((response) => response.text()).then(text => {
+    lsrApi.getChat(charName, display_secret, getCharId(charElem)).then(chatHistory => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
-        var chatHistory = JSON.parse(text) as ChatHistory;
+        
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
             chat.dataset.update = chatHistory.update
