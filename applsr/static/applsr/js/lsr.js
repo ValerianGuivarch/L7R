@@ -33,11 +33,9 @@ class LsrApi {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + "?" + LsrApi.createCidParameterString(cid))
             .then(response => response.text()).then(t => JSON.parse(t));
     }
-    // TODO should not update chat
     rollForServerCharacter(charName, action, pf, pp, ra, secret, bonus, malus, hidden, cid, parentRollId = null) {
         return fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid));
     }
-    // TODO should not update chat, should also probably not be blocking
     empiricalRoll(charName, cid, secret) {
         var valeur = prompt("Quel lancer de dé ?", "1d6");
         return fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid));

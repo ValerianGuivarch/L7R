@@ -45,12 +45,10 @@ class LsrApi {
         .then(response => response.text()).then(t => JSON.parse(t) as CharacterFromDatabase)
     }
 
-    // TODO should not update chat
     public rollForServerCharacter(charName: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cid: CharId | undefined, parentRollId: string | null = null) {
         return fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid));
     }
 
-    // TODO should not update chat, should also probably not be blocking
     public empiricalRoll(charName: string, cid: CharId | undefined, secret: boolean) {
         var valeur = prompt("Quel lancer de dé ?", "1d6");
         return fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid));
