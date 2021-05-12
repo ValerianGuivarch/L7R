@@ -83,7 +83,6 @@ function actionToStatValue(char, action) {
 }
 /** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
 function rollForLocalCharacterAndApplyCosts(c, action, dc /** dés cachés */, parentRollId) {
-    const opposition = parseInt(document.querySelector('#opposition').value);
     let stat = actionToStatValue(c, action);
     const rollAction = new OneStatRollAction(c, action, parentRollId);
     lsrApi.rollForLocalCharacter(c, rollAction).then(updateChat);

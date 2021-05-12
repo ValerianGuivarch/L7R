@@ -70,8 +70,6 @@ function actionToStatValue(char: LocalCharacterView, action: RollType): number {
 
 /** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
 function rollForLocalCharacterAndApplyCosts(c: LocalCharacterView, action: StatBasedRollType, dc: boolean /** dés cachés */, parentRollId: string | undefined) {
-    const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
-
     let stat: number = actionToStatValue(c, action);
 
     const rollAction = new OneStatRollAction(c, action, parentRollId);
