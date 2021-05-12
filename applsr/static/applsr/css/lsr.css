@@ -354,8 +354,18 @@ body.compact .character {
 body.compact .character * {
   font-size: 14px !important;
 }
-body.compact .character .portrait, body.compact .character .title, body.compact .character .level, body.compact .character .logo, body.compact .character .notes {
+body.compact .character .portrait, body.compact .character .title, body.compact .character .level, body.compact .character .logo {
   display: none;
+}
+body.compact .character .notes {
+  display: block;
+}
+body.compact .character .notes summary {
+  display: none;
+}
+body.compact .character .notes textarea {
+  height: 2em;
+  resize: none;
 }
 body.compact .character > *, body.compact .character .abilities, body.compact .character .roller .group {
   display: contents;

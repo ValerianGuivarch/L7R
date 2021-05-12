@@ -473,8 +473,16 @@ body.compact {
     }
     align-items: start;
     flex-direction: row;
-    .portrait, .title, .level, .logo, .notes {
+    .portrait, .title, .level, .logo {
       display: none;
+    }
+    .notes {
+      summary {  display: none; } // no closing in compact mode
+      display: block;
+      textarea {
+        height: 2em;
+        resize: none;
+      }
     }
     & > *, .abilities, .roller .group {
       display: contents;
