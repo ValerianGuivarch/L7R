@@ -918,30 +918,30 @@ function autoRoll(sourceElement: HTMLElement) {
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | null = null) {
     if(rollType == "empirical") {
-        loadLancerEmpirique(character.name.current, createCidParameterString(character), character.secret.enabled);
+        empiricalRoll(character.name.current, createCidParameterString(character), character.secret.enabled);
     }
     else if(rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
-        loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+        rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
     }
     else {
         if(!character.isOnline()) {
-            jetPNJ(character, rollType, character.hidden.enabled, parentRollId);
+            rollForLocalCharacter(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
             const rollType2 = convertRollTypeToBackend(rollType);
-            loadLancer2(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+            rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
         }
     }
 }
 
 
-function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cidString: string, parentRollId: string | null = null) {
+function rollForServerCharacter(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cidString: string, parentRollId: string | null = null) {
     fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
 }
 
 
-function loadLancerEmpirique(charName: string, cidString: string, secret: boolean) {
+function empiricalRoll(charName: string, cidString: string, secret: boolean) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
 
     fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {

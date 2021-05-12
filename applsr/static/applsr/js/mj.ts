@@ -1,34 +1,6 @@
 /// <reference path="lsr.d.ts" />
 
 display_secret = true; // override value from lsr.js
-
-function afficherPJ() {
-    const liste_pj = document.querySelector<HTMLElement>('#liste_pj')!;
-    liste_pj.childNodes.forEach(function(pcNode) {
-        const pcElement = pcNode as HTMLElement;
-        const name = pcElement.querySelector(".name")!.innerHTML;
-        fetch('/lsr/getcar/' + name + createCidParameterString(pcElement, "?"))
-            .then((response) => response.text())
-            .then(json => {
-                const obj = JSON.parse(json) as CharacterFromDatabase;
-                pcElement.querySelector('.pj_pv')!.innerHTML = obj.point_de_vie.toString();
-                pcElement.querySelector('.pj_pv_max')!.innerHTML = obj.point_de_vie_max.toString();
-                pcElement.querySelector('.pj_pf')!.innerHTML = obj.point_de_focus.toString();
-                pcElement.querySelector('.pj_pf_max')!.innerHTML = obj.point_de_focus_max.toString();
-                pcElement.querySelector('.pj_pp')!.innerHTML = obj.point_de_pouvoir.toString();
-                pcElement.querySelector('.pj_pp_max')!.innerHTML = obj.point_de_pouvoir_max.toString();
-                pcElement.querySelector('.pj_dettes')!.innerHTML = obj.dettes.toString();
-                pcElement.querySelector('.pj_arcanes')!.innerHTML = obj.arcanes.toString();
-                pcElement.querySelector('.pj_arcanes_max')!.innerHTML = obj.arcanes_max.toString();
-                pcElement.querySelector('.pj_fl')!.innerHTML = obj.fl;
-                pcElement.querySelector('.pj_fu')!.innerHTML = obj.fu;
-                pcElement.querySelector('.pj_fs')!.innerHTML = obj.fs;
-            }).catch(function(e) {
-                console.error("error", e);
-            });
-    });
-}
-
 let remove_char_timeout: null | number = null;
 var remove_char_ok = false;
 
@@ -62,8 +34,8 @@ function deleteCharacter(pnjElement: HTMLElement) {
     }
 }
 
-
-function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
+/** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
+function rollForLocalCharacter(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
     let stat: number = 0;
@@ -135,7 +107,7 @@ function incrementString(str: string, separator="-") {
 }
 
 
-function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: string | "PVmax", new_pnj_pf_max: string | "PFmax", new_pnj_pp_max: string | "PPmax") {
+function addTempCharacter(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit: string, new_pnj_essence: string, new_pnj_pv_max: string | "PVmax", new_pnj_pf_max: string | "PFmax", new_pnj_pp_max: string | "PPmax") {
     const new_pnj_dettes = Math.floor(Math.random() * Math.floor(5));
     const liste_pnj = document.querySelector('#liste_pnj')!;
     
@@ -186,7 +158,7 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
 }
 
 
-function effacerLancersDes() {
+function clearChat() {
     fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => updateChat());
 }
 
@@ -216,7 +188,7 @@ function duplicateInDb(characterElement: HTMLElement) {
 }
 
 
-function duplicateAsOfflineCharacter(characterElement: HTMLElement) {
+function duplicateAsTempCharacter(characterElement: HTMLElement) {
     const liste_pnj = document.querySelector('#liste_pnj')!;
     const offlineChar = characterElement.cloneNode(true) as HTMLElement;
     offlineChar.classList.add("npc");
