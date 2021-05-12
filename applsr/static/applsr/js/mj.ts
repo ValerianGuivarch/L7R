@@ -168,7 +168,7 @@ function addTempCharacter(new_pnj_name: string, new_pnj_chair: string, new_pnj_e
 }
 
 
-function clearChat() {
+function clearAndUpdateChat() {
     lsrApi.clearChat().then(() => updateChat());
 }
 

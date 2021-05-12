@@ -163,7 +163,7 @@ function addTempCharacter(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_e
     liste_pnj.appendChild(pnjElement);
     document.querySelector("#new_pnj_name").value = incrementString(new_pnj_name);
 }
-function clearChat() {
+function clearAndUpdateChat() {
     lsrApi.clearChat().then(() => updateChat());
 }
 function duplicateInDb(characterElement) {
