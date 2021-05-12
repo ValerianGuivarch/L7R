@@ -121,7 +121,6 @@ body.compact .button, body.compact .name > button, body.compact .title > button,
   text-transform: capitalize;
 }
 .character .notes {
-  flex-basis: 100%;
   display: block;
 }
 .character .notes textarea {
