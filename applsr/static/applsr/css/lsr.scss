@@ -451,8 +451,7 @@ body.pc-page {
 .misc-menu {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  flex: 1;
+  flex-direction: column;
 }
 
 // compact
@@ -489,8 +488,6 @@ body.compact {
     .category, button.plus-max, button.minus-max, button.edit, .blessing .label, .curse .label {
       display: none;
     }
-  }
-  .character {
     * {
       font-size: 14px !important;
     }
