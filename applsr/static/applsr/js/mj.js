@@ -82,20 +82,11 @@ function actionToStatValue(char, action) {
     assertNever(action);
 }
 /** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
-function rollForLocalCharacterAndApplyCosts(c, action, dc /** dés cachés */, parentRollId = null) {
+function rollForLocalCharacterAndApplyCosts(c, action, dc /** dés cachés */, parentRollId) {
     const opposition = parseInt(document.querySelector('#opposition').value);
     let stat = actionToStatValue(c, action);
-    if (document.querySelector('#opposition_checked').checked) {
-        lsrApi.rollForLocalCharacter(c, action, stat, dc, opposition, parentRollId).then(text => {
-            const degats = parseInt(text);
-            c.hp.current -= degats;
-            updateChat();
-        });
-    }
-    else {
-        lsrApi.rollForLocalCharacter(c, action, stat, dc, 0, parentRollId)
-            .then(() => updateChat());
-    }
+    const rollAction = new OneStatRollAction(c, action, parentRollId);
+    lsrApi.rollForLocalCharacter2(c, rollAction).then(updateChat);
     applyActionCosts(c, action);
 }
 /** Get the last number in a string with separators, for example getIndexInString("a-b-c-3") would return 3 */

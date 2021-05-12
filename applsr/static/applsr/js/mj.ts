@@ -69,22 +69,13 @@ function actionToStatValue(char: LocalCharacterView, action: RollType): number {
 
 
 /** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
-function rollForLocalCharacterAndApplyCosts(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
+function rollForLocalCharacterAndApplyCosts(c: LocalCharacterView, action: StatBasedRollType, dc: boolean /** dés cachés */, parentRollId: string | undefined) {
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
 
     let stat: number = actionToStatValue(c, action);
 
-    if(document.querySelector<HTMLInputElement>('#opposition_checked')!.checked) {
-        lsrApi.rollForLocalCharacter(c, action, stat, dc, opposition, parentRollId).then(text => {
-            const degats = parseInt(text);
-            c.hp.current -= degats;
-            updateChat();
-        });
-    }
-    else {
-        lsrApi.rollForLocalCharacter(c, action, stat, dc, 0, parentRollId)
-        .then(() => updateChat());
-    }
+    const rollAction = new OneStatRollAction(c, action, parentRollId);
+    lsrApi.rollForLocalCharacter2(c, rollAction).then(updateChat);
 
     applyActionCosts(c, action);
 }

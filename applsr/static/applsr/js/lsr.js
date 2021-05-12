@@ -118,14 +118,9 @@ class LsrApi {
             body: notes,
         });
     }
-    // TODO stat should probably not be passed as a parameter
-    // TODO remove once we migrated to action base rolls
-    rollForLocalCharacter(char, action, stat, hiddenDice, opposition, parentRollId = null) {
-        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + hiddenDice + '/' + opposition + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
-    }
-    rollForLocalCharacter2(char, ra, parentRollId = null) {
+    rollForLocalCharacter2(char, ra) {
         const opposition = 0;
-        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
+        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
     }
     createCharacter(character) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true' + '/' + character.category.current)
