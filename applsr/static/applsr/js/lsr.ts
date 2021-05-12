@@ -290,7 +290,7 @@ class LocalCharacterView {
     public static fromElement(element: HTMLElement): LocalCharacterView {
         let instance = this.instances.get(element);
         if(instance === undefined) {
-            instance = LocalCharacterView.fromElement(element);
+            instance = new LocalCharacterView(element);
             this.instances.set(element, instance);
         }
         return instance;

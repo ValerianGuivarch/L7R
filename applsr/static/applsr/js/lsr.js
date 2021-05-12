@@ -235,7 +235,7 @@ class LocalCharacterView {
     static fromElement(element) {
         let instance = this.instances.get(element);
         if (instance === undefined) {
-            instance = LocalCharacterView.fromElement(element);
+            instance = new LocalCharacterView(element);
             this.instances.set(element, instance);
         }
         return instance;
