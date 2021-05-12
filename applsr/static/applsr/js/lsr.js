@@ -1,5 +1,20 @@
 "use strict";
+/// <reference path="lsr.d.ts" />
 let somethingIsNotSaved = false;
+let display_secret = false; // override value from lsr.js
+function getCurrentCharacter() {
+    var _a, _b;
+    const characterElements = document.querySelectorAll(".main .character");
+    if (characterElements.length == 0) {
+        return null;
+    }
+    else if (characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
+    }
+}
 class WithLabel {
     constructor(element) {
         this.element = element;
@@ -152,19 +167,6 @@ class AttributeWithMaxActivable extends AttributeWithMax {
         this.element.querySelector(".enabled input").checked = value;
     }
 }
-function getCurrentCharacter() {
-    var _a, _b;
-    const characterElements = document.querySelectorAll(".main .character");
-    if (characterElements.length == 0) {
-        return null;
-    }
-    else if (characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return (_b = (_a = document.querySelector('input[name="activeCharacter"]:checked')) === null || _a === void 0 ? void 0 : _a.closest(".character")) !== null && _b !== void 0 ? _b : null;
-    }
-}
 class LocalCharacterView {
     constructor(element) {
         this.element = element;
@@ -208,7 +210,7 @@ class LocalCharacterView {
         }
         else {
             const attr = this[prop];
-            if (attr instanceof SmartStringAttribute) {
+            if (attr instanceof SmartStringAttribute || attr instanceof TextInputAttribute) {
                 if (typeof (value) != "string") {
                     throw new Error("wrong type for value: " + value);
                 }
@@ -509,7 +511,6 @@ function jsonRollToHtml(roll, sub = false) {
         + "</td>";
     return tr;
 }
-let display_secret = false; // override value from lsr.js
 /** cid = Character ID */
 function createCidParameterString(character, prefix = "&") {
     if (character == null) {
@@ -842,7 +843,6 @@ class DebouncedTimer {
     }
 }
 const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
-notesInputTimer.reset();
 function onNotesInput(source) {
     source.dataset.commitNeeded = "true";
     somethingIsNotSaved = true;
@@ -864,22 +864,25 @@ function sendNotesToServer() {
         });
     });
 }
-// Main
-document.addEventListener("DOMContentLoaded", () => {
-    var cb = () => {
-        updateCharactersOnPage();
-        updateChat();
-    };
-    cb();
-    setInterval(cb, 2000);
-});
-window.addEventListener("beforeunload", function (e) {
-    if (somethingIsNotSaved === true) {
-        var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-    }
-    else {
-        return undefined;
-    }
-});
+function main() {
+    document.addEventListener("DOMContentLoaded", () => {
+        var cb = () => {
+            updateCharactersOnPage();
+            updateChat();
+        };
+        cb();
+        setInterval(cb, 2000);
+    });
+    window.addEventListener("beforeunload", function (e) {
+        if (somethingIsNotSaved === true) {
+            var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        }
+        else {
+            return undefined;
+        }
+    });
+    notesInputTimer.reset();
+}
+main();

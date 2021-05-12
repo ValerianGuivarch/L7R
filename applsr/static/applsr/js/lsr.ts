@@ -1,7 +1,23 @@
-let somethingIsNotSaved = false;
+/// <reference path="lsr.d.ts" />
 
-type JEMP = `Jemp-${string}`;
-type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
+
+let somethingIsNotSaved = false;
+let display_secret = false; // override value from lsr.js
+
+
+function getCurrentCharacter(): HTMLElement | null {
+    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
+    if(characterElements.length == 0) {
+        return null;
+    }
+    else if(characterElements.length == 1) {
+        return characterElements[0];
+    }
+    else {
+        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
+    }
+}
+
 
 class WithLabel {
     constructor(protected element: HTMLElement) { }
@@ -17,6 +33,7 @@ class WithLabel {
         }
     }
 }
+
 
 class Attribute extends WithLabel {
     constructor(element: HTMLElement) {
@@ -35,6 +52,7 @@ class Attribute extends WithLabel {
     }
 }
 
+
 class AttributeWithMax extends Attribute {
     constructor(element: HTMLElement) {
         super(element);
@@ -51,6 +69,7 @@ class AttributeWithMax extends Attribute {
         }
     }
 }
+
 
 class TextInputAttribute {
     private onChangeCb: ((attr: TextInputAttribute) => void) | null = null;
@@ -79,6 +98,7 @@ class TextInputAttribute {
         this.onChangeCb = cb;
     }
 }
+
 
 class SmartStringAttribute {
     private onChangeCb: ((attr: SmartStringAttribute) => void) | null = null;
@@ -121,6 +141,7 @@ class SmartStringAttribute {
     }
 }
 
+
 class AttributeWithoutValueActivable extends WithLabel {
     constructor(element: HTMLElement) {
         super(element);
@@ -134,6 +155,7 @@ class AttributeWithoutValueActivable extends WithLabel {
         this.element.querySelector<HTMLInputElement>(".enabled input")!.checked = value;
     }
 }
+
 
 class AttributeActivable extends Attribute {
     constructor(element: HTMLElement) {
@@ -165,6 +187,7 @@ class AttributeActivable extends Attribute {
     }
 }
 
+
 class AttributeWithMaxActivable extends AttributeWithMax {
     constructor(element: HTMLElement) {
         super(element);
@@ -179,18 +202,6 @@ class AttributeWithMaxActivable extends AttributeWithMax {
     }
 }
 
-function getCurrentCharacter(): HTMLElement | null {
-    const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
-    if(characterElements.length == 0) {
-        return null;
-    }
-    else if(characterElements.length == 1) {
-        return characterElements[0];
-    }
-    else {
-        return document.querySelector<HTMLElement>('input[name="activeCharacter"]:checked')?.closest<HTMLElement>(".character") ?? null;
-    }
-}
 
 class LocalCharacterView {
     constructor(private element: HTMLElement) {
@@ -235,7 +246,7 @@ class LocalCharacterView {
         }
         else {
             const attr = this[prop];
-            if(attr instanceof SmartStringAttribute) {
+            if(attr instanceof SmartStringAttribute || attr instanceof TextInputAttribute) {
                 if(typeof (value) != "string") {
                     throw new Error("wrong type for value: " + value);
                 }
@@ -381,57 +392,6 @@ class LocalCharacterView {
     }
 }
 
-interface CharacterFromDatabase {
-    id: number,
-    name: string,
-    titre: string,
-    niveau: number,
-    element: string,
-    force1: string,
-    force2: string | null,
-    chair: number,
-    esprit: number,
-    essence: number,
-    point_de_vie: number,
-    point_de_vie_max: number,
-    point_de_focus: number,
-    point_de_focus_max: number,
-    point_de_pouvoir: number,
-    point_de_pouvoir_max: number,
-    dettes: number,
-    arcanes: number,
-    arcanes_max: number,
-    /** lux */
-    fl: string,
-    /** umbra */
-    fu: string,
-    /** secunda */
-    fs: string,
-    notes: string | undefined,
-    category: string,
-}
-
-interface Roll {
-    id: number,
-    date: string, // 2021-05-02T18:03:41.551Z
-    secret: boolean,
-    character: string,
-    malediction_count: number,
-    benediction_count: number,
-    dice_results: number[],
-    pp: boolean,
-    pf: boolean,
-    ra: boolean,
-    hidden_dice: boolean,
-    roll_type: RollTypeBackend,
-    parent_roll?: Roll,
-    related_rolls: Roll[]
-}
-
-interface ChatHistory {
-    "update": string, // iso datetime
-    "rolls": Roll[]
-}
 
 function rollTypeToString(rollType: RollTypeBackend) {
     if(rollType == 'Jsoin') {
@@ -469,8 +429,8 @@ function rollTypeToString(rollType: RollTypeBackend) {
     }
 }
 
-const diceTable = ["?", "&#9856;", "&#9857;", "&#9858;", "&#9859;", "&#9860;", "&#9861;"];
 
+const diceTable = ["?", "&#9856;", "&#9857;", "&#9858;", "&#9859;", "&#9860;", "&#9861;"];
 function formatRollResults(dice_results: number[], rollType: RollType, symbol = true) {
     var str = "";
     for(var result of dice_results) {
@@ -502,6 +462,7 @@ function formatRollResults(dice_results: number[], rollType: RollType, symbol = 
     return str;
 }
 
+
 function countSuccessesWith(dice_results: number[], countAsOne: number[], countAsTwo: number[], bonus: number) {
     var successCount = 0;
     for(var result of dice_results) {
@@ -515,9 +476,11 @@ function countSuccessesWith(dice_results: number[], countAsOne: number[], countA
     return successCount + bonus;
 }
 
+
 function isGm(): boolean {
     return document.body.classList.contains("gm-page");
 }
+
 
 function resist(elem: HTMLElement, action: RollType) {
     const char = getCurrentCharacter();
@@ -530,6 +493,7 @@ function resist(elem: HTMLElement, action: RollType) {
         autoRoll2(character, action, parentRollId);
     }
 }
+
 
 function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     let tr = document.createElement("tr");
@@ -632,7 +596,6 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     return tr;
 }
 
-let display_secret = false; // override value from lsr.js
 
 /** cid = Character ID */
 function createCidParameterString(character: LocalCharacterView | HTMLElement | null, prefix = "&") {
@@ -652,6 +615,7 @@ function createCidParameterString(character: LocalCharacterView | HTMLElement | 
     }
     return idParameterString;
 }
+
 
 function updateChat() {
     let charName: string;
@@ -685,9 +649,11 @@ function updateChat() {
     });
 }
 
+
 function updateCharactersOnPage() {
     document.querySelectorAll<HTMLElement>("body > .main .character:not(.npc)").forEach(e => updateCharacter(e));
 }
+
 
 function createCharacter(name: string, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
@@ -702,6 +668,7 @@ function createCharacter(name: string, withRoller = true) {
     return characterElement;
 }
 
+
 function createCharacterByCid(cid: string, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
     const character = new LocalCharacterView(characterElement);
@@ -715,6 +682,7 @@ function createCharacterByCid(cid: string, withRoller = true) {
     return characterElement;
 }
 
+
 function updateCharacter(characterElement: HTMLElement) {
     const name = characterElement.querySelector<HTMLElement>(".name .current")!.innerHTML;
     fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
@@ -726,8 +694,6 @@ function updateCharacter(characterElement: HTMLElement) {
         });
 }
 
-type Action = "+" | "-" | "--" | "++" | "Edit";
-type Thing = "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
 
 function thingToName(thing: Thing) {
     // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
@@ -799,6 +765,7 @@ function thingToName(thing: Thing) {
     }
 }
 
+
 function autoClick(sourceElement: HTMLElement) {
     const characterElement = sourceElement.closest<HTMLElement>(".character")!;
     const character = new LocalCharacterView(characterElement);
@@ -868,7 +835,6 @@ function autoClick(sourceElement: HTMLElement) {
     }
 }
 
-type RollType = "flesh" | "spirit" | "essence" | "death" | "magic" | "heal" | "empirical" | "arcana" | "arcana-spirit" | "arcana-essence";
 
 function convertRollTypeToBackend(rollType: RollType): RollTypeBackend {
     //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
@@ -905,6 +871,7 @@ function convertRollTypeToBackend(rollType: RollType): RollTypeBackend {
     throw new Error("unknown roll type: " + rollType);
 }
 
+
 function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): RollType {
     //type RollType = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'JCH' | 'JAG' | 'JCB' | 'JMG' | 'JSV' | 'JNV' | 'JNT' | JEMP;
     if(rollTypeBackend == "JC") {
@@ -940,12 +907,14 @@ function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): Rol
     throw new Error("unknown roll type: " + rollTypeBackend);
 }
 
+
 function autoRoll(sourceElement: HTMLElement) {
     const characterElement = sourceElement.closest<HTMLElement>(".character")!;
     const rollType = sourceElement.dataset.roll as RollType;
     const character = new LocalCharacterView(characterElement);
     autoRoll2(character, rollType);
 }
+
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | null = null) {
     if(rollType == "empirical") {
@@ -966,9 +935,11 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
     }
 }
 
+
 function loadLancer2(name: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cidString: string, parentRollId: string | null = null) {
     fetch('/lancer/' + name + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
 }
+
 
 function loadLancerEmpirique(charName: string, cidString: string, secret: boolean) {
     var valeur = prompt("Quel lancer de dé ?", "1d6");
@@ -977,6 +948,7 @@ function loadLancerEmpirique(charName: string, cidString: string, secret: boolea
         console.error("error", e);
     }).then(() => updateChat());
 }
+
 
 class DebouncedTimer {
     private timeoutId: number | undefined = undefined;
@@ -996,14 +968,14 @@ class DebouncedTimer {
     }
 }
 
-const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
-notesInputTimer.reset();
 
+const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
 function onNotesInput(source: HTMLTextAreaElement) {
     source.dataset.commitNeeded = "true";
     somethingIsNotSaved = true;
     notesInputTimer.reset();
 }
+
 
 function sendNotesToServer() {
     console.log("sending notes!");
@@ -1022,24 +994,30 @@ function sendNotesToServer() {
     });
 }
 
-// Main
 
-document.addEventListener("DOMContentLoaded", () => {
-    var cb = () => {
-        updateCharactersOnPage();
-        updateChat();
-    };
-    cb();
-    setInterval(cb, 2000);
-});
+function main() {
+    document.addEventListener("DOMContentLoaded", () => {
+        var cb = () => {
+            updateCharactersOnPage();
+            updateChat();
+        };
+        cb();
+        setInterval(cb, 2000);
+    });
 
-window.addEventListener("beforeunload", function (e) {
-    if(somethingIsNotSaved === true) {
-        var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-    }
-    else {
-        return undefined;
-    }
-});
+    window.addEventListener("beforeunload", function (e) {
+        if(somethingIsNotSaved === true) {
+            var confirmationMessage = "Vous devriez revenir sur la page pendant quelques secondes, quelques chose est en train d'être sauvegardé.";
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        }
+        else {
+            return undefined;
+        }
+    });
+
+    notesInputTimer.reset();
+}
+
+
+main();

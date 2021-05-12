@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="lsr.d.ts" />
 display_secret = true; // override value from lsr.js
 function afficherPJ() {
     const liste_pj = document.querySelector('#liste_pj');

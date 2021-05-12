@@ -1,4 +1,4 @@
-type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
+/// <reference path="lsr.d.ts" />
 
 display_secret = true; // override value from lsr.js
 
@@ -32,6 +32,7 @@ function afficherPJ() {
 let remove_char_timeout: null | number = null;
 var remove_char_ok = false;
 
+
 function deleteCharacter(pnjElement: HTMLElement) {
     if(remove_char_ok == false) {
         remove_char_ok = true;
@@ -60,6 +61,7 @@ function deleteCharacter(pnjElement: HTMLElement) {
         document.querySelectorAll<HTMLButtonElement>('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(b => b.disabled = false); // using forEach as ifPresent
     }
 }
+
 
 function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés cachés */, parentRollId: string | null = null) {
     const opposition = parseInt(document.querySelector<HTMLInputElement>('#opposition')!.value);
@@ -103,6 +105,7 @@ function jetPNJ(c: LocalCharacterView, action: RollType, dc: boolean /** dés ca
     }
 }
 
+
 /** Get the last number in a string with separators, for example getIndexInString("a-b-c-3") would return 3 */
 function getIndexInString(str: string, separator="-", byDefault: number | null = null): number | null {
     const parts = str.split(separator);
@@ -119,6 +122,7 @@ function getIndexInString(str: string, separator="-", byDefault: number | null =
     }
     return i;
 }
+
 
 function incrementString(str: string, separator="-") {
     const i = getIndexInString(str, separator);
@@ -181,9 +185,11 @@ function ajouter_pnj(new_pnj_name: string, new_pnj_chair: string, new_pnj_esprit
     document.querySelector<HTMLInputElement>("#new_pnj_name")!.value = incrementString(new_pnj_name);
 }
 
+
 function effacerLancersDes() {
     fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => updateChat());
 }
+
 
 function duplicateInDb(characterElement: HTMLElement) {
     let character = new LocalCharacterView(characterElement);
@@ -209,6 +215,7 @@ function duplicateInDb(characterElement: HTMLElement) {
     });
 }
 
+
 function duplicateAsOfflineCharacter(characterElement: HTMLElement) {
     const liste_pnj = document.querySelector('#liste_pnj')!;
     const offlineChar = characterElement.cloneNode(true) as HTMLElement;
@@ -226,12 +233,14 @@ function duplicateAsOfflineCharacter(characterElement: HTMLElement) {
     liste_pnj.appendChild(offlineChar);
 }
 
+
 function autoAddChar(source: HTMLButtonElement) {
     const pcList = document.querySelector<HTMLElement>("#liste_pj")!;
     pcList.appendChild(createCharacterByCid(source.dataset.cid!));
     updateCharactersOnPage();
     source.disabled = true;
 }
+
 
 function autoFilter(source: HTMLInputElement) {
     document.querySelectorAll<HTMLButtonElement>(".char-select .content button").forEach(b => {
