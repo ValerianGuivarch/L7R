@@ -2,6 +2,24 @@
 /// <reference path="lsr.d.ts" />
 let somethingIsNotSaved = false;
 let display_secret = false; // override value from lsr.js
+class LsrApi {
+    constructor() {
+        this.baseUrl = "/";
+    }
+    // TODO temporarily public, set to private after refactoring
+    static createCidParameterString(cid, prefix = "&") {
+        let idParameterString = "";
+        if (cid !== undefined) {
+            idParameterString = prefix + "cid=" + cid;
+        }
+        return idParameterString;
+    }
+    getChat(charName, showSecret, cid) {
+        return fetch('/afficher/' + charName + '/' + showSecret + '?json' + LsrApi.createCidParameterString(cid))
+            .then(response => response.text()).then(t => JSON.parse(t));
+    }
+}
+const lsrApi = new LsrApi();
 function getCurrentCharacter() {
     var _a, _b;
     const characterElements = document.querySelectorAll(".main .character");
@@ -511,12 +529,10 @@ function jsonRollToHtml(roll, sub = false) {
         + "</td>";
     return tr;
 }
-/** cid = Character ID */
-function createCidParameterString(character, prefix = "&") {
+function getCharId(character) {
     if (character == null) {
-        return "";
+        return undefined;
     }
-    let idParameterString = "";
     let id;
     if ("dataset" in character) {
         id = character.dataset.id;
@@ -524,22 +540,20 @@ function createCidParameterString(character, prefix = "&") {
     else {
         id = character.id;
     }
-    if (id !== undefined) {
-        idParameterString = prefix + "cid=" + id;
-    }
-    return idParameterString;
+    return id;
 }
 function updateChat() {
     let charName;
     let idParameterString = "";
-    const char = getCurrentCharacter();
+    const charElem = getCurrentCharacter();
     if (isGm()) {
         charName = "mj";
     }
     else {
-        charName = char.querySelector(".name .current").innerHTML;
+        charName = charElem.querySelector(".name .current").innerHTML;
     }
-    fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then((response) => response.text()).then(text => {
+    lsrApi.getChat(charName, display_secret, getCharId(charElem));
+    fetch('/afficher/' + charName + '/' + display_secret + '?json' + LsrApi.createCidParameterString(getCharId(charElem))).then((response) => response.text()).then(text => {
         var _a;
         const chat = document.querySelector('#chat').firstElementChild;
         var chatHistory = JSON.parse(text);
@@ -585,7 +599,7 @@ function createCharacterByCid(cid, withRoller = true) {
 }
 function updateCharacter(characterElement) {
     const name = characterElement.querySelector(".name .current").innerHTML;
-    fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
+    fetch('/lsr/getcar/' + name + "?json" + LsrApi.createCidParameterString(getCharId(characterElement)))
         .then(response => response.text())
         .then(text => {
         const characterFromDatabase = JSON.parse(text);
@@ -716,7 +730,7 @@ function autoClick(sourceElement) {
             }
         }
         else {
-            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
+            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + LsrApi.createCidParameterString(getCharId(characterElement), "?");
             fetch(url)
                 .then(response => response.text())
                 .then(text => {
@@ -802,11 +816,11 @@ function autoRoll(sourceElement) {
 }
 function autoRoll2(character, rollType, parentRollId = null) {
     if (rollType == "empirical") {
-        empiricalRoll(character.name.current, createCidParameterString(character), character.secret.enabled);
+        empiricalRoll(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
     }
     else if (rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
-        rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+        rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
     }
     else {
         if (!character.isOnline()) {
@@ -814,7 +828,7 @@ function autoRoll2(character, rollType, parentRollId = null) {
         }
         else {
             const rollType2 = convertRollTypeToBackend(rollType);
-            rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+            rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
         }
     }
 }
@@ -853,7 +867,7 @@ function sendNotesToServer() {
     document.querySelectorAll('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest(".character");
         const char = new LocalCharacterView(charElem);
-        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
+        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + LsrApi.createCidParameterString(getCharId(char)), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value },
             credentials: 'include',

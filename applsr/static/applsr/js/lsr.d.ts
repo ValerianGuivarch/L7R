@@ -1,6 +1,6 @@
 type JEMP = `Jemp-${string}`;
 type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
-
+type CharId = string;
 
 type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 

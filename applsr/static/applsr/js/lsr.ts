@@ -4,6 +4,25 @@
 let somethingIsNotSaved = false;
 let display_secret = false; // override value from lsr.js
 
+class LsrApi {
+    private baseUrl = "/";
+
+    // TODO temporarily public, set to private after refactoring
+    public static createCidParameterString(cid: CharId | undefined, prefix = "&") {
+        let idParameterString = "";
+        if(cid !== undefined) {
+            idParameterString = prefix + "cid=" + cid;
+        }
+        return idParameterString;
+    }
+
+    public getChat(charName: string, showSecret: boolean, cid: CharId | undefined) {
+        return fetch('/afficher/' + charName + '/' + showSecret + '?json' + LsrApi.createCidParameterString(cid))
+        .then(response => response.text()).then(t => JSON.parse(t) as ChatHistory)
+    }
+}
+
+const lsrApi = new LsrApi();
 
 function getCurrentCharacter(): HTMLElement | null {
     const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
@@ -596,41 +615,38 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     return tr;
 }
 
-
-/** cid = Character ID */
-function createCidParameterString(character: LocalCharacterView | HTMLElement | null, prefix = "&") {
+function getCharId(character: LocalCharacterView | HTMLElement | null): CharId | undefined {
     if(character == null) {
-        return "";
+        return undefined;
     }
-    let idParameterString = "";
-    let id: string | undefined;
+    let id: CharId | undefined;
     if("dataset" in character) {
         id = character.dataset.id;
     }
     else {
         id = character.id;
     }
-    if(id !== undefined) {
-        idParameterString = prefix + "cid=" + id;
-    }
-    return idParameterString;
+
+    return id;
 }
 
 
 function updateChat() {
     let charName: string;
     let idParameterString = "";
-    const char = getCurrentCharacter();
+    const charElem = getCurrentCharacter();
     if(isGm()) {
         charName = "mj";
     }
     else {
-        charName = char!.querySelector(".name .current")!.innerHTML;
+        charName = charElem!.querySelector(".name .current")!.innerHTML;
     }
 
-    fetch('/afficher/' + charName + '/' + display_secret + '?json' + createCidParameterString(char)).then((response) => response.text()).then(text => {
+
+    lsrApi.getChat(charName, display_secret, getCharId(charElem));
+    fetch('/afficher/' + charName + '/' + display_secret + '?json' + LsrApi.createCidParameterString(getCharId(charElem))).then((response) => response.text()).then(text => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
-        var chatHistory = JSON.parse(text);
+        var chatHistory = JSON.parse(text) as ChatHistory;
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
             chat.dataset.update = chatHistory.update
@@ -685,7 +701,7 @@ function createCharacterByCid(cid: string, withRoller = true) {
 
 function updateCharacter(characterElement: HTMLElement) {
     const name = characterElement.querySelector<HTMLElement>(".name .current")!.innerHTML;
-    fetch('/lsr/getcar/' + name + "?json" + createCidParameterString(characterElement))
+    fetch('/lsr/getcar/' + name + "?json" + LsrApi.createCidParameterString(getCharId(characterElement)))
         .then(response => response.text())
         .then(text => {
             const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
@@ -824,7 +840,7 @@ function autoClick(sourceElement: HTMLElement) {
             }
         }
         else {
-            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + createCidParameterString(characterElement, "?");
+            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + LsrApi.createCidParameterString(getCharId(characterElement), "?");
             fetch(url)
                 .then(response => response.text())
                 .then(text => {
@@ -918,11 +934,11 @@ function autoRoll(sourceElement: HTMLElement) {
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | null = null) {
     if(rollType == "empirical") {
-        empiricalRoll(character.name.current, createCidParameterString(character), character.secret.enabled);
+        empiricalRoll(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
     }
     else if(rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
-        rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+        rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
     }
     else {
         if(!character.isOnline()) {
@@ -930,7 +946,7 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
         }
         else {
             const rollType2 = convertRollTypeToBackend(rollType);
-            rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, createCidParameterString(character), parentRollId);
+            rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
         }
     }
 }
@@ -982,7 +998,7 @@ function sendNotesToServer() {
     document.querySelectorAll<HTMLTextAreaElement>('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest<HTMLElement>(".character")!;
         const char = new LocalCharacterView(charElem);
-        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + createCidParameterString(char), {
+        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + LsrApi.createCidParameterString(getCharId(char)), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector<HTMLInputElement>('[name="csrfmiddlewaretoken"]')!.value},
             credentials: 'include',
