@@ -120,11 +120,11 @@ class LsrApi {
         .then(response => response.text()).then(t => JSON.parse(t) as CharacterFromDatabase)
     }
 
-    public rollForServerCharacter2(char: LocalCharacterView, ra: OneStatRollAction) {
+    public rollForServerCharacter(char: LocalCharacterView, ra: OneStatRollAction) {
         return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
     }
 
-    public empiricalRoll2(char: LocalCharacterView, ra: EmpiricalRollAction) {
+    public empiricalRoll(char: LocalCharacterView, ra: EmpiricalRollAction) {
         return fetch(this.baseUrl + 'lancer_empirique/' + char.name.current + '/' + ra.formula + '/' + ra.forGmOnly + "?" + LsrApi.createCidParameterString(char.id));
     }
 
@@ -137,7 +137,7 @@ class LsrApi {
         })
     }
 
-    public rollForLocalCharacter2(char: LocalCharacterView, ra: OneStatRollAction) {
+    public rollForLocalCharacter(char: LocalCharacterView, ra: OneStatRollAction) {
         const opposition = 0;
         return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
     }
@@ -1101,11 +1101,11 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
             return;
         }
         const rollAction = new EmpiricalRollAction(character, formula, parentRollId);
-        lsrApi.empiricalRoll2(character, rollAction).then(updateChat);
+        lsrApi.empiricalRoll(character, rollAction).then(updateChat);
     }
     else if(rollType == "death") {
         const rollAction = new OneStatRollAction(character, rollType, parentRollId);
-        lsrApi.rollForServerCharacter2(character, rollAction).then(updateChat);
+        lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
     }
     else {
         if(!character.isOnline()) {
@@ -1113,7 +1113,7 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
         }
         else {
             const rollAction = new OneStatRollAction(character, rollType, parentRollId);
-            lsrApi.rollForServerCharacter2(character, rollAction).then(updateChat);
+            lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
         }
     }
 }
