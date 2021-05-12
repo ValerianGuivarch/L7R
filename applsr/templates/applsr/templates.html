@@ -39,7 +39,7 @@
             </div>
 
             <div class="abilities">
-                <div data-thing="flesh" class="flesh" title="Chair">
+                <div data-thing="flesh" class="flesh" title="Chair, force physique">
                     <button class="minus" onclick="autoClick(this);">-</button>
                     <span class="logo">
                         {% with 'applsr/'|add:"chair.png" as filepath %}<img alt="chair" src="{% static filepath %}" />{% endwith %}
@@ -48,7 +48,7 @@
                     <span class="current">1</span>
                     <button class="plus" onclick="autoClick(this);">+</button>
                 </div>
-                <div data-thing="spirit" class="spirit" title="Esprit">
+                <div data-thing="spirit" class="spirit" title="Esprit, force mentale. Peut aider dans (presque) n'importe quelles circonstances.">
                     <button class="minus" onclick="autoClick(this);">-</button>
                     <span class="logo">
                         {% with 'applsr/'|add:"esprit.png" as filepath %}<img alt="chair" src="{% static filepath %}" />{% endwith %}
@@ -57,7 +57,7 @@
                     <span class="current">1</span>
                     <button class="plus" onclick="autoClick(this);">+</button>
                 </div>
-                <div data-thing="essence" class="essence" title="Essence">
+                <div data-thing="essence" class="essence" title="Essence, puissance magique">
                     <button class="minus" onclick="autoClick(this);">-</button>
                     <span class="logo">
                         {% with 'applsr/'|add:"essence.png" as filepath %}<img alt="chair" src="{% static filepath %}" />{% endwith %}
@@ -69,17 +69,17 @@
             </div>
 
             <div class="story">
-                <div data-thing="lux" class="lux" title="Lux">
+                <div data-thing="lux" class="lux" title="Lux, ce qui vous passionne">
                     <button class="edit" onclick="autoClick(this);">Edit</button>
                     <span class="label">Lux&nbsp;:</span>
                     <span class="current">lux</span>
                 </div>
-                <div data-thing="umbra" class="umbra" title="Umbra">
+                <div data-thing="umbra" class="umbra" title="Umbra, votre côté sombre">
                     <button class="edit" onclick="autoClick(this);">Edit</button>
                     <span class="label">Umbra&nbsp;:</span>
                     <span class="current">umbra</span>
                 </div>
-                <div data-thing="secunda" class="secunda" title="Secunda">
+                <div data-thing="secunda" class="secunda" title="Secunda, ça vous passionne aussi mais moyen quoi">
                     <button class="edit" onclick="autoClick(this);">Edit</button>
                     <span class="label">Secunda&nbsp;:</span>
                     <span class="current">secunda</span>
@@ -118,7 +118,7 @@
         </div>
 
         <div class="boosts">
-            <div data-thing="focus" class="focus" title="Points de focus">
+            <div data-thing="focus" class="focus" title="Points de focus. Lance 1 dé supplémentaire.">
                 <button class="minus" onclick="autoClick(this);">-</button>
                 <button class="minus-max" onclick="autoClick(this);">--</button>
                 <span class="enabled">
@@ -131,7 +131,7 @@
                 <button class="plus-max" onclick="autoClick(this);">++</button>
                 <button class="plus" onclick="autoClick(this);">+</button>
             </div>
-            <div data-thing="power" class="power" title="Points de pouvoir">
+            <div data-thing="power" class="power" title="Points de pouvoir. Ajoute 1 réussite au jet. En utiliser un donne 1 dette, ne peut pas être utiliser sur les jets d'arcane.">
                 <button class="minus" onclick="autoClick(this);">-</button>
                 <button class="minus-max" onclick="autoClick(this);">--</button>
                 <span class="enabled">
@@ -147,11 +147,11 @@
         </div>
 
         <div class="graces">
-            <div data-thing="curse" class="curse" title="Malédiction">
+            <div data-thing="curse" class="curse" title="Malédiction, diminue le nombre de dés que vous lancez">
                 <button class="minus" onclick="autoClick(this);">-</button>
                 <span class="label">Malédictions :</span>
                 <span class="current">0</span>
-                <div data-thing="curse2" class="curse2" title="Malédiction du à la perte de PV">
+                <div data-thing="curse2" class="curse2" title="Malédictions dûes à la perte de PV. Chaque tranche de 6PV en dessous du maximum donne 1 malédiction.">
                     <button class="minus" onclick="autoClick(this);">-</button>
                     <span class="enabled">
                         <input type="checkbox" checked />
@@ -162,7 +162,7 @@
                 </div>
                 <button class="plus" onclick="autoClick(this);">+</button>
             </div>
-            <div data-thing="blessing" class="blessing" title="Bénédiction">
+            <div data-thing="blessing" class="blessing" title="Bénédiction, augmente le nombre de dés que vous lancez">
                 <button class="minus" onclick="autoClick(this);">-</button>
                 <span class="label">Bénédiction :</span>
                 <span class="current">0</span>
@@ -171,7 +171,7 @@
         </div>
 
         <div class="options">
-            <div data-thing="proficiency" class="proficiency" title="">
+            <div data-thing="proficiency" class="proficiency" title="Si cette compétence est pertinente pour votre jet alors cela vous donnera une réussite supplémentaire.">
                 <button class="edit" onclick="autoClick(this);">Edit</button>
                 <span class="enabled">
                     <input type="checkbox" />
@@ -194,7 +194,7 @@
             </div>
         </div>
 
-        <details data-thing="notes" class="notes" title="Notes" open="">
+        <details data-thing="notes" class="notes" title="Notes (sauvegardées sur le serveur)" open="">
             <summary class="label">Notes :</summary>
             <textarea class="current" placeholder="notes" oninput="onNotesInput(this);"></textarea>
         </details>
@@ -208,14 +208,14 @@
             <button onclick="autoRoll(this);" data-roll="death">Mort</button>
         </div>
         <div class="group">
-            <button onclick="autoRoll(this);" data-roll="magic">Jet de Magie</button>
-            <button onclick="autoRoll(this);" data-roll="heal">Jet de Soin</button>
-            <button onclick="autoRoll(this);" data-roll="empirical">Jet Empirique</button>
+            <button onclick="autoRoll(this);" data-roll="magic" title="Jet d'Essence qui ajoute 1 dette">Jet de Magie</button>
+            <button onclick="autoRoll(this);" data-roll="heal" title="Jet d'Essence qui consome 1 PP">Jet de Soin</button>
+            <button onclick="autoRoll(this);" data-roll="empirical" title="Lancer n'importe quel dé, 1d12, 1d20, 1d6, ...">Jet Empirique</button>
         </div>
         <div class="group">
-            <button onclick="autoRoll(this);" data-roll="arcana">Arcane Fixe</button>
-            <button onclick="autoRoll(this);" data-roll="arcana-spirit">Arcane d'Esprit</button>
-            <button onclick="autoRoll(this);" data-roll="arcana-essence">Arcane d'Essence</button>
+            <button onclick="autoRoll(this);" data-roll="arcana" title="Pas vraiment un jet, consome juste 1 charge d'arcane">Arcane Fixe</button>
+            <button onclick="autoRoll(this);" data-roll="arcana-spirit" title="Jet d'Esprit qui consome 1 charge d'arcane">Arcane d'Esprit</button>
+            <button onclick="autoRoll(this);" data-roll="arcana-essence" title="Jet d'Essence qui consome 1 charge d'arcane">Arcane d'Essence</button>
         </div>
     </div>
 </div>
