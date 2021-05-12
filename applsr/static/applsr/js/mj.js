@@ -33,7 +33,7 @@ function deleteCharacter(pnjElement) {
     }
 }
 /** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
-function rollForLocalCharacter(c, action, dc /** dés cachés */, parentRollId = null) {
+function rollForLocalCharacterAndConsumeResources(c, action, dc /** dés cachés */, parentRollId = null) {
     const opposition = parseInt(document.querySelector('#opposition').value);
     let stat = 0;
     if (action == "flesh") {
@@ -67,16 +67,15 @@ function rollForLocalCharacter(c, action, dc /** dés cachés */, parentRollId =
         stat = 0;
     }
     if (document.querySelector('#opposition_checked').checked) {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/' + opposition + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(getCharId(c))).then(function (response) {
-            response.text().then(function (text) {
-                const degats = parseInt(text);
-                c.hp.current -= degats;
-                updateChat();
-            });
+        lsrApi.rollForLocalCharacter(c, action, stat, dc, opposition, parentRollId).then(text => {
+            const degats = parseInt(text);
+            c.hp.current -= degats;
+            updateChat();
         });
     }
     else {
-        fetch('/mj/lancer_pnj/' + c.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + c.focus.enabled + '/' + c.power.enabled + '/' + c.proficiency.enabled + '/' + (c.curse.current + c.curse2.current) + '/' + c.blessing.current + '/' + c.secret.enabled + '/' + dc + '/0' + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(getCharId(c))).then(() => updateChat());
+        lsrApi.rollForLocalCharacter(c, action, stat, dc, 0, parentRollId)
+            .then(() => updateChat());
     }
     if (action == 'magic') {
         c.debt.current += 1;
@@ -159,15 +158,12 @@ function addTempCharacter(new_pnj_name, new_pnj_chair, new_pnj_esprit, new_pnj_e
     document.querySelector("#new_pnj_name").value = incrementString(new_pnj_name);
 }
 function clearChat() {
-    fetch('/mj_interdit_aux_joueurs/effacerLancersDes').then(() => updateChat());
+    lsrApi.clearChat().then(() => updateChat());
 }
 function duplicateInDb(characterElement) {
     let character = new LocalCharacterView(characterElement);
-    fetch('/mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true' + '/' + character.category.current)
-        .then((response) => response.text())
-        .then(json => {
-        const cdb = JSON.parse(json);
-        console.log(cdb);
+    lsrApi.createCharacter(character)
+        .then(cdb => {
         const container = document.createElement("div");
         container.innerHTML = '<button data-cid="' + cdb.id + '" onclick="autoAddChar(this);">' + cdb.name + '</button>';
         let categoryElement = document.querySelector(".char-select .category-" + cdb.category);
