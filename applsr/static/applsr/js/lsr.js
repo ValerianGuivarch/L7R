@@ -31,6 +31,13 @@ class LsrApi {
     rollForServerCharacterAndUpdateChat(charName, action, pf, pp, ra, secret, bonus, malus, hidden, cidString, parentRollId = null) {
         fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
     }
+    // TODO should not update chat, should also probably not be blocking
+    empiricalRollAndUpdateChat(charName, cidString, secret) {
+        var valeur = prompt("Quel lancer de dé ?", "1d6");
+        fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function (e) {
+            console.error("error", e);
+        }).then(() => updateChat());
+    }
 }
 const lsrApi = new LsrApi();
 function getCurrentCharacter() {
@@ -819,7 +826,7 @@ function autoRoll(sourceElement) {
 }
 function autoRoll2(character, rollType, parentRollId = null) {
     if (rollType == "empirical") {
-        empiricalRoll(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
+        lsrApi.empiricalRollAndUpdateChat(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
     }
     else if (rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
@@ -834,12 +841,6 @@ function autoRoll2(character, rollType, parentRollId = null) {
             lsrApi.rollForServerCharacterAndUpdateChat(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
         }
     }
-}
-function empiricalRoll(charName, cidString, secret) {
-    var valeur = prompt("Quel lancer de dé ?", "1d6");
-    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function (e) {
-        console.error("error", e);
-    }).then(() => updateChat());
 }
 class DebouncedTimer {
     constructor(cb, timeoutMs = 2000) {

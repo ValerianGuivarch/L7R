@@ -36,6 +36,14 @@ class LsrApi {
     public rollForServerCharacterAndUpdateChat(charName: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cidString: string, parentRollId: string | null = null) {
         fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
     }
+
+    // TODO should not update chat, should also probably not be blocking
+    public empiricalRollAndUpdateChat(charName: string, cidString: string, secret: boolean) {
+        var valeur = prompt("Quel lancer de dé ?", "1d6");
+        fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {
+            console.error("error", e);
+        }).then(() => updateChat());
+    }
 }
 
 const lsrApi = new LsrApi();
@@ -941,7 +949,7 @@ function autoRoll(sourceElement: HTMLElement) {
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | null = null) {
     if(rollType == "empirical") {
-        empiricalRoll(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
+        lsrApi.empiricalRollAndUpdateChat(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
     }
     else if(rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
@@ -956,15 +964,6 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
             lsrApi.rollForServerCharacterAndUpdateChat(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
         }
     }
-}
-
-
-function empiricalRoll(charName: string, cidString: string, secret: boolean) {
-    var valeur = prompt("Quel lancer de dé ?", "1d6");
-
-    fetch('/lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {
-        console.error("error", e);
-    }).then(() => updateChat());
 }
 
 
