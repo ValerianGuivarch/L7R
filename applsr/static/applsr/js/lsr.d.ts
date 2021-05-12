@@ -14,6 +14,8 @@ type Action = "+" | "-" | "--" | "++" | "Edit";
 type Thing = "name" | "title" | "level" | "portrait" | "flesh" | "spirit" | "essence" | "lux" | "umbra" | "secunda" | "hp" | "debt" | "arcana" | "focus" | "power" | "curse" | "curse2" | "blessing" | "proficiency" | "secret" | "notes" | "category";
 
 
+type BackendThing = "name" | "essence" | "category" | "titre" | "niveau" | "chair" | "esprit" | "fl" | "fu" | "fs" | "pv" | "dettes" | "arcanes" | "pf" | "pp" | "force";
+
 interface CharacterFromDatabase {
     id: number,
     name: string,

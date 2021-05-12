@@ -5,6 +5,7 @@ let somethingIsNotSaved = false;
 let display_secret = false; // override value from lsr.js
 
 class LsrApi {
+    /** Must end with "/" */
     private baseUrl = "/";
 
     // TODO temporarily public, set to private after refactoring
@@ -17,8 +18,18 @@ class LsrApi {
     }
 
     public getChat(charName: string, showSecret: boolean, cid: CharId | undefined) {
-        return fetch('/afficher/' + charName + '/' + showSecret + '?json' + LsrApi.createCidParameterString(cid))
+        return fetch(this.baseUrl + 'afficher/' + charName + '/' + showSecret + '?json' + LsrApi.createCidParameterString(cid))
         .then(response => response.text()).then(t => JSON.parse(t) as ChatHistory)
+    }
+
+    public getCharacter(charName: string, cid: CharId | undefined) {
+        return fetch(this.baseUrl + 'lsr/getcar/' + charName + "?json" + LsrApi.createCidParameterString(cid))
+        .then(response => response.text()).then(t => JSON.parse(t) as CharacterFromDatabase)
+    }
+
+    public updateCharacter(charName: string, cid: CharId | undefined, target: Thing, maxSuffix: string, value: string, add: boolean) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + "?" + LsrApi.createCidParameterString(cid))
+        .then(response => response.text()).then(t => JSON.parse(t) as CharacterFromDatabase)
     }
 }
 
@@ -700,18 +711,14 @@ function createCharacterByCid(cid: string, withRoller = true) {
 
 function updateCharacter(characterElement: HTMLElement) {
     const name = characterElement.querySelector<HTMLElement>(".name .current")!.innerHTML;
-    fetch('/lsr/getcar/' + name + "?json" + LsrApi.createCidParameterString(getCharId(characterElement)))
-        .then(response => response.text())
-        .then(text => {
-            const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
-            const character = new LocalCharacterView(characterElement);
-            character.updateFromDatabase(characterFromDatabase);
-        });
+    lsrApi.getCharacter(name, getCharId(characterElement)).then(characterFromDatabase => {
+        const character = new LocalCharacterView(characterElement);
+        character.updateFromDatabase(characterFromDatabase);
+    });
 }
 
 
-function thingToName(thing: Thing) {
-    // "pv" "pv_max" "pf" "pf_max" "pp" "pp_max" "chair" "esprit" "essence" "dettes" "arcanes" "arcanes_max"
+function thingToName(thing: Thing): BackendThing | undefined {
     if(thing == "name") {
         return "name";
     }
@@ -839,13 +846,9 @@ function autoClick(sourceElement: HTMLElement) {
             }
         }
         else {
-            const url = '/mj_interdit_aux_joueurs/modifs_valeurs/' + character.name.current + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + LsrApi.createCidParameterString(getCharId(characterElement), "?");
-            fetch(url)
-                .then(response => response.text())
-                .then(text => {
-                    const characterFromDatabase = JSON.parse(text) as CharacterFromDatabase;
-                    character.updateFromDatabase(characterFromDatabase);
-                });
+            // TODO rework maxSuffix logic
+            lsrApi.updateCharacter(character.name.current, getCharId(characterElement), target, maxSuffix, value, add)
+            .then(characterFromDatabase => character.updateFromDatabase(characterFromDatabase));
         }
     }
 }
