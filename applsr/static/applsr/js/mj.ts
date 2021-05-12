@@ -29,7 +29,7 @@ function deleteCharacterView(pnjElement: HTMLElement) {
         }, 5000);
         pnjElement.parentElement?.removeChild(pnjElement);
         console.log("remove char", pnjElement.dataset.id);
-        document.querySelectorAll<HTMLButtonElement>('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(b => b.disabled = false); // using forEach as ifPresent
+        document.querySelectorAll<HTMLButtonElement>('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(b => b.classList.remove("disabled")); // using forEach as ifPresent
     }
 }
 
@@ -205,11 +205,18 @@ function duplicateAsTempCharacter(characterElement: HTMLElement) {
 
 
 function autoAddChar(source: HTMLButtonElement) {
-    const pcList = document.querySelector<HTMLElement>("#liste_pj")!;
-    // TODO this cast should be removed, this function is too top level to have it
-    pcList.appendChild(createCharacterByCid(source.dataset.cid! as unknown as CharId));
-    updateCharactersOnPage();
-    source.disabled = true;
+    if(source.classList.contains("disabled")) {
+        const charElem = document.querySelector('.character[data-id="' + source.dataset.cid! + '"]');
+        console.log(charElem);
+        charElem?.scrollIntoView();
+    }
+    else {
+        const pcList = document.querySelector<HTMLElement>("#liste_pj")!;
+        // TODO this cast should be removed, this function is too top level to have it
+        pcList.appendChild(createCharacterByCid(source.dataset.cid! as unknown as CharId));
+        updateCharactersOnPage();
+        source.classList.add("disabled");
+    }
 }
 
 

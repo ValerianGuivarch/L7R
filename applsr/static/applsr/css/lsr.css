@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   box-sizing: border-box;
   margin: 0;
@@ -303,6 +304,22 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
 .db-char-menu .char-select {
   overflow-y: auto;
   height: 100%;
+}
+.db-char-menu .char-select button {
+  border: 1px solid #bfb8b1;
+  border-radius: 5px;
+  padding: 2px;
+  margin: 2px 0;
+  background: linear-gradient(#f5f4f3, #edebe9);
+}
+.db-char-menu .char-select button:hover {
+  background-color: #f4f3f1;
+}
+.db-char-menu .char-select button.disabled {
+  background: #faf9f8;
+}
+.db-char-menu .char-select button.disabled::before {
+  content: "→";
 }
 .db-char-menu .content {
   display: flex;

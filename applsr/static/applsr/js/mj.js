@@ -28,7 +28,7 @@ function deleteCharacterView(pnjElement) {
         }, 5000);
         (_a = pnjElement.parentElement) === null || _a === void 0 ? void 0 : _a.removeChild(pnjElement);
         console.log("remove char", pnjElement.dataset.id);
-        document.querySelectorAll('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(b => b.disabled = false); // using forEach as ifPresent
+        document.querySelectorAll('.char-select button[data-cid="' + pnjElement.dataset.id + '"]').forEach(b => b.classList.remove("disabled")); // using forEach as ifPresent
     }
 }
 // TODO should probably have an object representing the actual action, for example we should not take the fact that power was used from the character but from the action
@@ -188,11 +188,18 @@ function duplicateAsTempCharacter(characterElement) {
     liste_pnj.appendChild(offlineChar);
 }
 function autoAddChar(source) {
-    const pcList = document.querySelector("#liste_pj");
-    // TODO this cast should be removed, this function is too top level to have it
-    pcList.appendChild(createCharacterByCid(source.dataset.cid));
-    updateCharactersOnPage();
-    source.disabled = true;
+    if (source.classList.contains("disabled")) {
+        const charElem = document.querySelector('.character[data-id="' + source.dataset.cid + '"]');
+        console.log(charElem);
+        charElem === null || charElem === void 0 ? void 0 : charElem.scrollIntoView();
+    }
+    else {
+        const pcList = document.querySelector("#liste_pj");
+        // TODO this cast should be removed, this function is too top level to have it
+        pcList.appendChild(createCharacterByCid(source.dataset.cid));
+        updateCharactersOnPage();
+        source.classList.add("disabled");
+    }
 }
 function autoFilter(source) {
     document.querySelectorAll(".char-select .content button").forEach(b => {
