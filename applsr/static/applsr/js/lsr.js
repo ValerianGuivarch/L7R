@@ -91,6 +91,10 @@ class WithLabel {
 class Attribute extends WithLabel {
     constructor(element) {
         super(element);
+        this.onChangeCb = null;
+    }
+    onChange(cb) {
+        this.onChangeCb = cb;
     }
     get current() {
         return parseInt(this.element.querySelector(".current").innerHTML);
@@ -99,6 +103,9 @@ class Attribute extends WithLabel {
         const current = this.element.querySelector(".current");
         if (current.innerHTML != value.toString()) {
             current.innerHTML = value.toString();
+            if (this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
         }
     }
 }
@@ -113,6 +120,9 @@ class AttributeWithMax extends Attribute {
         const max = this.element.querySelector(".max");
         if (max.innerHTML != value.toString()) {
             max.innerHTML = value.toString();
+            if (this.onChangeCb != null) {
+                this.onChangeCb(this);
+            }
         }
     }
 }
@@ -146,6 +156,9 @@ class SmartStringAttribute {
         this.element = element;
         this.onChangeCb = null;
     }
+    onChange(cb) {
+        this.onChangeCb = cb;
+    }
     get current() {
         const current = this.element.querySelector(".current");
         if ("value" in current) {
@@ -174,9 +187,6 @@ class SmartStringAttribute {
                 }
             }
         }
-    }
-    onChange(cb) {
-        this.onChangeCb = cb;
     }
 }
 class AttributeWithoutValueActivable extends WithLabel {
@@ -351,18 +361,16 @@ class LocalCharacterView {
         return new AttributeActivable(this.element.querySelector(".curse2"));
     }
     get hp() {
-        if (this.hpTimeoutSet == false) {
-            setTimeout(() => {
-                let curse2 = Math.floor((this.hp.max - this.hp.current) / 6);
-                if (curse2 < 0) {
-                    curse2 = 0;
-                }
-                this.curse2.current = curse2;
-                this.hpTimeoutSet = false;
-            }, 1);
-            this.hpTimeoutSet = true;
-        }
-        return new AttributeWithMax(this.element.querySelector(".hp"));
+        const attr = new AttributeWithMax(this.element.querySelector(".hp"));
+        attr.onChange(() => {
+            // TODO this is ugly, there must be a better way! Probably like the onChange done for the name property
+            let curse2 = Math.floor((this.hp.max - this.hp.current) / 6);
+            if (curse2 < 0) {
+                curse2 = 0;
+            }
+            this.curse2.current = curse2;
+        });
+        return attr;
     }
     get debt() {
         return new Attribute(this.element.querySelector(".debt"));
