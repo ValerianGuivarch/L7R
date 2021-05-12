@@ -232,6 +232,14 @@ class LocalCharacterView {
         this.element = element;
         this.hpTimeoutSet = false; // necessary to avoid infinitly starting timeouts
     }
+    static fromElement(element) {
+        let instance = this.instances.get(element);
+        if (instance === undefined) {
+            instance = LocalCharacterView.fromElement(element);
+            this.instances.set(element, instance);
+        }
+        return instance;
+    }
     isOnline() {
         return !this.element.classList.contains("npc");
     }
@@ -390,6 +398,7 @@ class LocalCharacterView {
         return new SmartStringAttribute(this.element.querySelector(".category"));
     }
 }
+LocalCharacterView.instances = new Map();
 function rollTypeToString(rollType) {
     if (rollType == 'Jsoin') {
         return "<i>Soigne</i>";
@@ -477,7 +486,7 @@ function resist(elem, action) {
         throw new Error("Can't find an active character");
     }
     else {
-        let character = new LocalCharacterView(char);
+        let character = LocalCharacterView.fromElement(char);
         autoRoll2(character, action, parentRollId);
     }
 }
@@ -619,7 +628,7 @@ function updateCharactersOnPage() {
 }
 function createCharacter(name, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character").cloneNode(true);
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     character.name.current = name;
     if (withRoller == true) {
         const rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
@@ -629,7 +638,7 @@ function createCharacter(name, withRoller = true) {
 }
 function createCharacterByCid(cid, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character").cloneNode(true);
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     character.id = cid;
     if (withRoller == true) {
         const rollerElement = document.querySelector(".templates > .roller").cloneNode(true);
@@ -640,7 +649,7 @@ function createCharacterByCid(cid, withRoller = true) {
 function updateCharacter(characterElement) {
     const name = characterElement.querySelector(".name .current").innerHTML;
     lsrApi.getCharacter(name, getCharId(characterElement)).then(characterFromDatabase => {
-        const character = new LocalCharacterView(characterElement);
+        const character = LocalCharacterView.fromElement(characterElement);
         character.updateFromDatabase(characterFromDatabase);
     });
 }
@@ -714,7 +723,7 @@ function thingToName(thing) {
 }
 function autoClick(sourceElement) {
     const characterElement = sourceElement.closest(".character");
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     const action = sourceElement.innerHTML;
     const target = sourceElement.parentElement.dataset.thing;
     let value = null;
@@ -843,7 +852,7 @@ function convertRollTypeBackendToFrontend(rollTypeBackend) {
 function autoRoll(sourceElement) {
     const characterElement = sourceElement.closest(".character");
     const rollType = sourceElement.dataset.roll;
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     autoRoll2(character, rollType);
 }
 function autoRoll2(character, rollType, parentRollId = null) {
@@ -889,7 +898,7 @@ function sendNotesToServer() {
     console.log("sending notes!");
     document.querySelectorAll('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest(".character");
-        const char = new LocalCharacterView(charElem);
+        const char = LocalCharacterView.fromElement(charElem);
         lsrApi.sendNotes(char.name.current, getCharId(char), char.notes.current).then(() => {
             somethingIsNotSaved = false;
             delete ta.dataset.commitNeeded;

@@ -81,6 +81,7 @@ class LsrApi {
 
 const lsrApi = new LsrApi();
 
+
 function getCurrentCharacter(): HTMLElement | null {
     const characterElements = document.querySelectorAll<HTMLElement>(".main .character");
     if(characterElements.length == 0) {
@@ -280,7 +281,19 @@ class AttributeWithMaxActivable extends AttributeWithMax {
 
 
 class LocalCharacterView {
-    constructor(private element: HTMLElement) {
+
+    private static instances: Map<HTMLElement, LocalCharacterView> = new Map();
+
+    private constructor(private element: HTMLElement) {
+    }
+
+    public static fromElement(element: HTMLElement): LocalCharacterView {
+        let instance = this.instances.get(element);
+        if(instance === undefined) {
+            instance = LocalCharacterView.fromElement(element);
+            this.instances.set(element, instance);
+        }
+        return instance;
     }
 
     public isOnline(): boolean {
@@ -565,7 +578,7 @@ function resist(elem: HTMLElement, action: RollType) {
         throw new Error("Can't find an active character");
     }
     else {
-        let character = new LocalCharacterView(char);
+        let character = LocalCharacterView.fromElement(char);
         autoRoll2(character, action, parentRollId);
     }
 }
@@ -729,7 +742,7 @@ function updateCharactersOnPage() {
 
 function createCharacter(name: string, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     character.name.current = name;
 
     if(withRoller == true) {
@@ -743,7 +756,7 @@ function createCharacter(name: string, withRoller = true) {
 
 function createCharacterByCid(cid: CharId, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     character.id = cid;
 
     if(withRoller == true) {
@@ -758,7 +771,7 @@ function createCharacterByCid(cid: CharId, withRoller = true) {
 function updateCharacter(characterElement: HTMLElement) {
     const name = characterElement.querySelector<HTMLElement>(".name .current")!.innerHTML;
     lsrApi.getCharacter(name, getCharId(characterElement)).then(characterFromDatabase => {
-        const character = new LocalCharacterView(characterElement);
+        const character = LocalCharacterView.fromElement(characterElement);
         character.updateFromDatabase(characterFromDatabase);
     });
 }
@@ -836,7 +849,7 @@ function thingToName(thing: Thing): BackendThing | undefined {
 
 function autoClick(sourceElement: HTMLElement) {
     const characterElement = sourceElement.closest<HTMLElement>(".character")!;
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     const action = sourceElement.innerHTML as Action;
     const target = sourceElement.parentElement!.dataset.thing as Thing;
 
@@ -975,7 +988,7 @@ function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): Rol
 function autoRoll(sourceElement: HTMLElement) {
     const characterElement = sourceElement.closest<HTMLElement>(".character")!;
     const rollType = sourceElement.dataset.roll as RollType;
-    const character = new LocalCharacterView(characterElement);
+    const character = LocalCharacterView.fromElement(characterElement);
     autoRoll2(character, rollType);
 }
 
@@ -1031,7 +1044,7 @@ function sendNotesToServer() {
     console.log("sending notes!");
     document.querySelectorAll<HTMLTextAreaElement>('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest<HTMLElement>(".character")!;
-        const char = new LocalCharacterView(charElem);
+        const char = LocalCharacterView.fromElement(charElem);
         lsrApi.sendNotes(char.name.current, getCharId(char), char.notes.current).then(() => {
             somethingIsNotSaved = false;
             delete ta.dataset.commitNeeded;

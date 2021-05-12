@@ -150,7 +150,7 @@ function addTempCharacter(new_pnj_name: string, new_pnj_chair: string, new_pnj_e
     
     const pnjElement = createCharacter(new_pnj_name);
     pnjElement.classList.add("npc");
-    const c = new LocalCharacterView(pnjElement);
+    const c = LocalCharacterView.fromElement(pnjElement);
     c.flesh.current = parseInt(new_pnj_chair);
     c.spirit.current = parseInt(new_pnj_esprit);
     c.essence.current = parseInt(new_pnj_essence);
@@ -175,7 +175,7 @@ function clearChat() {
 
 
 function duplicateInDb(characterElement: HTMLElement) {
-    let character = new LocalCharacterView(characterElement);
+    let character = LocalCharacterView.fromElement(characterElement);
     lsrApi.createCharacter(character)
     .then(cdb => {
         const container = document.createElement("div");
@@ -206,7 +206,7 @@ function duplicateAsTempCharacter(characterElement: HTMLElement) {
     const ids = Array.from(document.querySelectorAll(".character .name .current")).map(e => getIndexInString(e.innerHTML, "-", 0)!).sort();
 
     if(ids.length !== 0) {
-        let c = new LocalCharacterView(offlineChar);
+        let c = LocalCharacterView.fromElement(offlineChar);
         c.name.current = c.name.current + "-" + (ids[ids.length - 1] + 1);
     }
 
