@@ -75,7 +75,7 @@ function rollForLocalCharacterAndApplyCosts(c: LocalCharacterView, action: StatB
     let stat: number = actionToStatValue(c, action);
 
     const rollAction = new OneStatRollAction(c, action, parentRollId);
-    lsrApi.rollForLocalCharacter2(c, rollAction).then(updateChat);
+    lsrApi.rollForLocalCharacter(c, rollAction).then(updateChat);
 
     applyActionCosts(c, action);
 }

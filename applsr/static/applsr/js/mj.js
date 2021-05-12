@@ -86,7 +86,7 @@ function rollForLocalCharacterAndApplyCosts(c, action, dc /** dés cachés */, p
     const opposition = parseInt(document.querySelector('#opposition').value);
     let stat = actionToStatValue(c, action);
     const rollAction = new OneStatRollAction(c, action, parentRollId);
-    lsrApi.rollForLocalCharacter2(c, rollAction).then(updateChat);
+    lsrApi.rollForLocalCharacter(c, rollAction).then(updateChat);
     applyActionCosts(c, action);
 }
 /** Get the last number in a string with separators, for example getIndexInString("a-b-c-3") would return 3 */
