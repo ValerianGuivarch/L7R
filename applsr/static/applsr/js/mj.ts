@@ -33,6 +33,7 @@ function deleteCharacterView(pnjElement: HTMLElement) {
     }
 }
 
+
 // TODO should probably have an object representing the actual action, for example we should not take the fact that power was used from the character but from the action
 function applyActionCosts(char: LocalCharacterView, action: RollType) {
     if(action == 'magic') {
@@ -51,6 +52,7 @@ function applyActionCosts(char: LocalCharacterView, action: RollType) {
 }
 
 
+// TODO to remove once we migrated to action base rolls
 function actionToStatValue(char: LocalCharacterView, action: RollType): number {
     if(action == "flesh") { return char.flesh.current; }
     else if(action == "spirit") { return char.spirit.current; }

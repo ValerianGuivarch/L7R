@@ -9,7 +9,13 @@ interface CharId extends string {
 type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 
 
-type RollType = "flesh" | "spirit" | "essence" | "death" | "magic" | "heal" | "empirical" | "arcana" | "arcana-spirit" | "arcana-essence";
+type StatBasedRollType = "flesh" | "spirit" | "essence" | "magic" | "heal" | "arcana" | "arcana-spirit" | "arcana-essence" | "death";
+
+
+type AbsoluteRollType = "empirical";
+
+
+type RollType = StatBasedRollType | AbsoluteRollType;
 
 
 type Action = "+" | "-" | "--" | "++" | "Edit";

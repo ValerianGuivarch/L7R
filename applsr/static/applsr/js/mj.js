@@ -47,6 +47,7 @@ function applyActionCosts(char, action) {
         char.debt.current += 1;
     }
 }
+// TODO to remove once we migrated to action base rolls
 function actionToStatValue(char, action) {
     if (action == "flesh") {
         return char.flesh.current;

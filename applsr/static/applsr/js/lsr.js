@@ -19,6 +19,64 @@ class DebouncedTimer {
         this.timeoutId = setTimeout(this.cb, this.timeoutMs);
     }
 }
+// ### RollAction
+class BaseRollAction {
+    constructor(rollType, forGmOnly, 
+    /** Show only the number of successes */
+    hideDiceResults, parentRollId) {
+        this.rollType = rollType;
+        this.forGmOnly = forGmOnly;
+        this.hideDiceResults = hideDiceResults;
+        this.parentRollId = parentRollId;
+    }
+}
+class OneStatRollAction extends BaseRollAction {
+    constructor(char, rollType, parentRollId) {
+        super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
+        this.bonus = char.blessing.current;
+        this.malus = char.curse.current + char.curse2.current;
+        this.focusing = char.focus.enabled;
+        this.powering = char.power.enabled;
+        this.proficient = char.proficiency.enabled;
+        this.relevantStatValue = actionToStatValue(char, rollType);
+    }
+    static actionToStatValue(char, action) {
+        if (action == "flesh") {
+            return char.flesh.current;
+        }
+        else if (action == "spirit") {
+            return char.spirit.current;
+        }
+        else if (action == "essence") {
+            return char.essence.current;
+        }
+        else if (action == "magic") {
+            return char.essence.current;
+        }
+        else if (action == "heal") {
+            return char.essence.current;
+        }
+        else if (action == "arcana") {
+            return 0;
+        }
+        else if (action == "arcana-spirit") {
+            return char.spirit.current;
+        }
+        else if (action == "arcana-essence") {
+            return char.essence.current;
+        }
+        else if (action == "death") {
+            return 0;
+        }
+        assertNever(action);
+    }
+}
+class EmpiricalRollAction extends BaseRollAction {
+    constructor(char, rollType, formula, parentRollId) {
+        super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
+        this.formula = formula;
+    }
+}
 // ### Api
 class LsrApi {
     constructor() {
@@ -46,12 +104,21 @@ class LsrApi {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + "?" + LsrApi.createCidParameterString(cid))
             .then(response => response.text()).then(t => JSON.parse(t));
     }
+    // TODO remove once we migrated to action base rolls
     rollForServerCharacter(charName, action, pf, pp, ra, secret, bonus, malus, hidden, cid, parentRollId = null) {
         return fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid));
     }
+    rollForServerCharacter2(char, ra) {
+        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + ra.rollType + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
+    }
+    // TODO prompt should probably be outside of this function
+    // TODO remove once we migrated to action base rolls
     empiricalRoll(charName, cid, secret) {
         var valeur = prompt("Quel lancer de dé ?", "1d6");
         return fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid));
+    }
+    empiricalRoll2(char, ra) {
+        return fetch(this.baseUrl + 'lancer_empirique/' + char.name.current + '/' + ra.formula + '/' + ra.forGmOnly + "?" + LsrApi.createCidParameterString(char.id));
     }
     sendNotes(charName, cid, notes) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/notes/post/true?' + LsrApi.createCidParameterString(cid), {
@@ -62,8 +129,13 @@ class LsrApi {
         });
     }
     // TODO stat should probably not be passed as a parameter
+    // TODO remove once we migrated to action base rolls
     rollForLocalCharacter(char, action, stat, hiddenDice, opposition, parentRollId = null) {
         return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(action) + '/' + stat + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + hiddenDice + '/' + opposition + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
+    }
+    rollForLocalCharacter2(char, ra, parentRollId = null) {
+        const opposition = 0;
+        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
     }
     createCharacter(character) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/createcharacter/' + character.name.current + '/' + character.flesh.current + '/' + character.spirit.current + '/' + character.essence.current + '/' + character.hp.current + '/' + character.hp.max + '/' + character.focus.current + '/' + character.focus.max + '/' + character.power.current + '/' + character.power.max + '/' + character.level.current + '/' + character.arcana.current + '/' + character.arcana.max + '/' + character.debt.current + '/' + character.title.current + '/' + character.lux.current + '/' + character.secunda.current + '/' + character.umbra.current + '/' + character.proficiency.label + '/' + character.proficiency.label + '/true' + '/' + character.category.current)
@@ -594,9 +666,9 @@ function isGm() {
     return document.body.classList.contains("gm-page");
 }
 function resist(elem, action) {
-    var _a, _b;
+    var _a;
     const char = getCurrentCharacter();
-    const parentRollId = (_b = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid) !== null && _b !== void 0 ? _b : null;
+    const parentRollId = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid;
     if (char == null) {
         throw new Error("Can't find an active character");
     }
@@ -880,21 +952,21 @@ function autoRoll(sourceElement) {
     const character = LocalCharacterView.fromElement(characterElement);
     autoRoll2(character, rollType);
 }
-function autoRoll2(character, rollType, parentRollId = null) {
+function autoRoll2(character, rollType, parentRollId = undefined) {
     if (rollType == "empirical") {
         lsrApi.empiricalRoll(character.name.current, getCharId(character), character.secret.enabled).then(() => updateChat());
     }
     else if (rollType == "death") {
-        const rollType2 = convertRollTypeToBackend(rollType);
-        lsrApi.rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, getCharId(character), parentRollId).then(() => updateChat());
+        const rollAction = new OneStatRollAction(character, rollType, parentRollId);
+        lsrApi.rollForServerCharacter2(character, rollAction).then(updateChat);
     }
     else {
         if (!character.isOnline()) {
             rollForLocalCharacterAndApplyCosts(character, rollType, character.hidden.enabled, parentRollId);
         }
         else {
-            const rollType2 = convertRollTypeToBackend(rollType);
-            lsrApi.rollForServerCharacter(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, getCharId(character), parentRollId).then(() => updateChat());
+            const rollAction = new OneStatRollAction(character, rollType, parentRollId);
+            lsrApi.rollForServerCharacter2(character, rollAction).then(updateChat);
         }
     }
 }
