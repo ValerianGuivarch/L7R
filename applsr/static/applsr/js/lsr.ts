@@ -36,7 +36,7 @@ class BaseRollAction {
         public readonly forGmOnly: boolean,
         /** Show only the number of successes */
         public readonly hideDiceResults: boolean,
-        public readonly parentRollId?: string,
+        public readonly parentRollId: string | null = null,
     ) { }
 }
 
@@ -73,7 +73,7 @@ class OneStatRollAction extends BaseRollAction {
         this.focusing = char.focus.enabled;
         this.powering = char.power.enabled;
         this.proficient = char.proficiency.enabled;
-        this.relevantStatValue = actionToStatValue(char, rollType);
+        this.relevantStatValue = OneStatRollAction.actionToStatValue(char, rollType);
     }
 }
 
@@ -127,7 +127,7 @@ class LsrApi {
     }
 
     public rollForServerCharacter2(char: LocalCharacterView, ra: OneStatRollAction) {
-        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + ra.rollType + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
+        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
     }
 
     // TODO prompt should probably be outside of this function

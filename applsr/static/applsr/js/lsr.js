@@ -23,7 +23,7 @@ class DebouncedTimer {
 class BaseRollAction {
     constructor(rollType, forGmOnly, 
     /** Show only the number of successes */
-    hideDiceResults, parentRollId) {
+    hideDiceResults, parentRollId = null) {
         this.rollType = rollType;
         this.forGmOnly = forGmOnly;
         this.hideDiceResults = hideDiceResults;
@@ -38,7 +38,7 @@ class OneStatRollAction extends BaseRollAction {
         this.focusing = char.focus.enabled;
         this.powering = char.power.enabled;
         this.proficient = char.proficiency.enabled;
-        this.relevantStatValue = actionToStatValue(char, rollType);
+        this.relevantStatValue = OneStatRollAction.actionToStatValue(char, rollType);
     }
     static actionToStatValue(char, action) {
         if (action == "flesh") {
@@ -109,7 +109,7 @@ class LsrApi {
         return fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid));
     }
     rollForServerCharacter2(char, ra) {
-        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + ra.rollType + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
+        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
     }
     // TODO prompt should probably be outside of this function
     // TODO remove once we migrated to action base rolls

@@ -679,6 +679,7 @@ def lancer_empirique(request, nom, valeur, secret):
 
 
 def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
+    print("lancer!!!!!!!!!", nom, action, pf, pp, ra, mal, ben, secret, des_caches)
     if "cid" in request.GET:
         nom = findCharacterNameFromCid(request.GET["cid"])
     parent_roll_id = None
