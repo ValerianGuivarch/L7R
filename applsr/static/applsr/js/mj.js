@@ -196,6 +196,7 @@ function duplicateAsTempCharacter(characterElement) {
 }
 function autoAddChar(source) {
     const pcList = document.querySelector("#liste_pj");
+    // TODO this cast should be removed, this function is too top level to have it
     pcList.appendChild(createCharacterByCid(source.dataset.cid));
     updateCharactersOnPage();
     source.disabled = true;

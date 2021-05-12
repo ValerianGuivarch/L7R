@@ -7,6 +7,7 @@ let display_secret = false; // override value from lsr.js
 class LsrApi {
     /** Must end with "/" */
     private baseUrl = "/";
+    private csrfToken = document.querySelector<HTMLInputElement>('[name="csrfmiddlewaretoken"]')!.value;
 
     // TODO temporarily public, set to private after refactoring
     public static createCidParameterString(cid: CharId | undefined, prefix = "&") {
@@ -33,16 +34,25 @@ class LsrApi {
     }
 
     // TODO should not update chat
-    public rollForServerCharacterAndUpdateChat(charName: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cidString: string, parentRollId: string | null = null) {
-        fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + cidString).then(() => updateChat());
+    public rollForServerCharacterAndUpdateChat(charName: string, action: RollTypeBackend, pf: boolean, pp: boolean, ra: boolean, secret: boolean, bonus: number, malus: number, hidden: boolean, cid: CharId | undefined, parentRollId: string | null = null) {
+        fetch(this.baseUrl + 'lancer/' + charName + '/' + action + '/' + pf + '/' + pp + '/' + ra + '/' + malus + '/' + bonus + '/' + secret + '/' + hidden + '?parent_roll_id=' + parentRollId + LsrApi.createCidParameterString(cid)).then(() => updateChat());
     }
 
     // TODO should not update chat, should also probably not be blocking
-    public empiricalRollAndUpdateChat(charName: string, cidString: string, secret: boolean) {
+    public empiricalRollAndUpdateChat(charName: string, cid: CharId | undefined, secret: boolean) {
         var valeur = prompt("Quel lancer de dé ?", "1d6");
-        fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + cidString).catch(function(e) {
+        fetch(this.baseUrl + 'lancer_empirique/' + charName + '/' + valeur + '/' + secret + "?" + LsrApi.createCidParameterString(cid)).catch(function(e) {
             console.error("error", e);
         }).then(() => updateChat());
+    }
+
+    public sendNotes(charName: string, cid: CharId | undefined, notes: string) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/notes/post/true?' + LsrApi.createCidParameterString(cid), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.csrfToken },
+            credentials: 'include',
+            body: notes,
+        })
     }
 }
 
@@ -255,7 +265,7 @@ class LocalCharacterView {
     }
 
     updateFromDatabase(characterFromDatabase: CharacterFromDatabase) {
-        this.id = characterFromDatabase.id.toString();
+        this.id = characterFromDatabase.id.toString() as unknown as CharId;
         this.name.current = characterFromDatabase.name;
         this.title.current = characterFromDatabase.titre;
         this.level.current = characterFromDatabase.niveau;
@@ -312,12 +322,12 @@ class LocalCharacterView {
         }
     }
 
-    public get id(): string | undefined {
-        return this.element.dataset.id;
+    public get id(): CharId | undefined {
+        return this.element.dataset.id as unknown as CharId;
     }
 
-    public set id(id: string | undefined) {
-        this.element.dataset.id = id;
+    public set id(id: CharId | undefined) {
+        this.element.dataset.id = id as unknown as string;
     }
 
     public get name(): SmartStringAttribute {
@@ -645,7 +655,7 @@ function getCharId(character: LocalCharacterView | HTMLElement | null): CharId |
     }
     let id: CharId | undefined;
     if("dataset" in character) {
-        id = character.dataset.id;
+        id = character.dataset.id as CharId | undefined;
     }
     else {
         id = character.id;
@@ -708,7 +718,7 @@ function createCharacter(name: string, withRoller = true) {
 }
 
 
-function createCharacterByCid(cid: string, withRoller = true) {
+function createCharacterByCid(cid: CharId, withRoller = true) {
     const characterElement = document.querySelector(".templates > .character")!.cloneNode(true) as HTMLElement;
     const character = new LocalCharacterView(characterElement);
     character.id = cid;
@@ -949,11 +959,11 @@ function autoRoll(sourceElement: HTMLElement) {
 
 function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRollId: string | null = null) {
     if(rollType == "empirical") {
-        lsrApi.empiricalRollAndUpdateChat(character.name.current, LsrApi.createCidParameterString(getCharId(character)), character.secret.enabled);
+        lsrApi.empiricalRollAndUpdateChat(character.name.current, getCharId(character), character.secret.enabled);
     }
     else if(rollType == "death") {
         const rollType2 = convertRollTypeToBackend(rollType);
-        lsrApi.rollForServerCharacterAndUpdateChat(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
+        lsrApi.rollForServerCharacterAndUpdateChat(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, getCharId(character), parentRollId);
     }
     else {
         if(!character.isOnline()) {
@@ -961,7 +971,7 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
         }
         else {
             const rollType2 = convertRollTypeToBackend(rollType);
-            lsrApi.rollForServerCharacterAndUpdateChat(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, LsrApi.createCidParameterString(getCharId(character)), parentRollId);
+            lsrApi.rollForServerCharacterAndUpdateChat(character.name.current, rollType2, character.focus.enabled, character.power.enabled, character.proficiency.enabled, character.secret.enabled, character.blessing.current, character.curse.current + character.curse2.current, character.hidden.enabled, getCharId(character), parentRollId);
         }
     }
 }
@@ -999,12 +1009,7 @@ function sendNotesToServer() {
     document.querySelectorAll<HTMLTextAreaElement>('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest<HTMLElement>(".character")!;
         const char = new LocalCharacterView(charElem);
-        fetch('/mj_interdit_aux_joueurs/modifs_valeurs/' + char.name.current + '/notes/post/true?' + LsrApi.createCidParameterString(getCharId(char)), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector<HTMLInputElement>('[name="csrfmiddlewaretoken"]')!.value},
-            credentials: 'include',
-            body: char.notes.current,
-        }).then(() => {
+        lsrApi.sendNotes(char.name.current, getCharId(char), char.notes.current).then(() => {
             somethingIsNotSaved = false;
             delete ta.dataset.commitNeeded;
         });

@@ -1,6 +1,10 @@
 type JEMP = `Jemp-${string}`;
 type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
-type CharId = string;
+
+declare enum CidBrand { _ = "" }
+interface CharId extends string {
+    _cidBrand: CidBrand;
+}
 
 type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 
