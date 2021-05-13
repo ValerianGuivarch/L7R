@@ -706,7 +706,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     }
 
     let success = "";
-    if(roll.roll_type.indexOf('Jemp-') !== 0) {
+    if(roll.roll_type.indexOf('Jemp-') !== 0 && roll.roll_type != "Jmort" && roll.roll_type != "Jsoin") {
         success = 'et obtient <span title="Juge12: '
             + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
             + ', Juge34: '
