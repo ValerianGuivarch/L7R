@@ -600,18 +600,25 @@ function jsonRollToHtml(roll, sub = false) {
     }
     let success = "";
     if (roll.roll_type.indexOf('Jemp-') !== 0 && roll.roll_type != "Jmort") {
-        success = 'et obtient <span title="Juge12: '
-            + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-            + ', Juge34: '
-            + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
-            + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
-            + " succès</span>";
+        if (roll.hidden_dice == false || isGm()) {
+            success = 'et obtient <span title="Juge12: '
+                + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+                + ', Juge34: '
+                + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+                + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+                + " succès</span>";
+        }
+        else {
+            success = 'et obtient '
+                + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+                + " succès";
+        }
     }
     else {
         resist = "";
     }
     let roll_string = " ";
-    if (roll.roll_type == "JAF") {
+    if (roll.roll_type == "JAF") { // JAF = Jet d'arcane fixe
         roll_string = "";
         success = "";
     }
