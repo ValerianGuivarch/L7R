@@ -1048,10 +1048,10 @@ function convertRollTypeToBackend(rollType: RollType): RollTypeBackend {
         return "JAF";
     }
     else if(rollType == "arcana-spirit") {
-        return "JAS"
+        return "JAE"
     }
     else if(rollType == "arcana-essence") {
-        return "JAE";
+        return "JAS";
     }
     throw new Error("unknown roll type: " + rollType);
 }
