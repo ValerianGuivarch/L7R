@@ -568,10 +568,10 @@ function rollTypeToString(rollType: RollTypeBackend) {
         return "utilise une <i>Arcane Fixe</i>";
     }
     else if(rollType == 'JAS') {
-        return "utilise une <i>Arcane d'Esprit</i>";
+        return "utilise une <i>Arcane d'Essence</i>";
     }
     else if(rollType == 'JAE') {
-        return "utilise une <i>Arcane d'Essence</i>";
+        return "utilise une <i>Arcane d'Esprit</i>";
     }
     else if(rollType == 'JC') {
         return "fait un <i>jet de Chair</i>";
@@ -1084,10 +1084,10 @@ function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): Rol
         return "arcana";
     }
     else if(rollTypeBackend == "JAS") {
-        return "arcana-spirit"
+        return "arcana-essence"
     }
     else if(rollTypeBackend == "JAE") {
-        return "arcana-essence";
+        return "arcana-spirit";
     }
     throw new Error("unknown roll type: " + rollTypeBackend);
 }
