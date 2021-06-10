@@ -416,9 +416,9 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
             'degats': 0,
         }
         return result
-    elif test == 'JAE':
-        dices_string += "utilise une <i>Arcane d'Esprit</i> "
     elif test == 'JAS':
+        dices_string += "utilise une <i>Arcane d'Esprit</i> "
+    elif test == 'JAE':
         dices_string += "utilise une <i>Arcane d'Essence</i> "
     else:
         dices_string += "fait un <i>Jet "
@@ -726,12 +726,12 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
     if 'JAF' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
         dice = dice_roll(char[0].name.capitalize(), 'JAF', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'JAE' == action and char[0].arcanes > 0:
-        Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
-        dice = dice_roll(char[0].name.capitalize(), 'JAE', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'JAS' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
-        dice = dice_roll(char[0].name.capitalize(), 'JAS', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
+        dice = dice_roll(char[0].name.capitalize(), 'JAS', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
+    if 'JAE' == action and char[0].arcanes > 0:
+        Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
+        dice = dice_roll(char[0].name.capitalize(), 'JAE', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
     if 'Jsoin' == action :
         Character.objects.filter(id=char[0].id).update(dettes=char[0].dettes + 1)
         Character.objects.filter(id=char[0].id).update(point_de_pouvoir=char[0].point_de_pouvoir - 1)
