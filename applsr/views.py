@@ -815,7 +815,7 @@ def lancer_pnj2(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_ca
 
     return HttpResponse(dice)
 
-def privacy(request, nom):
+def privacy(request):
     template = loader.get_template('applsr/privacy.html')
     return HttpResponse(template.render(context, request))
 
