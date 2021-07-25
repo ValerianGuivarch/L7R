@@ -609,7 +609,6 @@ def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, i
             success = cps
             dices_string = cpt
             for i in range(0, nb):
-                print("lol6")
                 roll = random.randint(1, 6)
                 if not des_caches:
                     dices_string += " [ " + str(roll) + " ] "
