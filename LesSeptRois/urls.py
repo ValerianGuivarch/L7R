@@ -49,7 +49,7 @@ urlpatterns = [
     path('lancer/<str:nom>/<str:action>/<str:pf>/<str:pp>/<str:ra>/<int:mal>/<int:ben>/<str:secret>/<str:des_caches>', applsr_views.lancer),
     path('lancer_empirique/<str:nom>/<str:valeur>/<str:secret>/', applsr_views.lancer_empirique),
     path('mj/lancer_pnj/<str:nom>/<str:action>/<int:stat>/<str:pf>/<str:pp>/<str:ra>/<int:mal>/<int:ben>/<str:secret>/<str:des_caches>/<int:opposition>', applsr_views.lancer_pnj),
-    path('mj/lancer_pnj2/<str:nom>/<str:action>/<int:stat>/<str:pf>/<str:pp>/<str:ra>/<int:mal>/<int:ben>/<str:secret>/<int:des_caches>/<int:val_cin>/<str:max>', applsr_views.lancer_pnj_cine),
+    path('mj/lancer_pnj2/<str:nom>/<str:action>/<int:stat>/<str:pf>/<str:pp>/<str:ra>/<int:mal>/<int:ben>/<str:secret>/<str:des_caches>/<int:val_cin>/<str:max>', applsr_views.lancer_pnj_cine),
     path('mj/updatepj/<str:nom>/<str:chair>/<str:esprit>/<str:essence>/<str:point_de_vie_max>/<str:point_de_focus_max>/<str:point_de_pouvoir_max>/<str:niveau>', applsr_views.updatepj),
     path('mj/updatepj/<str:nom>/<str:chair>/<str:esprit>/<str:essence>/<str:point_de_vie_max>/<str:point_de_focus_max>/<str:point_de_pouvoir_max>/<str:niveau>', applsr_views.updatepj),
     path('mj_interdit_aux_joueurs/createcharacter/<str:name>/<int:flesh>/<int:spirit>/<int:essence>/<int:hp>/<int:hp_max>/<int:focus>/<int:focus_max>/<int:power>/<int:power_max>/<int:level>/<int:arcana>/<int:arcana_max>/<int:debt>/<str:title>/<str:lux>/<str:secunda>/<str:umbra>/<str:proficiency1>/<str:proficiency2>/<str:hidden>/<str:category>', applsr_views.create_character),
