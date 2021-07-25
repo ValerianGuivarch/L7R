@@ -604,7 +604,7 @@ def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, i
         print( success >= val_cin)
         print( success )
         print(  val_cin)
-        while (is_max and success <= val_cin) or ((not is_max) and success >= val_cin):
+        while not((is_max and success <= val_cin) or ((not is_max) and success >= val_cin)):
             print("lol5")
             success = cps
             dices_string = cpt
