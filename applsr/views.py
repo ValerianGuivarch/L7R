@@ -586,16 +586,18 @@ def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, i
 
     nb = nb + more_dices
 
+    is_max = max == "true"
+
     print("lol1")
-    if max or (val_cin <= nb*2):
+    if is_max or (val_cin <= nb*2):
         print("lol2")
         cps = success
         cpt = dices_string
-        if max :
+        if is_max :
             success = val_cin+1
         else :
             success = val_cin-1
-        while (max and success <= val_cin) or ((not max) and success >= val_cin):
+        while (is_max and success <= val_cin) or ((not is_max) and success >= val_cin):
             success = cps
             dices_string = cpt
             for i in range(0, nb):
