@@ -586,8 +586,9 @@ def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, i
 
     nb = nb + more_dices
 
+    print("lol1")
     if max or (val_cin <= nb*2):
-        print("lol")
+        print("lol2")
         cps = success
         cpt = dices_string
         if max :
