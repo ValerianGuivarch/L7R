@@ -400,14 +400,16 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
         dices_string += "se <i>concentre</i> et "
 
     if test == 'Jsoin':
-        dices_string += "<i>Soigne</i>"+elem+" "
+        dices_string += "<i>Soigne</i>" + elem + " "
     elif test == 'JM':
         dices_string += "lance un <i>Sort</i> "
     elif test == 'JAF':
         dices_string += "utilise une <i>Arcane Fixe</i>."
         now = datetime.now()
         dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
-        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results="", pp=pouvoir, pf=focus, roll_type=test, ra=use_ra, hidden_dice=des_caches, parent_roll_id=parent_roll_id)
+        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben,
+                        dice_results="", pp=pouvoir, pf=focus, roll_type=test, ra=use_ra, hidden_dice=des_caches,
+                        parent_roll_id=parent_roll_id)
         dice.save()
         result = {
             'requete': test,
@@ -460,6 +462,159 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
         elif roll == 6:
             success += 2
 
+    if use_ra:
+        success += 1
+
+    if test == 'Jsoin':
+        success += 1
+
+    if success == 0:
+        dices_string += "<br/>mais n'obtient <b>aucune réussite</b>..."
+    elif success == 1:
+        dices_string += "<br/>et obtient <b>une réussite</b>"
+    else:
+        dices_string += "<br/>et obtient <b>" + str(success) + " réussites</b>"
+
+    if use_ra:
+        dices_string += ", grâce à son <i>héritage latent</i>"
+
+    dices_string += "."
+
+    degats = 0
+    if opposition > 0:
+        degats = int((opposition - success + 1) / 2)
+        if degats < 0:
+            degats = 0
+        dices_string += " Cela lui inflige " + str(degats) + "  dégats."
+
+    now = datetime.now()
+    dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
+    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben,
+                    dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test, ra=use_ra,
+                    hidden_dice=des_caches, parent_roll_id=parent_roll_id)
+    dice.save()
+    result = {
+        degats
+        # 'requete': test,
+        # 'dices': dices,
+        # 'success': success,
+        # 'degats': degats
+    }
+    return result
+
+def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches, val_cin, max):
+    dices = []
+    success = 0
+    dices_string = ""
+    if is_secret:
+        dices_string += "(secret)"
+    if mal > 0 or ben > 0:
+        dices_string += "Avec "
+
+    if mal == 1:
+        dices_string += "une <i>malédiction</i>"
+    elif mal > 1:
+        dices_string += "" + str(mal) + " <i>malédictions</i>"
+
+    if mal > 0 and ben > 0:
+        dices_string += " et "
+
+    if ben == 1:
+        dices_string += "une <i>bénédiction</i>"
+    elif ben > 1:
+        dices_string += "" + str(ben) + " <i>bénédictions</i>"
+
+    if mal > 0 or ben > 0:
+        dices_string += ", "
+
+    dices_string += "<b>" + car + "</b> "
+    if focus:
+        dices_string += "se <i>concentre</i> et "
+
+    if test == 'Jsoin':
+        dices_string += "<i>Soigne</i>" + elem + " "
+    elif test == 'JM':
+        dices_string += "lance un <i>Sort</i> "
+    elif test == 'JAF':
+        dices_string += "utilise une <i>Arcane Fixe</i>."
+        now = datetime.now()
+        dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
+        dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben,
+                        dice_results="", pp=pouvoir, pf=focus, roll_type=test, ra=use_ra, hidden_dice=des_caches,
+                        parent_roll_id=parent_roll_id)
+        dice.save()
+        result = {
+            'requete': test,
+            'dices': dices,
+            'success': success,
+            'degats': 0,
+        }
+        return result
+    elif test == 'JAS':
+        dices_string += "utilise une <i>Arcane d'Esprit</i> "
+    elif test == 'JAE':
+        dices_string += "utilise une <i>Arcane d'Essence</i> "
+    else:
+        dices_string += "fait un <i>Jet "
+        if test == 'JC':
+            dices_string += "de Chair</i> "
+        elif test == 'JS':
+            dices_string += "d\'Esprit</i> "
+        elif test == 'JE':
+            dices_string += "d\'Essence</i> "
+        elif test == 'JCH':
+            dices_string += "de Charisme</i> "
+        elif test == 'JAG':
+            dices_string += "d\'Agriculture</i> "
+        elif test == 'JCB':
+            dices_string += "de Combat</i> "
+        elif test == 'JMG':
+            dices_string += "de Magie</i> "
+        elif test == 'JSV':
+            dices_string += "de Savoir</i> "
+        elif test == 'JNV':
+            dices_string += "de Navigation</i> "
+        elif test == 'JNT':
+            dices_string += "de Nature</i> "
+
+    if pouvoir:
+        success += 1
+        dices_string += "en y mettant toute sa <i>puissance</i>  "
+
+    if not des_caches:
+        dices_string += ":<br/>"
+
+    nb = nb + more_dices
+
+    if max or (val_cin <= nb*2):
+        cps = success
+        cpt = dices_string
+        if max :
+            success = val_cin+1
+        else :
+            success = val_cin-1
+        while (max and success <= val_cin) or ((not max) and success >= val_cin):
+            success = cps
+            dices_string = cpt
+            for i in range(0, nb):
+                roll = random.randint(1, 6)
+                if not des_caches:
+                    dices_string += " [ " + str(roll) + " ] "
+                dices.append(roll)
+                if roll == 5:
+                    success += 1
+                elif roll == 6:
+                    success += 2
+    else:
+        for i in range(0, nb):
+            roll = random.randint(1, 6)
+            if not des_caches:
+                dices_string += " [ " + str(roll) + " ] "
+            dices.append(roll)
+            if roll == 5:
+                success += 1
+            elif roll == 6:
+                success += 2
 
     if use_ra:
         success += 1
@@ -479,26 +634,27 @@ def dice_roll(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_se
 
     dices_string += "."
 
-    degats=0
-    if opposition > 0 :
-        degats = int((opposition - success + 1)/2)
-        if degats < 0 :
+    degats = 0
+    if opposition > 0:
+        degats = int((opposition - success + 1) / 2)
+        if degats < 0:
             degats = 0
         dices_string += " Cela lui inflige " + str(degats) + "  dégats."
 
     now = datetime.now()
-    dices_string = ""+str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" - "+dices_string
-    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben, dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test, ra=use_ra, hidden_dice=des_caches, parent_roll_id=parent_roll_id)
+    dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
+    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=car, malediction_count=mal, benediction_count=ben,
+                    dice_results=",".join([str(r) for r in dices]), pp=pouvoir, pf=focus, roll_type=test, ra=use_ra,
+                    hidden_dice=des_caches)
     dice.save()
     result = {
         degats
-        #'requete': test,
-        #'dices': dices,
-        #'success': success,
-        #'degats': degats
+        # 'requete': test,
+        # 'dices': dices,
+        # 'success': success,
+        # 'degats': degats
     }
     return result
-
 
 def dice_roll_fake(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, is_secret, des_caches):
     dices = []
@@ -793,6 +949,30 @@ def lancer_pnj(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_cac
 
     return HttpResponse(dice)
 
+def lancer_pnj_cine(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_caches, val_cin, max):
+    parent_roll_id = None
+    if "parent_roll_id" in request.GET and request.GET["parent_roll_id"] != "null":
+        parent_roll_id = int(request.GET["parent_roll_id"])
+    use_pf = pf == "true"
+    use_pp = pp == "true"
+    use_ra = ra == "true"
+    is_secret = secret == "true"
+    more_dices = 0
+    focus = False
+    pouvoir = False
+    if use_pf:  # and char[0].point_de_focus > 0:
+        more_dices += 1
+        focus = True
+    if use_pp:  # and char[0].point_de_focus > 0:
+        pouvoir = True
+    more_dices -= mal
+    more_dices += ben
+
+    dice = ""
+    is_des_caches = des_caches == "true"
+    dice = dice_roll_cin(nom.capitalize(), action, focus, pouvoir, stat, more_dices, use_ra, mal, ben, is_secret,is_des_caches, val_cin, max)
+
+    return HttpResponse(dice)
 
 def lancer_pnj2(request, nom, action, stat, pf, pp, ra, mal, ben, secret, des_caches):
     use_pf = pf == "true"
