@@ -608,8 +608,9 @@ def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, i
         while not((is_max and success <= val_cin) or ((not is_max) and success >= val_cin)):
             print("lol5")
             success = cps
+            print(success)
             dices_string = cpt
-            dices = cpd
+            dices = []
             for i in range(0, nb):
                 roll = random.randint(1, 6)
                 if not des_caches:
