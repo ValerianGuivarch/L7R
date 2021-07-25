@@ -635,11 +635,6 @@ def dice_roll_cin(car, test, focus, pouvoir, nb, more_dices, use_ra, mal, ben, i
     dices_string += "."
 
     degats = 0
-    if opposition > 0:
-        degats = int((opposition - success + 1) / 2)
-        if degats < 0:
-            degats = 0
-        dices_string += " Cela lui inflige " + str(degats) + "  dégats."
 
     now = datetime.now()
     dices_string = "" + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second) + " - " + dices_string
