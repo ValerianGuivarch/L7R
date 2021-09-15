@@ -839,7 +839,13 @@ def lancer_empirique(request, nom, valeur, secret):
     dices_string = ""+str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" - "+dices_string
 
     char = Character.objects.filter(name=nom)
-    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=char[0].name.capitalize(), malediction_count=0, benediction_count=0, dice_results=",".join([str(r) for r in dices]), pp=False, pf=False, roll_type="Jemp-" + valeur)
+    
+    if char.count() == 1:
+        name = char[0].name.capitalize()
+    else:
+        name = nom.capitalize()
+    
+    dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=name.capitalize(), malediction_count=0, benediction_count=0, dice_results=",".join([str(r) for r in dices]), pp=False, pf=False, roll_type="Jemp-" + valeur)
     #dice = DiceRoll(dices=dices_string, secret=is_secret, lancer=nom.capitalize())
     dice.save()
     return HttpResponse(dices_string)
