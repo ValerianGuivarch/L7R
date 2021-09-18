@@ -476,7 +476,7 @@ function rollTypeToString(rollType) {
     else if (rollType == 'JAF') {
         return "utilise une <i>Arcane Fixe</i>";
     }
-    else if (rollType == 'JAS') {
+    else if (rollType == 'JAE') {
         return "utilise une <i>Arcane d'Essence</i>";
     }
     else if (rollType == 'JAS') {
