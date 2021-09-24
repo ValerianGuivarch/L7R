@@ -740,15 +740,16 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         else {
             const dmg = Math.ceil(diff / 2);
             if(dmg >= 4) {
-                delta += ' <span class="high">(' + dmg + ' dégâts)</span>.'
+                delta += ' <span class="damage high" data-damage="' + dmg + '">(' + dmg + ' dégâts)</span>'
             }
             else if(dmg >= 1) {
-                delta += ' <span class="medium">(' + dmg + ' dégâts)</span>.'
+                delta += ' <span class="damage medium" data-damage="' + dmg + '">(' + dmg + ' dégâts)</span>'
             }
             else {
-                delta += ' <span class="low">(' + dmg + ' dégâts)</span>.'
+                delta += ' <span class="damage low" data-damage="' + dmg + '">(' + dmg + ' dégâts)</span>'
             }
         }
+        delta += '<button onclick="takeDamagesFromRoll(this);">subir</button>.';
     }
 
     let resist = "";
@@ -1273,6 +1274,21 @@ function changeSubActionRoll(elem: HTMLElement) {
     else { // if(elem.classList.contains("use-help")) {
         elem.classList.add("resist");
         elem.classList.remove("use-help");
+    }
+}
+
+function takeDamagesFromRoll(elem: HTMLElement) {
+    const rollElement = elem.closest<HTMLElement>(".roll")!;
+    const character = LocalCharacterView.fromElement(getCurrentCharacter()!);
+    const hpToLose = parseInt(rollElement.querySelector<HTMLElement>(".damage")!.dataset.damage!, 10);
+
+    if(!character.isOnline()) {
+        character.localUpdate("hp", false, -1 * hpToLose);
+    }
+    else {
+        // TODO rework maxSuffix logic
+        lsrApi.updateCharacter(character.name.current, character.id, "hp", "", hpToLose.toString(), false)
+        .then(characterFromDatabase => character.updateFromDatabase(characterFromDatabase));
     }
 }
 
