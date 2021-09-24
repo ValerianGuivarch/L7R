@@ -626,7 +626,7 @@ function jsonRollToHtml(roll, sub = false) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
     tr.innerHTML = ''
-        + '<td class="roll" data-rollid="' + roll.id + '">'
+        + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + " - "
         + secret // "(secret) "
@@ -665,12 +665,16 @@ function isGm() {
 function resist(elem, action) {
     var _a;
     const char = getCurrentCharacter();
-    const parentRollId = (_a = elem.closest(".roll")) === null || _a === void 0 ? void 0 : _a.dataset.rollid;
+    const rollElement = elem.closest(".roll");
+    const parentRollId = rollElement === null || rollElement === void 0 ? void 0 : rollElement.dataset.rollid;
     if (char == null) {
         throw new Error("Can't find an active character");
     }
     else {
         let character = LocalCharacterView.fromElement(char);
+        if (((_a = rollElement === null || rollElement === void 0 ? void 0 : rollElement.dataset.charName) === null || _a === void 0 ? void 0 : _a.toLocaleUpperCase()) == character.name.current.toLocaleUpperCase()) {
+            console.log("=== Resisting to your own roll, should use help");
+        }
         autoRoll2(character, action, parentRollId);
     }
 }
@@ -979,7 +983,6 @@ function onNotesInput(source) {
     notesInputTimer.reset();
 }
 function sendNotesToServer() {
-    console.log("sending notes!");
     document.querySelectorAll('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest(".character");
         const char = LocalCharacterView.fromElement(charElem);

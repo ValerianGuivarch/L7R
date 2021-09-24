@@ -735,7 +735,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     }
 
     tr.innerHTML = ''
-        + '<td class="roll" data-rollid="' + roll.id + '">'
+        + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + " - "
         + secret // "(secret) "
@@ -782,12 +782,16 @@ function isGm(): boolean {
 
 function resist(elem: HTMLElement, action: RollType) {
     const char = getCurrentCharacter();
-    const parentRollId = elem.closest<HTMLElement>(".roll")?.dataset.rollid;
+    const rollElement = elem.closest<HTMLElement>(".roll");
+    const parentRollId = rollElement?.dataset.rollid;
     if(char == null) {
         throw new Error("Can't find an active character");
     }
     else {
         let character = LocalCharacterView.fromElement(char);
+        if(rollElement?.dataset.charName?.toLocaleUpperCase() == character.name.current.toLocaleUpperCase()) {
+            console.log("=== Resisting to your own roll, should use help");
+        }
         autoRoll2(character, action, parentRollId);
     }
 }
@@ -1135,7 +1139,6 @@ function onNotesInput(source: HTMLTextAreaElement) {
 
 
 function sendNotesToServer() {
-    console.log("sending notes!");
     document.querySelectorAll<HTMLTextAreaElement>('.notes textarea[data-commit-needed="true"]').forEach(ta => {
         const charElem = ta.closest<HTMLElement>(".character")!;
         const char = LocalCharacterView.fromElement(charElem);
