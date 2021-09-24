@@ -419,7 +419,7 @@ interface ILocalCharacterView {
 class LocalCharacterView implements ILocalCharacterView {
     private static instances: Map<HTMLElement, LocalCharacterView> = new Map();
 
-    private constructor(private element: HTMLElement) {
+    private constructor(public readonly element: HTMLElement) {
     }
 
     public static fromElement(element: HTMLElement): LocalCharacterView {
@@ -792,7 +792,19 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         +     '<button onclick="useHelp(this, \'essence\')">h-essence</button>'
         +  '</span>'
         + '</span>'
-        + ' ?';
+
+        if(isGm()) {
+            const charElem = getCurrentCharacter();
+            if(charElem != null) {
+                const char = LocalCharacterView.fromElement(charElem);
+                resist += '<select class="active-character-selector" onchange="onChangeActiveCharacterFromRoll(this);"><option value="" data-cid="' + char.id + '">' + char.name.current + '</option></select>';
+            }
+            else {
+                resist += '<select class="active-character-selector" onchange="onChangeActiveCharacterFromRoll(this);"></select>';
+            }
+        }
+
+        resist += ' ?';
     }
 
     let success = "";
@@ -1278,12 +1290,10 @@ function sendNotesToServer() {
 
 function changeSubActionRoll(elem: HTMLElement) {
     if(elem.classList.contains("resist")) {
-        elem.classList.remove("resist");
-        elem.classList.add("use-help");
+        elem.classList.replace("resist", "use-help");
     }
     else { // if(elem.classList.contains("use-help")) {
-        elem.classList.add("resist");
-        elem.classList.remove("use-help");
+        elem.classList.replace("resist", "use-help");
     }
 }
 

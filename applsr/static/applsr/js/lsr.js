@@ -633,8 +633,18 @@ function jsonRollToHtml(roll, sub = false) {
             + '<button onclick="useHelp(this, \'spirit\')">h-esprit</button>'
             + '<button onclick="useHelp(this, \'essence\')">h-essence</button>'
             + '</span>'
-            + '</span>'
-            + ' ?';
+            + '</span>';
+        if (isGm()) {
+            const charElem = getCurrentCharacter();
+            if (charElem != null) {
+                const char = LocalCharacterView.fromElement(charElem);
+                resist += '<select class="active-character-selector" onchange="onChangeActiveCharacterFromRoll(this);"><option value="" data-cid="' + char.id + '">' + char.name.current + '</option></select>';
+            }
+            else {
+                resist += '<select class="active-character-selector" onchange="onChangeActiveCharacterFromRoll(this);"></select>';
+            }
+        }
+        resist += ' ?';
     }
     let success = "";
     const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
@@ -1061,12 +1071,10 @@ function sendNotesToServer() {
 }
 function changeSubActionRoll(elem) {
     if (elem.classList.contains("resist")) {
-        elem.classList.remove("resist");
-        elem.classList.add("use-help");
+        elem.classList.replace("resist", "use-help");
     }
     else { // if(elem.classList.contains("use-help")) {
-        elem.classList.add("resist");
-        elem.classList.remove("use-help");
+        elem.classList.replace("resist", "use-help");
     }
 }
 function takeDamagesFromRoll(elem) {

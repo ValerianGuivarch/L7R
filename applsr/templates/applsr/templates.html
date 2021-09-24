@@ -4,7 +4,7 @@
     <div class="character">
 
         <div class="controls">
-            <input type="radio" name="activeCharacter" />
+            <input type="radio" name="activeCharacter" class="activeCharacter" onchange="onChangeActiveCharacterFromSheet(this);" />
             <button class="delete disabled" onclick="deleteCharacterView(this.closest('.character'));"> X </button>
             <button class="duplicate-in-db" onclick="duplicateInDb(this.closest('.character'));" title="Copier dans la BD"> 	
                 &#x2398;&nbsp;BD</button>

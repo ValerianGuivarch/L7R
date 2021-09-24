@@ -205,3 +205,67 @@ function autoFilter(source) {
         }
     });
 }
+function indexOfOption(select, option) {
+    for (const o of select) {
+        if (o.value == option) {
+            return o.index;
+        }
+    }
+    return false;
+}
+/** Will even add an item to the <select> if there is none */
+function setAllCharacterSelectorTo(char) {
+    char.element.querySelector("input.activeCharacter").checked = true;
+    ;
+    document.querySelectorAll(".active-character-selector").forEach(select => {
+        const optionIndex = indexOfOption(select, char.name.current);
+        if (optionIndex === false) {
+            const option = document.createElement("option");
+            option.innerHTML = char.name.current;
+            option.value = char.name.current;
+            if (char.id != undefined) {
+                option.dataset.cid = "" + char.id;
+            }
+            select.add(option); // add at last position
+            select.selectedIndex = select.length - 1; // put select on last item (that we just added)
+        }
+        else {
+            select.selectedIndex = optionIndex;
+        }
+    });
+}
+function onChangeActiveCharacterFromSheet(inputElement) {
+    const charElem = inputElement.closest(".character");
+    const char = LocalCharacterView.fromElement(charElem);
+    console.log("change active char", char.name.current);
+    setAllCharacterSelectorTo(char);
+}
+function findCharacterById(id) {
+    return document.querySelector('.character[data-id="' + id + '"]');
+}
+function findCharacterByName(name) {
+    const names = document.querySelectorAll('.character .name .current');
+    for (const n of names) {
+        if (n.innerHTML == name) {
+            return n.closest(".character");
+        }
+    }
+    return null;
+}
+function onChangeActiveCharacterFromRoll(select) {
+    const cid = select.selectedOptions[0].dataset.cid;
+    const name = select.selectedOptions[0].value;
+    let charElem = null;
+    if (cid != undefined) {
+        // if we don't have a cid it means we have a local character
+        charElem = findCharacterById(parseInt(cid));
+    }
+    if (charElem == null) {
+        charElem = findCharacterByName(name);
+    }
+    if (charElem == null) {
+        throw new Error("Can't find character with id " + cid + " and name " + name);
+    }
+    const char = LocalCharacterView.fromElement(charElem);
+    setAllCharacterSelectorTo(char);
+}

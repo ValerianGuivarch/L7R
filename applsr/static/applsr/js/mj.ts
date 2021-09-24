@@ -244,3 +244,76 @@ function autoFilter(source: HTMLInputElement) {
         }
     });
 }
+
+
+function indexOfOption(select: HTMLSelectElement, option: string): false | number {
+    for(const o of select) {
+        if(o.value == option) {
+            return o.index;
+        }
+    }
+    return false;
+}
+
+
+/** Will even add an item to the <select> if there is none */
+function setAllCharacterSelectorTo(char: LocalCharacterView) {
+    char.element.querySelector<HTMLInputElement>("input.activeCharacter")!.checked = true;;
+    document.querySelectorAll<HTMLSelectElement>(".active-character-selector").forEach(select => {
+        const optionIndex = indexOfOption(select, char.name.current);
+        if(optionIndex === false) {
+            const option = document.createElement("option");
+            option.innerHTML = char.name.current;
+            option.value = char.name.current;
+            if(char.id != undefined) {
+                option.dataset.cid = "" + char.id;
+            }
+            select.add(option); // add at last position
+            select.selectedIndex = select.length - 1; // put select on last item (that we just added)
+        }
+        else {
+            select.selectedIndex = optionIndex;
+        }
+    });
+}
+
+
+function onChangeActiveCharacterFromSheet(inputElement: HTMLElement) {
+    const charElem = inputElement.closest<HTMLElement>(".character")!;
+    const char = LocalCharacterView.fromElement(charElem);
+    console.log("change active char", char.name.current);
+    setAllCharacterSelectorTo(char);
+}
+
+function findCharacterById(id: number): HTMLElement | null {
+    return document.querySelector('.character[data-id="' + id + '"]');
+}
+
+function findCharacterByName(name: string): HTMLElement | null {
+    const names = document.querySelectorAll<HTMLElement>('.character .name .current');
+    for(const n of names) {
+        if(n.innerHTML == name) {
+            return n.closest(".character");
+        }
+    }
+    return null;
+}
+
+function onChangeActiveCharacterFromRoll(select: HTMLSelectElement) {
+    const cid = select.selectedOptions[0].dataset.cid;
+    const name = select.selectedOptions[0].value;
+    let charElem: HTMLElement | null = null;
+    if(cid != undefined) {
+        // if we don't have a cid it means we have a local character
+        charElem = findCharacterById(parseInt(cid));
+    }
+    if(charElem == null) {
+        charElem = findCharacterByName(name);
+    }
+    if(charElem == null) {
+        throw new Error("Can't find character with id " + cid + " and name " + name);
+    }
+
+    const char = LocalCharacterView.fromElement(charElem);
+    setAllCharacterSelectorTo(char);
+}
