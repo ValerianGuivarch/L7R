@@ -331,3 +331,7 @@ function deleteCharacterFromDb(deleteButton: HTMLButtonElement) {
         document.querySelectorAll('.db-char-menu .add-character[data-cid="' + cid + '"]').forEach(e => e.parentElement?.remove())
     });
 }
+
+function toggleDeleteCharacterAbility(checkbox: HTMLInputElement) {
+    document.querySelector(".db-char-menu")!.classList.toggle("deletion-disabled", !checkbox.checked);
+}

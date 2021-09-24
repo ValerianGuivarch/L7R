@@ -282,3 +282,6 @@ function deleteCharacterFromDb(deleteButton) {
         document.querySelectorAll('.db-char-menu .add-character[data-cid="' + cid + '"]').forEach(e => { var _a; return (_a = e.parentElement) === null || _a === void 0 ? void 0 : _a.remove(); });
     });
 }
+function toggleDeleteCharacterAbility(checkbox) {
+    document.querySelector(".db-char-menu").classList.toggle("deletion-disabled", !checkbox.checked);
+}

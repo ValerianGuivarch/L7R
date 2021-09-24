@@ -15,10 +15,10 @@
 
 <div class="main">
 
-<div class="db-char-menu">
+<div class="db-char-menu deletion-disabled">
     <p>
         <input type="text" class="filter-characters" placeholder="Recherche ..." oninput="autoFilter(this);" />
-        <span><input type="checkbox" /> X</span>
+        <span><input type="checkbox" onchange="toggleDeleteCharacterAbility(this);" /> X</span>
     </p>
     <div class="char-select">
         {% for category, chars in characters_by_category.items %}

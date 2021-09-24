@@ -448,11 +448,16 @@ body.pc-page {
     button.add-character:hover {
       background-color: #f4f3f1;
     }
-    button.disabled {
+    button.add-character.disabled {
       background: #faf9f8;
     }
-    button.disabled::before {
+    button.add-character.disabled::before {
       content: "\2192 ";
+    }
+  }
+  &.deletion-disabled {
+    .delete {
+      display: none;
     }
   }
   .content {

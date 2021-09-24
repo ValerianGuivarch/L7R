@@ -331,11 +331,14 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
 .db-char-menu .char-select button.add-character:hover {
   background-color: #f4f3f1;
 }
-.db-char-menu .char-select button.disabled {
+.db-char-menu .char-select button.add-character.disabled {
   background: #faf9f8;
 }
-.db-char-menu .char-select button.disabled::before {
+.db-char-menu .char-select button.add-character.disabled::before {
   content: "→";
+}
+.db-char-menu.deletion-disabled .delete {
+  display: none;
 }
 .db-char-menu .content {
   display: flex;
