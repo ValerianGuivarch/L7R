@@ -60,7 +60,8 @@ function deleteRoll(rollElement: HTMLElement) {
             });
         }, 5000);
         console.log("remove roll", rollElement.dataset.rollid);
-        lsrApi.deleteRoll(parseInt(rollElement.dataset.rollid!)).then(() => updateChat());
+        lsrApi.deleteRoll(parseInt(rollElement.dataset.rollid!));
+        rollElement.remove();
     }
 }
 

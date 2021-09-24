@@ -57,7 +57,8 @@ function deleteRoll(rollElement) {
             });
         }, 5000);
         console.log("remove roll", rollElement.dataset.rollid);
-        lsrApi.deleteRoll(parseInt(rollElement.dataset.rollid)).then(() => updateChat());
+        lsrApi.deleteRoll(parseInt(rollElement.dataset.rollid));
+        rollElement.remove();
     }
 }
 // TODO should probably have an object representing the actual action, for example we should not take the fact that power was used from the character but from the action
