@@ -1194,3 +1194,11 @@ def create_character(request, name, flesh, spirit, essence, hp, hp_max, focus, f
 
     character.save()
     return JsonResponse(character, encoder=ExtendedEncoder, safe=False)
+
+def delete_character(request):
+    if "cid" in request.GET:
+        Character.objects.all().filter(id=request.GET["cid"]).delete()
+        return HttpResponse("deleted")
+    response = HttpResponse("");
+    response.status_code = 404
+    return response

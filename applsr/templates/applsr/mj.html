@@ -17,7 +17,8 @@
 
 <div class="db-char-menu">
     <p>
-        <input type="text" class="filter-characters" placeholder="Recherche ..." oninput="autoFilter(this);"/>
+        <input type="text" class="filter-characters" placeholder="Recherche ..." oninput="autoFilter(this);" />
+        <span><input type="checkbox" /> X</span>
     </p>
     <div class="char-select">
         {% for category, chars in characters_by_category.items %}
@@ -25,7 +26,10 @@
             <summary class="label">{{ category }}</summary>
             <div class="content">
             {% for c in chars %}
-                <button data-cid="{{ c.id }}" onclick="autoAddChar(this);">{{ c.name }}</button>
+                <span class="line">
+                    <button class="add-character" data-cid="{{ c.id }}" onclick="autoAddChar(this);">{{ c.name }}</button>
+                    <button data-cid="{{ c.id }}" class="delete" onclick="deleteCharacterFromDb(this);">X</button>
+                </span>
             {% endfor %}
             </div>
         </div>

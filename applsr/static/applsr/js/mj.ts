@@ -183,7 +183,10 @@ function duplicateInDb(characterElement: HTMLElement) {
     lsrApi.createCharacter(character)
     .then(cdb => {
         const container = document.createElement("div");
-        container.innerHTML = '<button data-cid="' + cdb.id + '" onclick="autoAddChar(this);">' + cdb.name + '</button>';
+        container.innerHTML = '<span class="line">'
+            + '<button class="add-character" data-cid="' + cdb.id + '" onclick="autoAddChar(this);">' + cdb.name + '</button>'
+            + '<button class="delete" data-cid="' + cdb.id + '" onclick="deleteCharacterFromDb(this);">X</button>'
+            + '</span>';
 
         let categoryElement = document.querySelector<HTMLElement>(".char-select .category-" + cdb.category);
 
@@ -316,4 +319,15 @@ function onChangeActiveCharacterFromRoll(select: HTMLSelectElement) {
 
     const char = LocalCharacterView.fromElement(charElem);
     setAllCharacterSelectorTo(char);
+}
+
+function deleteCharacterFromDb(deleteButton: HTMLButtonElement) {
+    const cidString = deleteButton.dataset.cid;
+    if(cidString == undefined) {
+        throw new Error("Can't find cid");
+    }
+    const cid = parseInt(cidString, 10)
+    lsrApi.deleteCharacter(cid).then(() => {
+        document.querySelectorAll('.db-char-menu .add-character[data-cid="' + cid + '"]').forEach(e => e.parentElement?.remove())
+    });
 }

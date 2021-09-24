@@ -432,20 +432,20 @@ body.pc-page {
   padding: 1rem;
   width: $db-char-menu-width;
   height: calc(100vh - 2em);
-  input {
+  input[type="text"] {
     width: 100%;
   }
   .char-select {
     overflow-y: auto;
     height: 100%;
-    button {
+    button.add-character {
       border: 1px solid #bfb8b1;
       border-radius: 5px;
       padding: 2px;
       margin: 2px 0;
       background: linear-gradient(#f5f4f3, #edebe9);
     }
-    button:hover {
+    button.add-character:hover {
       background-color: #f4f3f1;
     }
     button.disabled {
@@ -458,8 +458,12 @@ body.pc-page {
   .content {
     display: flex;
     flex-direction: column;
-    & > * {
+    & > .line {
       flex: 1;
+      display: flex;
+      .add-character {
+        flex: 1;
+      }
     }
   }
 }

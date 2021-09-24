@@ -135,6 +135,10 @@ class LsrApi {
             .then(response => response.text())
             .then(t => JSON.parse(t));
     }
+    /** Delete a character from the database */
+    deleteCharacter(id) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/deletecharacter?cid=' + id);
+    }
     clearChat(rollid) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes');
     }

@@ -53,4 +53,5 @@ urlpatterns = [
     path('mj/updatepj/<str:nom>/<str:chair>/<str:esprit>/<str:essence>/<str:point_de_vie_max>/<str:point_de_focus_max>/<str:point_de_pouvoir_max>/<str:niveau>', applsr_views.updatepj),
     path('mj/updatepj/<str:nom>/<str:chair>/<str:esprit>/<str:essence>/<str:point_de_vie_max>/<str:point_de_focus_max>/<str:point_de_pouvoir_max>/<str:niveau>', applsr_views.updatepj),
     path('mj_interdit_aux_joueurs/createcharacter/<str:name>/<int:flesh>/<int:spirit>/<int:essence>/<int:hp>/<int:hp_max>/<int:focus>/<int:focus_max>/<int:power>/<int:power_max>/<int:level>/<int:arcana>/<int:arcana_max>/<int:debt>/<str:title>/<str:lux>/<str:secunda>/<str:umbra>/<str:proficiency1>/<str:proficiency2>/<str:hidden>/<str:category>', applsr_views.create_character),
+    path('mj_interdit_aux_joueurs/deletecharacter/', applsr_views.delete_character),
 ]

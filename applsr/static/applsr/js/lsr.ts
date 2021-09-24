@@ -155,6 +155,11 @@ class LsrApi {
         .then(t => JSON.parse(t) as CharacterFromDatabase);
     }
 
+    /** Delete a character from the database */
+    public deleteCharacter(id: number) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/deletecharacter?cid=' + id);
+    }
+
     public clearChat(rollid?: number) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes');
     }

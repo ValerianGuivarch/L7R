@@ -314,21 +314,21 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   width: 10em;
   height: calc(100vh - 2em);
 }
-.db-char-menu input {
+.db-char-menu input[type=text] {
   width: 100%;
 }
 .db-char-menu .char-select {
   overflow-y: auto;
   height: 100%;
 }
-.db-char-menu .char-select button {
+.db-char-menu .char-select button.add-character {
   border: 1px solid #bfb8b1;
   border-radius: 5px;
   padding: 2px;
   margin: 2px 0;
   background: linear-gradient(#f5f4f3, #edebe9);
 }
-.db-char-menu .char-select button:hover {
+.db-char-menu .char-select button.add-character:hover {
   background-color: #f4f3f1;
 }
 .db-char-menu .char-select button.disabled {
@@ -341,7 +341,11 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   display: flex;
   flex-direction: column;
 }
-.db-char-menu .content > * {
+.db-char-menu .content > .line {
+  flex: 1;
+  display: flex;
+}
+.db-char-menu .content > .line .add-character {
   flex: 1;
 }
 
