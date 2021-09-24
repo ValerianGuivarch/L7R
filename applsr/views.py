@@ -803,8 +803,8 @@ def afficher(request, nom, secret):
         queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(parent_roll_id=None).filter(date__lt=today_end)
     else:
         queryset = DiceRoll.objects.order_by('-date').filter(date__gte=today_start).filter(parent_roll_id=None).filter(date__lt=today_end).filter(Q(secret=False) | Q(lancer=nom.capitalize()))
-    if queryset.count() > 10:
-        queryset = queryset[:10]
+    if queryset.count() > 20:
+        queryset = queryset[:20]
 
     if "json" in request.GET:
         date_queryset = DiceRoll.objects.order_by('-date')[:1]
