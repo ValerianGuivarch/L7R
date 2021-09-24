@@ -1,5 +1,10 @@
 /// <reference path="lsr.d.ts" />
 
+// ### Globals needed everywhere (even in the mj part)
+
+let remove_char_ok = false;
+let remove_roll_ok = false;
+
 
 // ### Utils
 

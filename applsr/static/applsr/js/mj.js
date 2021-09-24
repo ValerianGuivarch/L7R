@@ -1,7 +1,6 @@
 "use strict";
 /// <reference path="lsr.d.ts" />
 let remove_char_timeout = null;
-var remove_char_ok = false;
 function deleteCharacterView(pnjElement) {
     var _a;
     if (remove_char_ok == false) {
@@ -32,7 +31,6 @@ function deleteCharacterView(pnjElement) {
     }
 }
 let remove_roll_timeout = null;
-var remove_roll_ok = false;
 function deleteRoll(rollElement) {
     if (remove_roll_ok == false) {
         remove_roll_ok = true;
