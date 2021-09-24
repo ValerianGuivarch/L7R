@@ -1,5 +1,6 @@
-type JEMP = `Jemp-${string}`;
-type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | JEMP;
+/** There is something after the "-" */
+type JEMP = `Jemp-`;
+type RollTypeBackend = 'Jsoin' | 'JM' | 'JAF' | 'JAS' | 'JAE' | 'JC' | 'JS' | 'JE' | 'Jmort' | "AFH" | JEMP;
 
 declare enum CidBrand { _ = "" }
 interface CharId extends string {
@@ -9,7 +10,7 @@ interface CharId extends string {
 type Stat = "pv" | "arcanes" | "dettes" | "pf" | "pp" | "ben" | "mal";
 
 
-type StatBasedRollType = "flesh" | "spirit" | "essence" | "magic" | "heal" | "arcana" | "arcana-spirit" | "arcana-essence" | "death";
+type StatBasedRollType = "flesh" | "spirit" | "essence" | "magic" | "heal" | "arcana" | "arcana-spirit" | "arcana-essence" | "death" | "ask-for-help";
 
 
 type AbsoluteRollType = "empirical";

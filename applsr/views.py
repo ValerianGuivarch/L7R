@@ -884,28 +884,30 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
         ##elem = "<<" + str(malus_chair) + ">>"
         #more_dices -= malus_chair
         dice = dice_roll(char[0].name.capitalize(), 'JC', focus, pouvoir, char[0].chair, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'JS' == action:
+    elif 'JS' == action:
         dice = dice_roll(char[0].name.capitalize(), 'JS', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'JE' == action:
+    elif 'JE' == action:
         dice = dice_roll(char[0].name.capitalize(), 'JE', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'Jmort' == action:
+    elif 'Jmort' == action:
         dices = [random.randint(1, 20)]
         dices_string = " [ " + str(dices[0]) + " ] "
         dice = DiceRoll(dices=dices_string, secret=True, lancer=char[0].name.capitalize(), malediction_count=0, benediction_count=0, dice_results=",".join([str(r) for r in dices]), pp=False, pf=False, roll_type="Jmort")
         dice.save()
-    if 'JM' == action:
+    elif 'JM' == action:
         Character.objects.filter(id=char[0].id).update(dettes=char[0].dettes + 1)
         dice = dice_roll(char[0].name.capitalize(), 'JM', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'JAF' == action and char[0].arcanes > 0:
+    elif 'JAF' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
         dice = dice_roll(char[0].name.capitalize(), 'JAF', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'JAS' == action and char[0].arcanes > 0:
+    elif 'JAS' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
         dice = dice_roll(char[0].name.capitalize(), 'JAS', focus, pouvoir, char[0].esprit, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'JAE' == action and char[0].arcanes > 0:
+    elif 'JAE' == action and char[0].arcanes > 0:
         Character.objects.filter(id=char[0].id).update(arcanes=char[0].arcanes - 1)
         dice = dice_roll(char[0].name.capitalize(), 'JAE', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
-    if 'Jsoin' == action :
+    elif 'AFH' == action:
+        dice = dice_roll(char[0].name.capitalize(), 'AFH', focus, pouvoir, 0, more_dices, use_ra, mal, ben, is_secret, is_des_caches, "", parent_roll_id=parent_roll_id)
+    elif 'Jsoin' == action :
         Character.objects.filter(id=char[0].id).update(dettes=char[0].dettes + 1)
         Character.objects.filter(id=char[0].id).update(point_de_pouvoir=char[0].point_de_pouvoir - 1)
         elem=""
@@ -937,6 +939,8 @@ def lancer(request, nom, action, pf, pp, ra, mal, ben, secret, des_caches):
         if char[0].element == "deva" :
             elem =" par la deva"
         dice = dice_roll(char[0].name.capitalize(), 'Jsoin', focus, pouvoir, char[0].essence, more_dices, use_ra, mal, ben, is_secret, is_des_caches, elem, parent_roll_id=parent_roll_id)
+    else:
+        raise ValueError("unknown roll " + action)
 
     return HttpResponse(dice)
 

@@ -49,7 +49,7 @@ class OneStatRollAction extends BaseRollAction {
     public readonly proficient: boolean;
     public readonly relevantStatValue: number;
 
-    private static actionToStatValue(char: ILocalCharacterView, action: StatBasedRollType): number {
+    public static actionToStatValue(char: ILocalCharacterView, action: StatBasedRollType): number {
         if(action == "flesh") { return char.flesh.current; }
         else if(action == "spirit") { return char.spirit.current; }
         else if(action == "essence") { return char.essence.current; }
@@ -59,6 +59,7 @@ class OneStatRollAction extends BaseRollAction {
         else if(action == "arcana-spirit") { return char.spirit.current; }
         else if(action == "arcana-essence") { return char.essence.current; }
         else if(action == "death") { return 0; }
+        else if(action == "ask-for-help") { return 0; }
         assertNever(action);
     }
 
@@ -636,12 +637,13 @@ function rollTypeToString(rollType: RollTypeBackend) {
     else if(rollType == 'Jmort') {
         return "fait un <i>jet de Sauvegarde contre la Mort</i>";
     }
-    else if(rollType.indexOf('Jemp-') === 0) {
+    else if(rollType.indexOf('Jemp-') === 0 || rollType == "Jemp-") { // the rollType == "Jemp-" is for typechecking
         return "fait un <i>jet empirique</i> (" + rollType.split("-")[1] + ")";
     }
-    else {
-        return rollType + "?";
+    else if(rollType == "AFH") {
+        return "demande de l'aide";
     }
+    assertNever(rollType);
 }
 
 
@@ -751,8 +753,21 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     let resist = "";
     if(sub == false) {
+        let resistOrUseHelp: "resist" | "use-help";
+        if(roll.roll_type == "AFH") {
+            if(roll.character.toLocaleUpperCase() == LocalCharacterView.fromElement(getCurrentCharacter()!).name.current.toLocaleUpperCase()) {
+                resistOrUseHelp = "use-help";
+            }
+            else {
+                resistOrUseHelp = "resist";
+            }
+        }
+        else {
+            resistOrUseHelp = "resist";
+        }
+
         resist = '. '
-        + '<span class="sub-roll-action resist">'
+        + '<span class="sub-roll-action ' + resistOrUseHelp + '">'
         +   '<span class="sra-resist">'
         +     '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Résister</span> avec '
         +     '<button onclick="resist(this, \'flesh\')">chair</button>'
@@ -760,7 +775,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
         +     '<button onclick="resist(this, \'essence\')">essence</button>'
         +   '</span>'
         +   '<span class="sra-use-help">'
-        +     '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Se faire aider</span> avec '
+        +     '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Utiliser l\'aide</span> pour '
         +     '<button onclick="useHelp(this, \'flesh\')">h-chair</button>'
         +     '<button onclick="useHelp(this, \'spirit\')">h-esprit</button>'
         +     '<button onclick="useHelp(this, \'essence\')">h-essence</button>'
@@ -791,7 +806,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     }
 
     let roll_string = " ";
-    if(roll.roll_type == "JAF") { // JAF = Jet d'arcane fixe
+    if(roll.roll_type == "JAF" ||  roll.roll_type == "AFH") { // JAF = Jet d'arcane fixe
         roll_string = "";
         success = "";
     }
@@ -1134,6 +1149,10 @@ function convertRollTypeToBackend(rollType: RollType): RollTypeBackend {
     else if(rollType == "arcana-essence") {
         return "JAE";
     }
+    else if(rollType == "ask-for-help") {
+        return "AFH";
+    }
+    assertNever(rollType);
     throw new Error("unknown roll type: " + rollType);
 }
 
@@ -1158,7 +1177,7 @@ function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): Rol
     else if(rollTypeBackend == 'Jsoin') {
         return "heal";
     }
-    else if(rollTypeBackend.indexOf("Jemp-") === 0) {
+    else if(rollTypeBackend.indexOf("Jemp-") === 0 || rollTypeBackend == "Jemp-") { // the rollTypeBackend == "Jemp-" is only here for typechecking
         return "empirical";
     }
     else if(rollTypeBackend == "JAF") {
@@ -1170,6 +1189,10 @@ function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): Rol
     else if(rollTypeBackend == "JAS") {
         return "arcana-spirit";
     }
+    else if(rollTypeBackend == "AFH") {
+        return "ask-for-help";
+    }
+    assertNever(rollTypeBackend);
     throw new Error("unknown roll type: " + rollTypeBackend);
 }
 
@@ -1209,6 +1232,10 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
         lsrApi.empiricalRoll(character, rollAction).then(updateChat);
     }
     else if(rollType == "death") {
+        const rollAction = new OneStatRollAction(character, rollType, parentRollId);
+        lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
+    }
+    else if(rollType == "ask-for-help") {
         const rollAction = new OneStatRollAction(character, rollType, parentRollId);
         lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
     }

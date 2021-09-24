@@ -47,43 +47,9 @@ function applyActionCosts(char, action) {
         char.debt.current += 1;
     }
 }
-// TODO to remove once we migrated to action base rolls
-function actionToStatValue(char, action) {
-    if (action == "flesh") {
-        return char.flesh.current;
-    }
-    else if (action == "spirit") {
-        return char.spirit.current;
-    }
-    else if (action == "essence") {
-        return char.essence.current;
-    }
-    else if (action == "death") {
-        return 0;
-    }
-    else if (action == "magic") {
-        return char.essence.current;
-    }
-    else if (action == "heal") {
-        return char.essence.current;
-    }
-    else if (action == "empirical") {
-        return 0;
-    }
-    else if (action == "arcana") {
-        return 0;
-    }
-    else if (action == "arcana-spirit") {
-        return char.spirit.current;
-    }
-    else if (action == "arcana-essence") {
-        return char.essence.current;
-    }
-    assertNever(action);
-}
 /** Asks the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
 function rollForLocalCharacterAndApplyCosts(c, action, parentRollId, bonuses = {}) {
-    let stat = actionToStatValue(c, action);
+    let stat = OneStatRollAction.actionToStatValue(c, action);
     const rollAction = new OneStatRollAction(c, action, parentRollId, bonuses);
     lsrApi.rollForLocalCharacter(c, rollAction).then(updateChat);
     applyActionCosts(c, action);
