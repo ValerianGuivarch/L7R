@@ -150,8 +150,12 @@ class LsrApi {
         .then(t => JSON.parse(t) as CharacterFromDatabase);
     }
 
-    public clearChat() {
+    public clearChat(rollid?: number) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes');
+    }
+
+    public deleteRoll(rollid: number) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes?rollid=' + rollid);
     }
 }
 
@@ -756,7 +760,8 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     if(sub == false) {
         let resistOrUseHelp: "resist" | "use-help";
         if(roll.roll_type == "AFH") {
-            if(roll.character.toLocaleUpperCase() == LocalCharacterView.fromElement(getCurrentCharacter()!).name.current.toLocaleUpperCase()) {
+            const charElem = getCurrentCharacter();
+            if(charElem != null && roll.character.toLocaleUpperCase() == LocalCharacterView.fromElement(charElem).name.current.toLocaleUpperCase()) {
                 resistOrUseHelp = "use-help";
             }
             else {
@@ -817,6 +822,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     tr.innerHTML = ''
         + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '" data-success-count="' + successCount56 + '">'
+        + '<button class="delete delete-roll ' + (remove_roll_ok == false ? "disabled" : "enabled") + '" onclick="deleteRoll(this.closest(\'.roll\'));">X</button>'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + " - "
         + secret // "(secret) "
@@ -920,7 +926,6 @@ function updateChat() {
 
     lsrApi.getChat(charName, isGm(), getCharId(charElem)).then(chatHistory => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
-        
         if(chatHistory.update == null || chat.dataset.update != chatHistory.update) {
             chat.innerHTML = "";
             chat.dataset.update = chatHistory.update

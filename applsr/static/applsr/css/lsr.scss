@@ -312,8 +312,8 @@ body.pc-page {
 }
 
 .pc-page {
-  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .level button, .hidden-number, .abilities button, .category {
-    display: none;
+  .minus-max, .plus-max, .edit, .curse2 button, .curse2 .enabled, .level button, .hidden-number, .abilities button, .category, .delete-roll {
+    display: none !important;
   }
 
   .name, .title, .level, .lux, .umbra, .secunda, .proficiency, .secret, .abilities {
@@ -335,7 +335,7 @@ body.pc-page {
   }
   button {
     @extend .round-button;
-    padding: 0 !important;
+    padding: 0;
     margin-left: 0.2rem;
   }
   .dice {
@@ -389,18 +389,25 @@ body.pc-page {
     .duplicate-in-db, .duplicate-as-offline {
       @extend .round-button;
     }
-    .delete {
-      @extend .round-button;
-      &.disabled {
-        border-color: $red-danger;
-        background-color: $red-danger;
-      }
-      &.enabled {
-        border-color: $green-success;
-        background-color: $green-success;
-      }
-    }
   }
+}
+
+// "#chat .delete" is needed to increase specificity
+#chat .delete, .delete {
+  @extend .round-button;
+  &.disabled {
+    border-color: $red-danger;
+    background-color: $red-danger;
+  }
+  &.enabled {
+    border-color: $green-success;
+    background-color: $green-success;
+  }
+}
+
+#chat .delete {
+  margin-right: 5px;
+  padding: 0 5px;
 }
 
 // GM Menu

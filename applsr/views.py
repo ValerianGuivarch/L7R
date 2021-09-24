@@ -1060,7 +1060,10 @@ def lsr(request, nom):
 
 
 def effacer_lancers_des(request):
-    DiceRoll.objects.all().delete()
+    if "rollid" in request.GET:
+        DiceRoll.objects.filter(id=request.GET["rollid"]).delete()
+    else:
+        DiceRoll.objects.all().delete()
     return HttpResponse("")
 
 

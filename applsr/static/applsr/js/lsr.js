@@ -132,8 +132,11 @@ class LsrApi {
             .then(response => response.text())
             .then(t => JSON.parse(t));
     }
-    clearChat() {
+    clearChat(rollid) {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes');
+    }
+    deleteRoll(rollid) {
+        return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/effacerLancersDes?rollid=' + rollid);
     }
 }
 const lsrApi = new LsrApi();
@@ -602,7 +605,8 @@ function jsonRollToHtml(roll, sub = false) {
     if (sub == false) {
         let resistOrUseHelp;
         if (roll.roll_type == "AFH") {
-            if (roll.character.toLocaleUpperCase() == LocalCharacterView.fromElement(getCurrentCharacter()).name.current.toLocaleUpperCase()) {
+            const charElem = getCurrentCharacter();
+            if (charElem != null && roll.character.toLocaleUpperCase() == LocalCharacterView.fromElement(charElem).name.current.toLocaleUpperCase()) {
                 resistOrUseHelp = "use-help";
             }
             else {
@@ -659,6 +663,7 @@ function jsonRollToHtml(roll, sub = false) {
     }
     tr.innerHTML = ''
         + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '" data-success-count="' + successCount56 + '">'
+        + '<button class="delete delete-roll ' + (remove_roll_ok == false ? "disabled" : "enabled") + '" onclick="deleteRoll(this.closest(\'.roll\'));">X</button>'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + " - "
         + secret // "(secret) "

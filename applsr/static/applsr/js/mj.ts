@@ -34,6 +34,37 @@ function deleteCharacterView(pnjElement: HTMLElement) {
 }
 
 
+let remove_roll_timeout: null | number = null;
+var remove_roll_ok = false;
+function deleteRoll(rollElement: HTMLElement) {
+    if(remove_roll_ok == false) {
+        remove_roll_ok = true;
+        document.querySelectorAll(".delete-roll").forEach(btn => {
+            btn.classList.replace("disabled", "enabled");
+        });
+        remove_roll_timeout = setTimeout(() => {
+            remove_roll_ok = false;
+            document.querySelectorAll(".delete-roll").forEach(btn => {
+                btn.classList.replace("enabled", "disabled");
+            });
+        }, 5000);
+    }
+    else {
+        if(remove_roll_timeout != null) {
+            clearTimeout(remove_roll_timeout);
+        }
+        remove_roll_timeout = setTimeout(() => {
+            remove_roll_ok = false;
+            document.querySelectorAll(".delete-roll").forEach(btn => {
+                btn.classList.replace("enabled", "disabled");
+            });
+        }, 5000);
+        console.log("remove roll", rollElement.dataset.rollid);
+        lsrApi.deleteRoll(parseInt(rollElement.dataset.rollid!)).then(() => updateChat());
+    }
+}
+
+
 // TODO should probably have an object representing the actual action, for example we should not take the fact that power was used from the character but from the action
 function applyActionCosts(char: ILocalCharacterView, action: RollType) {
     if(action == 'magic') {
