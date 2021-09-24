@@ -265,6 +265,12 @@ body.compact .name > *, body.compact .title > *, body.compact .level > *, body.c
   margin-left: 2rem;
   border-left: 2px solid #aaa;
 }
+#chat .sub-roll-action.resist .sra-use-help {
+  display: none;
+}
+#chat .sub-roll-action.use-help .sra-resist {
+  display: none;
+}
 
 .pc-page .character .controls {
   display: none;

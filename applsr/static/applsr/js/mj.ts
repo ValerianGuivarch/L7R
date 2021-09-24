@@ -35,7 +35,7 @@ function deleteCharacterView(pnjElement: HTMLElement) {
 
 
 // TODO should probably have an object representing the actual action, for example we should not take the fact that power was used from the character but from the action
-function applyActionCosts(char: LocalCharacterView, action: RollType) {
+function applyActionCosts(char: ILocalCharacterView, action: RollType) {
     if(action == 'magic') {
         char.debt.current += 1;
     }
@@ -53,7 +53,7 @@ function applyActionCosts(char: LocalCharacterView, action: RollType) {
 
 
 // TODO to remove once we migrated to action base rolls
-function actionToStatValue(char: LocalCharacterView, action: RollType): number {
+function actionToStatValue(char: ILocalCharacterView, action: RollType): number {
     if(action == "flesh") { return char.flesh.current; }
     else if(action == "spirit") { return char.spirit.current; }
     else if(action == "essence") { return char.essence.current; }
@@ -68,11 +68,11 @@ function actionToStatValue(char: LocalCharacterView, action: RollType): number {
 }
 
 
-/** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
-function rollForLocalCharacterAndApplyCosts(c: LocalCharacterView, action: StatBasedRollType, dc: boolean /** dés cachés */, parentRollId: string | undefined) {
+/** Asks the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
+function rollForLocalCharacterAndApplyCosts(c: ILocalCharacterView, action: StatBasedRollType, parentRollId: string | undefined, bonuses: TemporaryBonuses = {}) {
     let stat: number = actionToStatValue(c, action);
 
-    const rollAction = new OneStatRollAction(c, action, parentRollId);
+    const rollAction = new OneStatRollAction(c, action, parentRollId, bonuses);
     lsrApi.rollForLocalCharacter(c, rollAction).then(updateChat);
 
     applyActionCosts(c, action);

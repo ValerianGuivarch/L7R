@@ -362,6 +362,15 @@ body.pc-page {
     margin-left: 2rem;
     border-left: 2px solid #aaa;
   }
+
+  .sub-roll-action {
+    &.resist .sra-use-help {
+      display: none;
+    }
+    &.use-help .sra-resist {
+      display: none;
+    }
+  }
 }
 
 // Controls

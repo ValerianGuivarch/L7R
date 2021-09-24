@@ -31,9 +31,10 @@ class BaseRollAction {
     }
 }
 class OneStatRollAction extends BaseRollAction {
-    constructor(char, rollType, parentRollId) {
+    constructor(char, rollType, parentRollId, bonuses = {}) {
+        var _a;
         super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
-        this.bonus = char.blessing.current;
+        this.bonus = char.blessing.current + ((_a = bonuses.blessing) !== null && _a !== void 0 ? _a : 0);
         this.malus = char.curse.current + char.curse2.current;
         this.focusing = char.focus.enabled;
         this.powering = char.power.enabled;
@@ -104,8 +105,9 @@ class LsrApi {
         return fetch(this.baseUrl + 'mj_interdit_aux_joueurs/modifs_valeurs/' + charName + '/' + thingToName(target) + maxSuffix + '/' + value + '/' + add + "?" + LsrApi.createCidParameterString(cid))
             .then(response => response.text()).then(t => JSON.parse(t));
     }
-    rollForServerCharacter(char, ra) {
-        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
+    rollForServerCharacter(char, ra, /** Only blessings and curses are used for now */ bonuses = {}) {
+        var _a;
+        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + (ra.bonus + ((_a = bonuses.blessing) !== null && _a !== void 0 ? _a : 0)) + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
     }
     empiricalRoll(char, ra) {
         return fetch(this.baseUrl + 'lancer_empirique/' + char.name.current + '/' + ra.formula + '/' + ra.forGmOnly + "?" + LsrApi.createCidParameterString(char.id));
@@ -132,7 +134,6 @@ class LsrApi {
     }
 }
 const lsrApi = new LsrApi();
-// ### Character view
 class WithLabel {
     constructor(element) {
         this.element = element;
@@ -594,18 +595,32 @@ function jsonRollToHtml(roll, sub = false) {
     }
     let resist = "";
     if (sub == false) {
-        resist = '. Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
+        resist = '. '
+            + '<span class="sub-roll-action resist">'
+            + '<span class="sra-resist">'
+            + '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Résister</span> avec '
+            + '<button onclick="resist(this, \'flesh\')">chair</button>'
             + '<button onclick="resist(this, \'spirit\')">esprit</button>'
-            + '<button onclick="resist(this, \'essence\')">essence</button> ?';
+            + '<button onclick="resist(this, \'essence\')">essence</button>'
+            + '</span>'
+            + '<span class="sra-use-help">'
+            + '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Se faire aider</span> avec '
+            + '<button onclick="useHelp(this, \'flesh\')">h-chair</button>'
+            + '<button onclick="useHelp(this, \'spirit\')">h-esprit</button>'
+            + '<button onclick="useHelp(this, \'essence\')">h-essence</button>'
+            + '</span>'
+            + '</span>'
+            + ' ?';
     }
     let success = "";
+    const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
     if (roll.roll_type.indexOf('Jemp-') !== 0 && roll.roll_type != "Jmort") {
         if (roll.hidden_dice == false || isGm()) {
             success = 'et obtient <span title="Juge12: '
                 + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
                 + ', Juge34: '
                 + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
-                + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+                + successCount56
                 + " succès</span>";
         }
         else {
@@ -626,7 +641,7 @@ function jsonRollToHtml(roll, sub = false) {
         roll_string = " :<br />" + formatRollResults(roll.dice_results, convertRollTypeBackendToFrontend(roll.roll_type)) + "<br />";
     }
     tr.innerHTML = ''
-        + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '">'
+        + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '" data-success-count="' + successCount56 + '">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + " - "
         + secret // "(secret) "
@@ -663,7 +678,6 @@ function isGm() {
     return document.body.classList.contains("gm-page");
 }
 function resist(elem, action) {
-    var _a;
     const char = getCurrentCharacter();
     const rollElement = elem.closest(".roll");
     const parentRollId = rollElement === null || rollElement === void 0 ? void 0 : rollElement.dataset.rollid;
@@ -672,11 +686,21 @@ function resist(elem, action) {
     }
     else {
         let character = LocalCharacterView.fromElement(char);
-        if (((_a = rollElement === null || rollElement === void 0 ? void 0 : rollElement.dataset.charName) === null || _a === void 0 ? void 0 : _a.toLocaleUpperCase()) == character.name.current.toLocaleUpperCase()) {
-            console.log("=== Resisting to your own roll, should use help");
-        }
         autoRoll2(character, action, parentRollId);
     }
+}
+function useHelp(elem, action) {
+    const rollElement = elem.closest(".roll");
+    const char = getCurrentCharacter();
+    const character = LocalCharacterView.fromElement(char);
+    const parentRollId = rollElement === null || rollElement === void 0 ? void 0 : rollElement.dataset.rollid;
+    console.log("useHelp for", elem);
+    let blessingFromHelp = 0;
+    rollElement.querySelectorAll("table .roll").forEach(e => {
+        var _a;
+        blessingFromHelp += parseInt((_a = e.dataset.successCount) !== null && _a !== void 0 ? _a : "0", 10);
+    });
+    rollForCharacter(character, action, undefined, { blessing: blessingFromHelp });
 }
 function getCharId(character) {
     if (character == null) {
@@ -947,6 +971,18 @@ function convertRollTypeBackendToFrontend(rollTypeBackend) {
     }
     throw new Error("unknown roll type: " + rollTypeBackend);
 }
+function rollForServerCharacter(character, rollType, parentRollId, bonuses = {}) {
+    const rollAction = new OneStatRollAction(character, rollType, parentRollId, bonuses);
+    lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
+}
+function rollForCharacter(character, rollType, parentRollId, bonuses = {}) {
+    if (!character.isOnline()) {
+        rollForLocalCharacterAndApplyCosts(character, rollType, parentRollId, bonuses);
+    }
+    else {
+        rollForServerCharacter(character, rollType, parentRollId, bonuses);
+    }
+}
 function autoRoll(sourceElement) {
     const characterElement = sourceElement.closest(".character");
     const rollType = sourceElement.dataset.roll;
@@ -967,13 +1003,7 @@ function autoRoll2(character, rollType, parentRollId = undefined) {
         lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
     }
     else {
-        if (!character.isOnline()) {
-            rollForLocalCharacterAndApplyCosts(character, rollType, character.hidden.enabled, parentRollId);
-        }
-        else {
-            const rollAction = new OneStatRollAction(character, rollType, parentRollId);
-            lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
-        }
+        rollForCharacter(character, rollType, parentRollId);
     }
 }
 const notesInputTimer = new DebouncedTimer(sendNotesToServer, 2000);
@@ -991,6 +1021,16 @@ function sendNotesToServer() {
             delete ta.dataset.commitNeeded;
         });
     });
+}
+function changeSubActionRoll(elem) {
+    if (elem.classList.contains("resist")) {
+        elem.classList.remove("resist");
+        elem.classList.add("use-help");
+    }
+    else { // if(elem.classList.contains("use-help")) {
+        elem.classList.add("resist");
+        elem.classList.remove("use-help");
+    }
 }
 function main() {
     document.addEventListener("DOMContentLoaded", () => {

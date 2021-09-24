@@ -49,7 +49,7 @@ class OneStatRollAction extends BaseRollAction {
     public readonly proficient: boolean;
     public readonly relevantStatValue: number;
 
-    private static actionToStatValue(char: LocalCharacterView, action: StatBasedRollType): number {
+    private static actionToStatValue(char: ILocalCharacterView, action: StatBasedRollType): number {
         if(action == "flesh") { return char.flesh.current; }
         else if(action == "spirit") { return char.spirit.current; }
         else if(action == "essence") { return char.essence.current; }
@@ -63,12 +63,13 @@ class OneStatRollAction extends BaseRollAction {
     }
 
     public constructor(
-        char: LocalCharacterView,
+        char: ILocalCharacterView,
         rollType: StatBasedRollType,
         parentRollId?: string,
+        bonuses: TemporaryBonuses = {}
     ) {
         super(rollType, char.secret.enabled, char.hidden.enabled, parentRollId);
-        this.bonus = char.blessing.current;
+        this.bonus = char.blessing.current + (bonuses.blessing ?? 0);
         this.malus = char.curse.current + char.curse2.current;
         this.focusing = char.focus.enabled;
         this.powering = char.power.enabled;
@@ -120,8 +121,8 @@ class LsrApi {
         .then(response => response.text()).then(t => JSON.parse(t) as CharacterFromDatabase)
     }
 
-    public rollForServerCharacter(char: LocalCharacterView, ra: OneStatRollAction) {
-        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + ra.bonus + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
+    public rollForServerCharacter(char: ILocalCharacterView, ra: OneStatRollAction, /** Only blessings and curses are used for now */ bonuses: TemporaryBonuses = {}) {
+        return fetch(this.baseUrl + 'lancer/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.focusing + '/' + ra.powering + '/' + ra.proficient + '/' + ra.malus + '/' + (ra.bonus + (bonuses.blessing ?? 0)) + '/' + ra.forGmOnly + '/' + ra.hideDiceResults + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(char.id));
     }
 
     public empiricalRoll(char: LocalCharacterView, ra: EmpiricalRollAction) {
@@ -137,7 +138,7 @@ class LsrApi {
         })
     }
 
-    public rollForLocalCharacter(char: LocalCharacterView, ra: OneStatRollAction) {
+    public rollForLocalCharacter(char: ILocalCharacterView, ra: OneStatRollAction) {
         const opposition = 0;
         return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
     }
@@ -159,6 +160,27 @@ const lsrApi = new LsrApi();
 // ### Character view
 
 
+interface IWithLabel {
+    label: string;
+}
+
+interface IMax {
+    max: number;
+}
+
+interface IStringAttribute {
+    current: string;
+}
+
+interface IActivable {
+    enabled: boolean;
+}
+
+interface IAttribute {
+    current: number;
+}
+
+
 class WithLabel {
     constructor(protected element: HTMLElement) { }
 
@@ -175,7 +197,7 @@ class WithLabel {
 }
 
 
-class Attribute extends WithLabel {
+class Attribute extends WithLabel implements IAttribute {
     protected onChangeCb: ((attr: Attribute) => void) | null = null;
     
     constructor(element: HTMLElement) {
@@ -202,7 +224,7 @@ class Attribute extends WithLabel {
 }
 
 
-class AttributeWithMax extends Attribute {
+class AttributeWithMax extends Attribute implements IAttribute, IMax {
     constructor(element: HTMLElement) {
         super(element);
     }
@@ -223,7 +245,7 @@ class AttributeWithMax extends Attribute {
 }
 
 
-class TextInputAttribute {
+class TextInputAttribute implements IStringAttribute {
     private onChangeCb: ((attr: TextInputAttribute) => void) | null = null;
     constructor(protected element: HTMLElement) { }
 
@@ -252,7 +274,7 @@ class TextInputAttribute {
 }
 
 
-class SmartStringAttribute {
+class SmartStringAttribute implements IStringAttribute {
     private onChangeCb: ((attr: SmartStringAttribute) => void) | null = null;
     constructor(protected element: HTMLElement) { }
     
@@ -294,7 +316,7 @@ class SmartStringAttribute {
 }
 
 
-class AttributeWithoutValueActivable extends WithLabel {
+class AttributeWithoutValueActivable extends WithLabel implements IActivable {
     constructor(element: HTMLElement) {
         super(element);
     }
@@ -309,7 +331,7 @@ class AttributeWithoutValueActivable extends WithLabel {
 }
 
 
-class AttributeActivable extends Attribute {
+class AttributeActivable extends Attribute implements IAttribute, IActivable {
     constructor(element: HTMLElement) {
         super(element);
     }
@@ -340,7 +362,7 @@ class AttributeActivable extends Attribute {
 }
 
 
-class AttributeWithMaxActivable extends AttributeWithMax {
+class AttributeWithMaxActivable extends AttributeWithMax implements IAttribute, IMax, IActivable {
     constructor(element: HTMLElement) {
         super(element);
     }
@@ -354,8 +376,37 @@ class AttributeWithMaxActivable extends AttributeWithMax {
     }
 }
 
+interface TemporaryBonuses {
+    blessing?: number;
+}
 
-class LocalCharacterView {
+interface ILocalCharacterView {
+    id: CharId | undefined;
+    name: IStringAttribute;
+    title: IStringAttribute;
+    lux: IStringAttribute;
+    umbra: IStringAttribute;
+    secunda: IStringAttribute;
+    notes: IStringAttribute;
+    level: /* IWithLabel & */ IAttribute;
+    flesh: /* IWithLabel & */ IAttribute;
+    spirit: /* IWithLabel & */ IAttribute;
+    essence: /* IWithLabel & */ IAttribute;
+    blessing: /* IWithLabel & */ IAttribute;
+    curse: /* IWithLabel & */ IAttribute;
+    curse2: IAttribute & IActivable;
+    hp: /* IWithLabel & */ IAttribute & IMax;
+    debt: /* IWithLabel & */ IAttribute;
+    arcana: /* IWithLabel & */ IAttribute & IMax;
+    focus: /* IWithLabel & */ IAttribute & IMax & IActivable;
+    power: /* IWithLabel & */ IAttribute & IMax & IActivable;
+    proficiency: /* IWithLabel & */ IActivable;
+    secret: /* IWithLabel & */ IActivable;
+    hidden: /* IWithLabel & */ IActivable;
+    category: IStringAttribute;
+}
+
+class LocalCharacterView implements ILocalCharacterView {
     private static instances: Map<HTMLElement, LocalCharacterView> = new Map();
 
     private constructor(private element: HTMLElement) {
@@ -700,19 +751,33 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     let resist = "";
     if(sub == false) {
-        resist = '. Résister avec <button onclick="resist(this, \'flesh\')">chair</button>'
-            + '<button onclick="resist(this, \'spirit\')">esprit</button>'
-            + '<button onclick="resist(this, \'essence\')">essence</button> ?';
+        resist = '. '
+        + '<span class="sub-roll-action resist">'
+        +   '<span class="sra-resist">'
+        +     '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Résister</span> avec '
+        +     '<button onclick="resist(this, \'flesh\')">chair</button>'
+        +     '<button onclick="resist(this, \'spirit\')">esprit</button>'
+        +     '<button onclick="resist(this, \'essence\')">essence</button>'
+        +   '</span>'
+        +   '<span class="sra-use-help">'
+        +     '<span onclick="changeSubActionRoll(this.parentNode.parentNode);">Se faire aider</span> avec '
+        +     '<button onclick="useHelp(this, \'flesh\')">h-chair</button>'
+        +     '<button onclick="useHelp(this, \'spirit\')">h-esprit</button>'
+        +     '<button onclick="useHelp(this, \'essence\')">h-essence</button>'
+        +  '</span>'
+        + '</span>'
+        + ' ?';
     }
 
     let success = "";
+    const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
     if(roll.roll_type.indexOf('Jemp-') !== 0 && roll.roll_type != "Jmort") {
         if(roll.hidden_dice == false || isGm()) {
             success = 'et obtient <span title="Juge12: '
                 + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
                 + ', Juge34: '
                 + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
-                + countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+                + successCount56
                 + " succès</span>"
         }
         else {
@@ -735,7 +800,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     }
 
     tr.innerHTML = ''
-        + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '">'
+        + '<td class="roll" data-rollid="' + roll.id + '" data-char-name="' + roll.character + '" data-success-count="' + successCount56 + '">'
         + new Date(roll.date).toLocaleTimeString().replace(" ", "&nbsp;")
         + " - "
         + secret // "(secret) "
@@ -789,15 +854,27 @@ function resist(elem: HTMLElement, action: RollType) {
     }
     else {
         let character = LocalCharacterView.fromElement(char);
-        if(rollElement?.dataset.charName?.toLocaleUpperCase() == character.name.current.toLocaleUpperCase()) {
-            console.log("=== Resisting to your own roll, should use help");
-        }
         autoRoll2(character, action, parentRollId);
     }
 }
 
+function useHelp(elem: HTMLElement, action: StatBasedRollType) {
+    const rollElement = elem.closest<HTMLElement>(".roll")!;
+    const char = getCurrentCharacter()!;
+    const character = LocalCharacterView.fromElement(char);
+    const parentRollId = rollElement?.dataset.rollid;
+    
+    console.log("useHelp for", elem);
+    let blessingFromHelp = 0;
+    rollElement.querySelectorAll<HTMLElement>("table .roll").forEach(e => {
+        blessingFromHelp += parseInt(e.dataset.successCount ?? "0", 10);
+    });
+    
+    rollForCharacter(character, action, undefined, { blessing: blessingFromHelp });
+}
 
-function getCharId(character: LocalCharacterView | HTMLElement | null): CharId | undefined {
+
+function getCharId(character: ILocalCharacterView | HTMLElement | null): CharId | undefined {
     if(character == null) {
         return undefined;
     }
@@ -817,13 +894,13 @@ function updateChat() {
     let charName: string;
     let idParameterString = "";
     const charElem = getCurrentCharacter();
+
     if(isGm()) {
         charName = "mj";
     }
     else {
         charName = charElem!.querySelector(".name .current")!.innerHTML;
     }
-
 
     lsrApi.getChat(charName, isGm(), getCharId(charElem)).then(chatHistory => {
         const chat = document.querySelector<HTMLElement>('#chat')!.firstElementChild as HTMLElement;
@@ -1097,6 +1174,23 @@ function convertRollTypeBackendToFrontend(rollTypeBackend: RollTypeBackend): Rol
 }
 
 
+
+function rollForServerCharacter(character: ILocalCharacterView, rollType: StatBasedRollType, parentRollId: string | undefined, bonuses: TemporaryBonuses = {}) {
+    const rollAction = new OneStatRollAction(character, rollType, parentRollId, bonuses);
+    lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
+}
+
+
+function rollForCharacter(character: LocalCharacterView, rollType: StatBasedRollType, parentRollId: string | undefined, bonuses: TemporaryBonuses = {}) {
+    if(!character.isOnline()) {
+        rollForLocalCharacterAndApplyCosts(character, rollType, parentRollId, bonuses);
+    }
+    else {
+        rollForServerCharacter(character, rollType, parentRollId, bonuses);
+    }
+}
+
+
 function autoRoll(sourceElement: HTMLElement) {
     const characterElement = sourceElement.closest<HTMLElement>(".character")!;
     const rollType = sourceElement.dataset.roll as RollType;
@@ -1119,13 +1213,7 @@ function autoRoll2(character: LocalCharacterView, rollType: RollType, parentRoll
         lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
     }
     else {
-        if(!character.isOnline()) {
-            rollForLocalCharacterAndApplyCosts(character, rollType, character.hidden.enabled, parentRollId);
-        }
-        else {
-            const rollAction = new OneStatRollAction(character, rollType, parentRollId);
-            lsrApi.rollForServerCharacter(character, rollAction).then(updateChat);
-        }
+        rollForCharacter(character, rollType, parentRollId);
     }
 }
 
@@ -1147,6 +1235,18 @@ function sendNotesToServer() {
             delete ta.dataset.commitNeeded;
         });
     });
+}
+
+
+function changeSubActionRoll(elem: HTMLElement) {
+    if(elem.classList.contains("resist")) {
+        elem.classList.remove("resist");
+        elem.classList.add("use-help");
+    }
+    else { // if(elem.classList.contains("use-help")) {
+        elem.classList.add("resist");
+        elem.classList.remove("use-help");
+    }
 }
 
 

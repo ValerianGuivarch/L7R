@@ -81,10 +81,10 @@ function actionToStatValue(char, action) {
     }
     assertNever(action);
 }
-/** Ask the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
-function rollForLocalCharacterAndApplyCosts(c, action, dc /** dés cachés */, parentRollId) {
+/** Asks the server to make a roll for a given character, the character is local which means stats are completly decided on the client side */
+function rollForLocalCharacterAndApplyCosts(c, action, parentRollId, bonuses = {}) {
     let stat = actionToStatValue(c, action);
-    const rollAction = new OneStatRollAction(c, action, parentRollId);
+    const rollAction = new OneStatRollAction(c, action, parentRollId, bonuses);
     lsrApi.rollForLocalCharacter(c, rollAction).then(updateChat);
     applyActionCosts(c, action);
 }
