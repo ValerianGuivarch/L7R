@@ -911,7 +911,11 @@ function useHelp(elem: HTMLElement, action: StatBasedRollType) {
     console.log("useHelp for", elem);
     let blessingFromHelp = 0;
     rollElement.querySelectorAll<HTMLElement>("table .roll").forEach(e => {
-        blessingFromHelp += parseInt(e.dataset.successCount ?? "0", 10);
+        let s = parseInt(e.dataset.successCount ?? "0", 10);
+        if(s == 0) {
+            s = -1; // no success means 1 curse
+        }
+        blessingFromHelp += s;
     });
     
     rollForCharacter(character, action, undefined, { blessing: blessingFromHelp });

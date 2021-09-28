@@ -737,7 +737,11 @@ function useHelp(elem, action) {
     let blessingFromHelp = 0;
     rollElement.querySelectorAll("table .roll").forEach(e => {
         var _a;
-        blessingFromHelp += parseInt((_a = e.dataset.successCount) !== null && _a !== void 0 ? _a : "0", 10);
+        let s = parseInt((_a = e.dataset.successCount) !== null && _a !== void 0 ? _a : "0", 10);
+        if (s == 0) {
+            s = -1; // no success means 1 curse
+        }
+        blessingFromHelp += s;
     });
     rollForCharacter(character, action, undefined, { blessing: blessingFromHelp });
 }
