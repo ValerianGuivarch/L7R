@@ -42,6 +42,7 @@ urlpatterns = [
     path('lsr/', applsr_views.list_characters),
     path('lsr/<str:nom>', applsr_views.lsr, name='lsr'),
     path('privacy', applsr_views.privacy),
+    path('FF9', applsr_views.FF9),
     path('afficher/<str:nom>/<str:secret>', applsr_views.afficher),
     path('mj_interdit_aux_joueurs/effacerLancersDes', applsr_views.effacer_lancers_des),
     path('lsr/getcar/<str:nom>', applsr_views.getcar, name='getcar'),

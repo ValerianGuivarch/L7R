@@ -1021,6 +1021,11 @@ def privacy(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+def FF9(request):
+    template = loader.get_template('applsr/FF9.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
 def lsr(request, nom):
     template = loader.get_template('applsr/index.html')
     char = Character.objects.filter(name=nom)
