@@ -146,7 +146,7 @@ class LsrApi {
 
     public rollForLocalCharacter(char: ILocalCharacterView, ra: OneStatRollAction) {
         const opposition = 0;
-        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + char.power.enabled + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
+        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + (char.power.enabled || ra.rollType == 'heal')  + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
     }
 
     public createCharacter(character: LocalCharacterView) {
@@ -813,16 +813,13 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     }
 
     let success = "";
-    console.log(roll.roll_type)
-    console.log((roll.roll_type == 'Jsoin'))
-    console.log(((roll.roll_type == 'Jsoin')  ? 1 : 0))
-    const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)  + ((roll.roll_type == 'Jsoin')  ? 1 : 0));
+    const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0) );
     if(roll.roll_type.indexOf('Jemp-') !== 0 && roll.roll_type != "Jmort") {
         if(roll.hidden_dice == false || isGm()) {
             success = 'et obtient <span title="Juge12: '
-                + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)  + ((roll.roll_type == 'Jsoin')  ? 1 : 0))
+                + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0) )
                 + ', Juge34: '
-                + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0) + ((roll.roll_type == 'Jsoin')  ? 1 : 0)) + '">'
+                + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
                 + successCount56
                 + " succès</span>"
         }
