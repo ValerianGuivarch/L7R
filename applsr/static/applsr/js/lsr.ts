@@ -146,7 +146,7 @@ class LsrApi {
 
     public rollForLocalCharacter(char: ILocalCharacterView, ra: OneStatRollAction) {
         const opposition = 0;
-        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + (char.power.enabled || ra.rollType == 'heal')  + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
+        return fetch(this.baseUrl + 'mj/lancer_pnj/' + char.name.current + '/' + convertRollTypeToBackend(ra.rollType) + '/' + ra.relevantStatValue + '/' + char.focus.enabled + '/' + (char.power.enabled || (ra.rollType == 'heal') && char.category.current != "Lumière")  + '/' + char.proficiency.enabled + '/' + (char.curse.current + char.curse2.current) + '/' + char.blessing.current + '/' + char.secret.enabled + '/' + ra.hideDiceResults + '/' + opposition + '?parent_roll_id=' + ra.parentRollId + LsrApi.createCidParameterString(getCharId(char))).then(r => r.text());
     }
 
     public createCharacter(character: LocalCharacterView) {
