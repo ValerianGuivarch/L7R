@@ -813,13 +813,16 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
     }
 
     let success = "";
-    const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + ((roll.roll_type == 'Jsoin')  ? 1 : 0);
+    console.log(roll.roll_type)
+    console.log((roll.roll_type == 'Jsoin'))
+    console.log(((roll.roll_type == 'Jsoin')  ? 1 : 0))
+    const successCount56 = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)  + ((roll.roll_type == 'Jsoin')  ? 1 : 0));
     if(roll.roll_type.indexOf('Jemp-') !== 0 && roll.roll_type != "Jmort") {
         if(roll.hidden_dice == false || isGm()) {
             success = 'et obtient <span title="Juge12: '
-                + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0))
+                + countSuccessesWith(roll.dice_results, [1], [2], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)  + ((roll.roll_type == 'Jsoin')  ? 1 : 0))
                 + ', Juge34: '
-                + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0)) + '">'
+                + countSuccessesWith(roll.dice_results, [3], [4], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0) + ((roll.roll_type == 'Jsoin')  ? 1 : 0)) + '">'
                 + successCount56
                 + " succès</span>"
         }
