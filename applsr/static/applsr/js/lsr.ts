@@ -744,7 +744,7 @@ function jsonRollToHtml(roll: Roll, sub: boolean = false) {
 
     let delta = "";
     if(roll.parent_roll != null) {
-        let parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0));
+        let parentSuccessCount = countSuccessesWith(roll.parent_roll.dice_results, [5], [6], (roll.parent_roll.pp ? 1 : 0) + (roll.parent_roll.ra ? 1 : 0)  + ((roll.roll_type == 'Jsoin')  ? 1 : 0) );
         let thisSuccessCount = countSuccessesWith(roll.dice_results, [5], [6], (roll.pp ? 1 : 0) + (roll.ra ? 1 : 0));
         let diff = parentSuccessCount - thisSuccessCount;
         delta = " Delta: " + diff + " ";
